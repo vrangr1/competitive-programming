@@ -1,0 +1,98 @@
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+
+void lppcalc(string &s1, int l, vector<int> &lpp, int N){
+    int len = 0; 
+    lpp.push_back(0); // lps[0] is always 0 
+  
+    // the loop calculates lps[i] for i = 1 to M-1 
+    int i = N - 2, j = 0;
+    while (i >= N - l){
+        if (s1[i] == s1[N - len - 1]){
+            len++;
+            lpp.push_back(len);
+            --i;
+        }
+        else{
+            if (len != 0){
+                len = lpp[len - 1];
+            }
+            else{
+                lpp.push_back(0);
+                --i;
+            }
+        }
+    }
+}
+
+void substrmatch(string &s1, int l, vector<int> &matches, vector<int> &lpp, int N){
+    // lppcalc(s1, l, lpp, N);
+    // for (int i = 0; i < l; ++i){
+    //     cout << lpp[i] << " ";
+    // }
+    // cout <<endl;
+    int m_s = matches.size();
+    if (m_s == 0){
+        for (int i = 0; i < N - 1; ++i){
+            if (s1[i] == s1[N-1])
+                matches.push_back(i);
+        }
+    }
+    else{
+        for (int i = 0; i < m_s; ++i){
+            if (matches[i] == 0){
+                matches.erase(matches.begin() + i);
+                --m_s;
+                --i;
+                continue;
+            }
+            else if (matches[i] >= N-l){
+                matches.erase(matches.begin() + i);
+                m_s--;
+                --i;
+                continue;
+            }
+            if(s1[N-l-1] == s1[matches[i] - 1]){
+                matches[i] = matches[i] - 1;
+                continue;
+            }
+        }
+    }
+}
+
+
+int main() {
+	// your code goes here
+	int T;
+	cin>> T;
+	string s1;
+    int N;
+    vector<int> lpp, matches;
+    int j, l, match;
+    	
+	for (int test = 0; test < T; ++test){
+	    cin >> N;
+	    cin >> s1;
+    // 	N = s1.length();
+    	match = 0;
+    	j = N-1;
+    	l = 1;
+    	while (j >= (float)N/2){
+	        substrmatch(s1, l, matches, lpp, N);
+	       // break;
+	        if (matches.size() == 0){
+	            break;
+	        }
+	    }
+	    if (match == 0)
+	        cout << "NO\n";
+	    s1.clear();
+	    lpp.clear();
+	    matches.clear();
+	}
+	
+	return 0;
+}
+
