@@ -21,12 +21,12 @@ inline ll calc(ll st, ll end){
 }
 
 
-inline ret_char(int n){
+inline ret_char(ll n){
 	return (char)(n + '0');
 }
 
 
-inline int update(int e, char s){
+inline ll update(ll e, char s){
 	if (e == -1 && s == '?')
 		return -1;
 	if (s == '1')
@@ -44,15 +44,14 @@ int main(){
 	while(T--){
 		string s;
 		cin >> s;
-		int n = s.length();
+		ll n = s.length();
 		ll ans = 0;
-		int last = 0;
-		int exp = -1;
+		ll last = 0, exp = -1;
 		if (s[0] == '0')
 			exp = 1;
 		else if(s[0] == '1')
 			exp = 0;
-		int lq = -1, bval;
+		ll lq = -1, bval;
 		bool stt = false, back = false;
 		forsn(i, 1, n - 1){
 			
@@ -86,7 +85,10 @@ int main(){
 		}
 		if (back){
 			// ans += calc(bval, n - 1);
-			ans += (n - last) * (last - bval);
+			// cout << "yes\n";
+			// cout << "ans: " << ans << bline;
+			// cout << "n: " << n << bline << "last: " << last << bline << "bval: " << bval << bline;
+			ans += ((n - last) * (last - bval));
 		}
 		ans += calc(last, n - 1);
 		cout << ans << bline;
