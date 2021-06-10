@@ -13,39 +13,32 @@ using namespace std;
 #define pb(a) push_back(a)
 #define pass (void)0
 typedef long long int ll;
+template <typename type> void print(vector<vector<type>> &arr);
+template <typename type> void print(vector<type> &arr);
 
 
-void print(vector<vector<int>> &arr){
+int main(){
+	fastIO;
+	int n = 5;
+	vector<vector<ll>> arr{{1, 2, 3}, {4,5}, {6, 7,8}};
+	print(arr);
+	return 0;
+}
+
+
+template <typename type> void print(vector<vector<type>> &arr){
 	cout << "2d vector: \n";
 	forn(i, arr.size()){
-		forn(j, arr[i].size()){
+		forn(j, arr[i].size())
 			cout << arr[i][j] << " ";
-		}
 		cout << bline;
 	}
 }
 
 
-void print(vector<int> &arr){
+template <typename type> void print(vector<type> &arr){
 	cout << "1d vector: \n";
-	forn(i, arr.size()){
+	forn(i, arr.size())
 		cout << arr[i] << " ";
-	}
 	cout << bline;
-}
-
-
-int main(){
-	fastIO;
-	int T;
-	vector<int> arr{1, 2, 3};
-	print(arr);
-	vector<vector<int>> ar2;
-	ar2.pb(arr);
-	print(ar2);
-	arr[1] = 4;
-	print(arr);
-	ar2.pb(arr);
-	print(ar2);
-	return 0;
 }
