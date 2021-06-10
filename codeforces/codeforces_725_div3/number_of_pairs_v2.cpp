@@ -26,12 +26,28 @@ template <typename type> void print(vector<type> &arr);
 template <typename t1, typename t2> void print(vector<pair<t1,t2>> &arr);
 
 
+ll solve(vector<int> &arr, int val){
+	int n = arr.size();
+	forr(i, n){
+		if (arr[i] <= val)
+			return i;
+	}
+	return 0;
+}
+
+
 int main(){
 	fastIO;
 	int T;
 	cin >> T;
 	while(T--){
-
+		int n, l, r;
+		cin >> n >> l >> r;
+		vector<int> arr(n);
+		forn(i, n)
+			cin >> arr[i];
+		sort(arr.begin(), arr.end());
+		
 	}
 	return 0;
 }
