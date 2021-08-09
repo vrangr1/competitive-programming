@@ -25,15 +25,14 @@ template <typename type> void print(const vector<vector<type>> &arr);
 template <typename type> void print(const vector<type> &arr);
 template <typename t1, typename t2> void print(const vector<pair<t1,t2>> &arr);
 template <typename t1, typename t2> void print(const vector<vector<pair<t1,t2>>> &arr);
+template <typename t1, typename t2> void print(const pair<t1, t2> &p);
 
 
 int main(){
 	fastIO;
-	int T;
-	cin >> T;
-	while(T--){
-
-	}
+	string a = "name", b = "hello, my ", c = " is ";
+	string ans = b + a + c + "Anav Prasad";
+	cout << ans;
 	return 0;
 }
 
@@ -87,4 +86,9 @@ template <typename t1, typename t2> void print(const vector<vector<pair<t1,t2>>>
 			cout << "," << endl;
 	}
 	cout << "], 2D Vector of Pairs\n";
+}
+
+
+template <typename t1, typename t2> void print(const pair<t1, t2> &p){
+	cout << "\n{" << p.first << "," << p.second << "}, Pair\n";
 }
