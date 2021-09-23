@@ -1,2 +1,2 @@
 # competitive-coding
-Repository for my cp codes
+Repository for my cp codes.
