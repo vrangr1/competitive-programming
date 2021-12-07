@@ -21,10 +21,10 @@ using namespace std;
 #define space " "
 typedef long long int ll;
 typedef unsigned long long int ull;
-template <typename type> void print(const vector<vector<type>> &arr);
+template <typename type> void print(const vector<vector<type> > &arr);
 template <typename type> void print(const vector<type> &arr);
-template <typename t1, typename t2> void print(const vector<pair<t1,t2>> &arr);
-template <typename t1, typename t2> void print(const vector<vector<pair<t1,t2>>> &arr);
+template <typename t1, typename t2> void print(const vector<pair<t1,t2> > &arr);
+template <typename t1, typename t2> void print(const vector<vector<pair<t1,t2> > > &arr);
 template <typename t1, typename t2> void print(const pair<t1, t2> &p);
 
 
@@ -35,7 +35,7 @@ int main(){
 }
 
 
-template <typename type> void print(const vector<vector<type>> &arr){
+template <typename type> void print(const vector<vector<type> > &arr){
 	cout << "\n[";
 	forn(i, arr.size()){
 		cout << "[";
@@ -60,7 +60,7 @@ template <typename type> void print(const vector<type> &arr){
 }
 
 
-template <typename t1, typename t2> void print(const vector<pair<t1,t2>> &arr){
+template <typename t1, typename t2> void print(const vector<pair<t1,t2> > &arr){
 	int n = arr.size();
 	cout << "\n[";
 	forn(i, n - 1){
@@ -70,7 +70,7 @@ template <typename t1, typename t2> void print(const vector<pair<t1,t2>> &arr){
 }
 
 
-template <typename t1, typename t2> void print(const vector<vector<pair<t1,t2>>> &arr){
+template <typename t1, typename t2> void print(const vector<vector<pair<t1,t2> > > &arr){
 	cout << "\n[";
 	forn(i, arr.size()){
 		cout << "[";
