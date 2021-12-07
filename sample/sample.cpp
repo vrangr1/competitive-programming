@@ -30,9 +30,7 @@ template <typename t1, typename t2> void print(const pair<t1, t2> &p);
 
 int main(){
 	fastIO;
-	string a = "name", b = "hello, my ", c = " is ";
-	string ans = b + a + c + "Anav Prasad";
-	cout << ans;
+	
 	return 0;
 }
 
