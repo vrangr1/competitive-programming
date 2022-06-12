@@ -10,10 +10,11 @@
 #include <stdlib.h>
 #include <map>
 #include <iterator>
+#include <climits>
 #include <iomanip>
 #include <algorithm>
-#include <climits>
 #include <assert.h>
+// TODO: Check if all the header files are included
 
 using namespace std;
 
@@ -41,7 +42,37 @@ template <typename t1, typename t2> void print(const pair<t1, t2> &p);
 
 int main(){
 	fastIO;
-	
+	int T;
+    cin >> T;
+    const char white = 'W', black = 'B';
+    while(T--){
+        int n, k;
+        cin >> n >> k;
+        string strip;
+        cin >> strip;
+        int best_count = INT_MAX, count = 0;
+        forn(i, k)
+            if (strip[i] == white) count++;
+        if (count == 0){
+            cout << 0 << endl;
+            continue;
+        }
+        best_count = min(count, best_count);
+        bool continue_now = false;
+        forsn(i, k, n-1){
+            if (strip[i] == white) count++;
+            if (strip[i-k] == white) count--;
+            if (count == 0){
+                cout << 0 << endl;
+                continue_now = true;
+                break;
+            }
+            best_count = min(best_count, count);
+        }
+        if (continue_now) continue;
+        assert(best_count != INT_MAX);
+        cout << best_count << endl;
+    }
 	return 0;
 }
 

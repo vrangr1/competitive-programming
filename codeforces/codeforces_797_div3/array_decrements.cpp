@@ -12,8 +12,8 @@
 #include <iterator>
 #include <iomanip>
 #include <algorithm>
-#include <climits>
 #include <assert.h>
+// TODO: Check if all the header files are included
 
 using namespace std;
 
@@ -41,7 +41,57 @@ template <typename t1, typename t2> void print(const pair<t1, t2> &p);
 
 int main(){
 	fastIO;
-	
+	int T;
+    cin >> T;
+    while(T--){
+        int n;
+        cin >> n;
+        vector<int> a(n), b(n);
+        forn(i,n) cin >> a[i];
+        forn(i, n) cin >> b[i];
+        int diff = -1;
+        bool continue_now = false;
+        bool nonzero = false;
+        forn(i, n){
+            if (b[i] > a[i]){
+                cout << "NO\n";
+                continue_now = true;
+                break;
+            }
+            if (diff == -1){
+                diff = a[i] - b[i];
+                if (b[i] > 0) nonzero = true;
+                continue;
+            }
+            if (!nonzero && b[i] == 0){
+                diff = max(a[i]-b[i], diff);
+                continue;
+            }
+            else if (!nonzero && b[i] > 0){
+                nonzero = true;
+                if (diff > a[i] - b[i]){
+                    cout << "NO\n";
+                    continue_now = true;
+                    break;
+                }
+                diff = a[i] - b[i];
+                continue;
+            }
+            if (b[i] != 0 && diff != a[i] - b[i]){
+                cout << "NO\n";
+                continue_now = true;
+                break;
+            }
+            if (b[i] != 0) continue;
+            if (a[i] - b[i] > diff){
+                cout << "NO\n";
+                continue_now = true;
+                break;
+            }
+        }
+        if (continue_now) continue;
+        cout << "YES\n";
+    }
 	return 0;
 }
 

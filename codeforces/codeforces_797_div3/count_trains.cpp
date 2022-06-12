@@ -14,6 +14,7 @@
 #include <algorithm>
 #include <climits>
 #include <assert.h>
+// TODO: Check if all the header files are included
 
 using namespace std;
 
@@ -37,11 +38,101 @@ template <typename type> void print(const vector<type> &arr);
 template <typename t1, typename t2> void print(const vector<pair<t1,t2> > &arr);
 template <typename t1, typename t2> void print(const vector<vector<pair<t1,t2> > > &arr);
 template <typename t1, typename t2> void print(const pair<t1, t2> &p);
+class car;
+class train;
 
+
+class cars{
+public:
+    trains *train;
+    cars *nextcar, *prevcar;
+    int maxspeed, curspeed, index;
+    cars(int index, int maxspeed){
+        this->train = nullptr;
+        this->nextcar = nullptr;
+        this->prevcar = nullptr;
+        this->maxspeed = maxspeed;
+        this->curspeed = -1;
+        this->index = index;
+    }
+};
+
+class trains{
+public:
+    cars *headcar;
+    trains *nexttrain;
+    int curspeed;
+    trains(){
+        this->headcar = nullptr;
+        this->nexttrain = nullptr;
+        this->curspeed = -1;
+    }
+};
 
 int main(){
 	fastIO;
-	
+	int T;
+    cin >> T;
+    while(T--){
+        int n, m;
+        cin >> n >> m;
+        vector<int> maxspeeds(n);
+        forn(i, n) cin >> maxspeeds[i];
+        vector<cars*> hashcars(n);
+        forn(i, n) hashcars[i] = new cars(i, maxspeeds[i]);
+        trains *headtrain = new trains(), *train;
+        train = headtrain;
+        train->headcar = hashcars[0];
+        int curspeed = maxspeeds[0];
+        cars *curcar = train->headcar;
+        curcar->curspeed = curspeed;
+        ll ans = 1;
+        forsn(i, 1, n-1){
+            if (curspeed <= maxspeeds[i]){
+                curcar->nextcar = hashcars[i];
+                curcar->nextcar->prevcar = curcar;
+                curcar = curcar->nextcar;
+                curcar->curspeed = curspeed;
+                train->curspeed = curspeed;
+                curcar->train = train;
+                continue;
+            }
+            train->nexttrain = new trains();
+            ans++;
+            curcar = hashcars[i];
+            curcar->prevcar = nullptr;
+            train = train->nexttrain;
+            train->headcar = curcar;
+            curspeed = curcar->maxspeed;
+            curcar->curspeed = curcar->maxspeed;
+            curcar->train = train;
+            train->curspeed = curspeed;
+        }
+        int k, d;
+        cars *prevcar;
+        forn(i,m){
+            cin >> k >> d;
+            curcar = hashcars[k-1];
+            if (curcar->maxspeed - d >= curcar->curspeed){
+                cout << ans << " ";
+                curcar->maxspeed = curcar->maxspeed - d;
+                continue;
+            }
+            if (curcar->prevcar == nullptr){
+                curcar->curspeed = curcar->maxspeed - d;
+                curcar->maxspeed = curcar->maxspeed - d;
+                train = curcar->train;
+                curspeed = curcar->curspeed;
+                curcar = curcar->nextcar;
+                while(curcar != nullptr){
+                    if (curcar->maxspeed < curspeed){
+                        
+                    }
+                }
+            }
+        }
+        cout << endl;
+    }
 	return 0;
 }
 

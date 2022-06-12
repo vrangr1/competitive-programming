@@ -12,8 +12,8 @@
 #include <iterator>
 #include <iomanip>
 #include <algorithm>
-#include <climits>
 #include <assert.h>
+// TODO: Check if all the header files are included
 
 using namespace std;
 
@@ -37,11 +37,32 @@ template <typename type> void print(const vector<type> &arr);
 template <typename t1, typename t2> void print(const vector<pair<t1,t2> > &arr);
 template <typename t1, typename t2> void print(const vector<vector<pair<t1,t2> > > &arr);
 template <typename t1, typename t2> void print(const pair<t1, t2> &p);
-
+template <typename type> void off_print(const vector<type> &arr);
 
 int main(){
 	fastIO;
-	
+	int T;
+    cin >> T;
+    while(T--){
+        int n;
+        cin >> n;
+        vector<int> si(n), fi(n);
+        forn(i,n) cin >> si[i];
+        forn(i,n) cin >> fi[i];
+        vector<int> ans;
+        ans.pb1(fi[0]-si[0]);
+        int fin_time = fi[0];
+        forsn(i,1,n-1){
+            // if (si[i] >= fin_time){
+            //     ans.pb1(fi[i]-si[i]);
+            //     fin_time = fi[i];
+            //     continue;
+            // }
+            // assert(fin_time < fi[i]);
+            ans.pb1(fi[i] - max(si[i], fi[i-1]));
+        }
+        off_print(ans);
+    }
 	return 0;
 }
 
@@ -57,6 +78,16 @@ template <typename type> void print(const vector<vector<type> > &arr){
 			cout << "," << endl;
 	}
 	cout << "], 2D Vector\n";
+}
+
+template <typename type> void off_print(const vector<type> &arr){
+	forn(i, arr.size()){
+		cout << arr[i];
+		// if (i != arr.size() - 1)
+			cout << " ";
+	}
+    cout << endl;
+	// cout << "], 1D Vector\n";
 }
 
 

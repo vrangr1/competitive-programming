@@ -12,8 +12,8 @@
 #include <iterator>
 #include <iomanip>
 #include <algorithm>
-#include <climits>
 #include <assert.h>
+// TODO: Check if all the header files are included
 
 using namespace std;
 
@@ -41,7 +41,20 @@ template <typename t1, typename t2> void print(const pair<t1, t2> &p);
 
 int main(){
 	fastIO;
-	
+	int T;
+    cin >> T;
+    while(T--){
+        int n;
+        cin >> n;
+        double first = (((double)n + 3)/((double)3));
+        int first_floor = first;
+        if (first > first_floor){
+            first_floor++;
+        }
+        int rem = n - first_floor;
+        rem /= 2;
+        cout << rem + 1 << " " << first_floor << " " << (n - first_floor - rem - 1) << endl;
+    }
 	return 0;
 }
 
