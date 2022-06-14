@@ -31,6 +31,7 @@ using namespace std;
 #define pass (void)0
 #define print_var(x) cout << #x << ": " << x << "\n";
 #define space " "
+#define debug_mode true
 typedef long long int ll;
 typedef unsigned long long int ull;
 template <typename type> void print(const vector<vector<type> > &arr);
@@ -39,8 +40,33 @@ template <typename t1, typename t2> void print(const vector<pair<t1,t2> > &arr);
 template <typename t1, typename t2> void print(const vector<vector<pair<t1,t2> > > &arr);
 template <typename t1, typename t2> void print(const pair<t1, t2> &p);
 
+inline int find_min_unchosen(vector<bool> &chosen, int avoid){
+    forn(i, chosen.size()) if (!chosen[i] && i != avoid) return i + 1;
+    // assert(false);
+    return -1;
+}
+// CODE ISN'T WORKING CURRENTLY
 void solve(){
-
+    int n, ind;
+    cin >> n;
+    vector<int> perm(n);
+    forn(i, n) cin >> perm[i];
+    vector<bool> chosen(n, false);
+    vector<int> ans;
+    forn(i, n){
+        ind = find_min_unchosen(chosen, perm[i]-1);
+        if (ind == -1){
+            cout << -1 << endl;
+            #if debug_mode
+            print(ans);
+            #endif
+            return;
+        }
+        chosen[ind-1] = true;
+        ans.push_back(ind);
+    }
+    forn(i, n) cout << ans[i] << " ";
+    cout << endl;
 }
 
 int main(){

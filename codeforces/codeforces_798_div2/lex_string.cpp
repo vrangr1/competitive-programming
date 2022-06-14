@@ -40,7 +40,54 @@ template <typename t1, typename t2> void print(const vector<vector<pair<t1,t2> >
 template <typename t1, typename t2> void print(const pair<t1, t2> &p);
 
 void solve(){
-
+    int n, m, k;
+    cin >> n >> m >> k;
+    string a, b;
+    cin >> a >> b;
+    int aind = 0, bind = 0;
+    sort(a.begin(), a.end());
+    sort(b.begin(), b.end());
+    assert(a.size() == n && b.size() == m);
+    int curct = 0;
+    bool left_add = true;
+    string ans;
+    while(aind < n && bind < m){
+        if (a[aind] < b[bind] && !left_add) curct = 0;
+        while(aind < n && curct < k && a[aind] < b[bind]){
+            ans.push_back(a[aind++]);
+            left_add = true;
+            curct++;
+        }
+        if (aind < n && curct == k && bind < m && a[aind] < b[bind]){
+            ans.push_back(b[bind++]);
+            left_add = false;
+            curct = 1;
+            continue;
+        }
+        if (aind >= n || bind >= m) break;
+        assert(a[aind] > b[bind]);
+        if (left_add)
+        curct = 0;
+        while(bind < m && curct < k && a[aind] > b[bind]){
+            ans.push_back(b[bind++]);
+            left_add = false;
+            curct++;
+        }
+        if (aind >= n || bind >= m) break;
+        if (curct == k && a[aind] > b[bind]){
+            ans.push_back(a[aind++]);
+            curct = 1;
+            left_add = true;
+            continue;
+        }
+        else if (a[aind] < b[bind]){
+            continue;
+        }
+        else{
+            assert(false);
+        }
+    }
+    cout << ans << endl;
 }
 
 int main(){
