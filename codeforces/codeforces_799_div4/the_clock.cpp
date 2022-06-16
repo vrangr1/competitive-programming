@@ -13,8 +13,6 @@
 #include <iomanip>
 #include <algorithm>
 #include <climits>
-#include <numeric>
-#include <cmath>
 #include <assert.h>
 
 using namespace std;
@@ -42,8 +40,77 @@ template <typename t1, typename t2> void print(const vector<pair<t1,t2> > &arr);
 template <typename t1, typename t2> void print(const vector<vector<pair<t1,t2> > > &arr);
 template <typename t1, typename t2> void print(const pair<t1, t2> &p);
 
-void solve(){
+const int twentyfour = 1440;
 
+int gcd(int a, int b){
+    if (a < b){
+        int temp = b;
+        b = a;
+        a = temp;
+    }
+    if (b == 0) return a;
+    return gcd(b, a%b);
+}
+
+inline int lcm(int a, int b){
+    return ((a * b) / gcd(a,b));
+}
+
+int get_time(string ct){
+    assert(ct.size() == 5 && ct[2] == ':');
+    int hr = stoi(ct.substr(0,2));
+    int ans = hr * 60 + stoi(ct.substr(3));
+    return ans;
+}
+
+int reverse_num(int num){
+    int ans = 0;
+    while(num != 0){
+        ans = ans * 10 + (num % 10);
+        num /= 10;
+    }
+    return ans;
+}
+
+
+bool check_palindrome(int ctime, vector<bool> &visited){
+    if (visited[ctime]) return false;
+    int hr = ctime / 60;
+    if (hr < 0 || hr >= 24){
+        print_var(ctime);
+        print_var(hr);
+        exit(0);
+    }
+    assert(hr >= 0 && hr < 24);
+    int mn = ctime % 60;
+    string hour, minutes;
+    hour = to_string(hr);
+    if (hr < 10) hour = "0" + hour;
+    minutes = to_string(mn);
+    if (mn < 10) minutes = "0" + minutes;
+    reverse(hour.begin(), hour.end());
+    bool ans = (hour == minutes);
+    if (ans)
+        visited[ctime] = true;
+    return ans;
+}
+
+void solve(){
+    string giventime;
+    int x;
+    cin >> giventime >> x;
+    int cycle = lcm(twentyfour, x);
+    int curtime = get_time(giventime);
+    assert(curtime >= 0 && curtime < 1440);
+    int otime = curtime, ans = 0, add = 0;
+    vector<bool> visited(1440, false);
+    while(add < cycle){
+        if (check_palindrome(curtime, visited)) ans++;
+        add += x;
+        curtime = otime + add;
+        while(curtime >= 1440) curtime -= 1440;
+    }
+    cout << ans << endl;
 }
 
 int main(){

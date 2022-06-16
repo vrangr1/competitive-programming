@@ -13,8 +13,6 @@
 #include <iomanip>
 #include <algorithm>
 #include <climits>
-#include <numeric>
-#include <cmath>
 #include <assert.h>
 
 using namespace std;
@@ -43,7 +41,21 @@ template <typename t1, typename t2> void print(const vector<vector<pair<t1,t2> >
 template <typename t1, typename t2> void print(const pair<t1, t2> &p);
 
 void solve(){
-
+    int n;
+    cin >> n;
+    vector<int> arr(n);
+    forn(i, n) cin >> arr[i];
+    int mx = *max_element(arr.begin(), arr.end());
+    vector<int> counts(mx+1, 0);
+    forn(i, n) counts[arr[i]]++;
+    int ans = 0, ct = 0;
+    forn(i, mx + 1)
+        if (counts[i] > 1){
+            ans += counts[i] - 1;
+            ct++;
+        }
+    if (ans % 2 == 0) cout << n - ans << endl;
+    else cout << n - ans - 1 << endl;
 }
 
 int main(){

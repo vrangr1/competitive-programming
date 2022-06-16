@@ -13,8 +13,6 @@
 #include <iomanip>
 #include <algorithm>
 #include <climits>
-#include <numeric>
-#include <cmath>
 #include <assert.h>
 
 using namespace std;
@@ -42,8 +40,20 @@ template <typename t1, typename t2> void print(const vector<pair<t1,t2> > &arr);
 template <typename t1, typename t2> void print(const vector<vector<pair<t1,t2> > > &arr);
 template <typename t1, typename t2> void print(const pair<t1, t2> &p);
 
-void solve(){
+vector<string> chess(8);
+const char hashch = '#';
 
+void solve(){
+    forn(i, 8)
+        cin >> chess[i];
+    forsn(i, 1, 6){
+        forsn(j, 1, 6){
+            if (chess[i][j] == hashch && chess[i-1][j-1] == hashch && chess[i-1][j+1] == hashch && chess[i+1][j+1] == hashch&& chess[i+1][j-1] == hashch){
+                cout << (i + 1) << " " << (j+1) << endl;
+                break;
+            }
+        }
+    }
 }
 
 int main(){

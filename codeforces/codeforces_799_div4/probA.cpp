@@ -13,8 +13,6 @@
 #include <iomanip>
 #include <algorithm>
 #include <climits>
-#include <numeric>
-#include <cmath>
 #include <assert.h>
 
 using namespace std;
@@ -43,7 +41,13 @@ template <typename t1, typename t2> void print(const vector<vector<pair<t1,t2> >
 template <typename t1, typename t2> void print(const pair<t1, t2> &p);
 
 void solve(){
-
+    int a, b, c, d;
+    cin >> a >> b >> c >> d;
+    int ans = 0;
+    if (b > a) ans++;
+    if (c > a) ans++;
+    if (d > a) ans++;
+    cout << ans << endl;
 }
 
 int main(){

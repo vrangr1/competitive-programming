@@ -42,8 +42,71 @@ template <typename t1, typename t2> void print(const vector<pair<t1,t2> > &arr);
 template <typename t1, typename t2> void print(const vector<vector<pair<t1,t2> > > &arr);
 template <typename t1, typename t2> void print(const pair<t1, t2> &p);
 
-void solve(){
+inline bool compare_func(const pair<int, int> &a, const pair<int,int> &b){
+    if (a.first != b.first) return a.first < b.first;
+    return a.second < b.second;
+}
 
+// void process(vector<pair<int,int>> &arr, const int start, const int end, int &maxval, int &a, int &l, int &r){
+//     int curval = 1, curl = start, curr = start, cura = arr[start].first;
+//     forsn(j, start + 1, end){
+        
+//     }
+// }
+
+void solve(){
+    int n;
+    cin >> n;
+    vector<int> arr(n);
+    forn(i, n) cin >> arr[i];
+    int start = 0, end = 1, maxval = 1, a = arr[0], l = 1, u = 1, cura = arr[0], curl = 1, curu = 1, maxfreq = 1, curval = 1;
+    map<int, int> freq;
+    forn(i, n) freq[arr[i]] = 0;
+    freq[arr[0]]++;
+    while(start <= end && end < n && start < n){
+        freq[arr[end]]++;
+        if (freq[arr[end]] > maxfreq){
+            maxfreq = freq[arr[end]];
+        }
+        curval = 2*maxfreq - end + start - 1;
+        while(curval < 1 && start < end){
+            freq[arr[start]]--;
+            
+        }
+        
+    }
+}
+
+void solve_v2(){
+    int n;
+    cin >> n;
+    vector<pair<int,int>> arr(n);
+    forn(i, n){
+        cin >> arr[i].first;
+        arr[i].second = i;
+    }
+    sort(arr.begin(), arr.end(), compare_func);
+    int start = 0, curval = arr[0].first, end = -1;
+    int a, l, r;
+    double maxval = 1, curval;
+    int curl, curr, cura;
+    forn(i, n){
+        if (arr[i].first != cura){
+            // end = i - 1;
+            // assert(end >= 0);
+            // curval = 1;
+            // curl = start;
+            // curr = start;
+            // forsn(j, start + 1, end){
+            //     if (curval == 1 && arr[j].second > arr[j-1].second + 1){
+            //         curval = 1;
+            //         curl = j;
+            //         curr = j;
+            //     }
+            //     else if ()
+            // }
+        }
+    }
 }
 
 int main(){

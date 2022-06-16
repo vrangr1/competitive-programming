@@ -14,7 +14,6 @@
 #include <algorithm>
 #include <climits>
 #include <numeric>
-#include <cmath>
 #include <assert.h>
 
 using namespace std;
@@ -43,7 +42,69 @@ template <typename t1, typename t2> void print(const vector<vector<pair<t1,t2> >
 template <typename t1, typename t2> void print(const pair<t1, t2> &p);
 
 void solve(){
-
+    int n, s;
+    cin >> n >> s;
+    vector<int> arr(n);
+    int left = 0, right = -1, tsum = 0;
+    forn(i, n){
+        cin >> arr[i];
+        tsum += arr[i];
+        if (right == -1 && tsum > s){
+            assert(arr[i] == 1);
+            right = i;
+        }
+    }
+    if (tsum < s){
+        assert(right == -1);
+        cout << "-1\n";
+        return;
+    }
+    else if (tsum == s){
+        cout << "0\n";
+        return;
+    }
+    int ans = n - right;
+    right++;
+    while(right < n && arr[right] == 0)
+        right++;
+    // if (right == n){
+    //     cout << ans << endl;
+    //     return;
+    // }
+    if (right == n){
+        while(left < n && left < right && arr[left] == 0)
+        left++;
+        if (left < n && left < right)
+            ans = min(ans, left + 1 + n - right);
+        cout << ans << endl;
+        return;
+    }
+    assert(arr[right] == 1);
+    while(left < n && left < right && arr[left] == 0)
+        left++;
+    if (left == n || left >= right){
+        cout << ans << endl;
+        return;
+    }
+    assert(arr[left] == 1);
+    ans = min(left + 1 + n - right, ans);
+    while(left < right && left < n && right < n){
+        right++;
+        left++;
+        while(right < n && arr[right] == 0)
+            right++;
+        if (right == n){
+            while(left < right && left < n && arr[left] == 0)
+                left++;
+            if (left < n && left < right)
+                ans = min(left + 1 + n - right, ans);
+            break;
+        }
+        while(left < right && left < n && arr[left] == 0) left++;
+        if (left == n || left >= right) break;
+        ans = min(left + 1 + n - right, ans);
+    }
+    cout << ans << endl;
 }
 
 int main(){

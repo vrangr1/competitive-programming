@@ -43,7 +43,33 @@ template <typename t1, typename t2> void print(const vector<vector<pair<t1,t2> >
 template <typename t1, typename t2> void print(const pair<t1, t2> &p);
 
 void solve(){
-
+    int n, k;
+    cin >> n >> k;
+    vector<int> arr(n), powers(n);
+    forn(i, n){
+        cin >> arr[i];
+        powers[i] = log2(arr[i]);
+    }
+    int ans = 0;
+    forn(i, n - k){
+        int increment = 1, temp_val;
+        forsn(j, i + 1, i + k){
+            if (powers[j] >= powers[j-1]) continue;
+            else if (powers[j] < powers[j-1] - 1){
+                increment = 0;
+                break;
+            }
+            assert(powers[j] == powers[j-1] - 1);
+            temp_val = (arr[j-1] >> 1);
+            assert(((int)log2(temp_val)) == powers[j]);
+            if (temp_val >= arr[j]){
+                increment = 0;
+                break;
+            }
+        }
+        ans += increment;
+    }
+    cout << ans << endl;
 }
 
 int main(){

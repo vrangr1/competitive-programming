@@ -14,7 +14,6 @@
 #include <algorithm>
 #include <climits>
 #include <numeric>
-#include <cmath>
 #include <assert.h>
 
 using namespace std;
@@ -43,7 +42,57 @@ template <typename t1, typename t2> void print(const vector<vector<pair<t1,t2> >
 template <typename t1, typename t2> void print(const pair<t1, t2> &p);
 
 void solve(){
-
+    int n;
+    cin >> n;
+    vector<int> arr(n);
+    forn(i, n) cin >> arr[i];
+    vector<int> counts(10, 0);
+    forn(i,n)
+        counts[arr[i]%10]++;
+    int curnum, need;
+    forn(i, 10){
+        if (counts[i] == 0) continue;
+        forsn(j, i, 9){
+            if (counts[j] == 0) continue;
+            if (i == j && counts[j] == 1) continue;
+            curnum = i + j;
+            if (curnum > 3 && curnum < 14) need = 13 - (i + j);
+            else if (curnum >= 14) need = 23 - (i + j);
+            else need = 3 - curnum;
+            // if (need < 0) continue;
+            // if (need < 0 || need > 9){
+            //     print_var(need);
+            //     print_var(i);
+            //     print_var(j);
+            //     exit(0);
+            // }
+            assert(need >= 0 && need <= 9);
+            if (i == j && need != i && counts[need] > 0){
+                cout << "YES\n";
+                return;
+            }
+            else if (i == j && need == i && counts[need] > 2){
+                cout << "YES\n";
+                return;
+            }
+            else if (i == j){
+                continue;
+            }
+            else if (need != i && need != j && counts[need] > 0){
+                cout << "YES\n";
+                return;
+            }
+            else if (need == i && counts[need] > 1){
+                cout << "YES\n";
+                return;
+            }
+            else if (need == j && counts[need] > 1){
+                cout << "YES\n";
+                return;
+            }
+        }
+    }
+    cout << "NO\n";
 }
 
 int main(){
