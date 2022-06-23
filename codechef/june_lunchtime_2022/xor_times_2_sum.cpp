@@ -35,7 +35,7 @@ using namespace std;
 #define print_var(x) cout << #x << ": " << x << "\n";
 #define space " "
 
-#define debug_mode true
+#define debug_mode false
 
 typedef long long int ll;
 typedef unsigned long long int ull;
@@ -46,13 +46,102 @@ template <typename t1, typename t2> void print(const vector<pair<t1,t2> > &arr);
 template <typename t1, typename t2> void print(const vector<vector<pair<t1,t2> > > &arr);
 template <typename t1, typename t2> void print(const pair<t1, t2> &p);
 
-void solve(){
-
+ll get_counter(ll num){
+    ll ans = 0;
+    ll count = 0, index = 0;
+    bool begun = false;
+    while(num > 0){
+        if (!begun && num % 2 == 1)
+            begun = true;
+        else if (begun && num % 2 == 0)
+            return -1;
+        else if (begun && num % 2 == 1){
+            begun = false;
+            ans |= (1ll << (index - 1));
+        }
+        index++;
+        num >>= 1;
+    }
+    if (!begun) return ans;
+    else return -1;
 }
+
+inline bool predicate(const pair<ll,ll> &pr, const ll &val){
+    return pr.first < val;
+}
+
+void solve(){
+	ll n, other, ans = 0;
+    cin >> n;
+    vector<ll> arr(n);
+    forn(i, n) cin >> arr[i];
+    sort(arr.begin(), arr.end());
+    vector<pair<ll, ll>> newarr;
+    ll nn = 0;
+    forn(i, n){
+        if (nn == 0 || newarr[nn-1].first != arr[i]){
+            newarr.push_back({arr[i], 1});
+            nn++;
+            continue;
+        }
+        assert(newarr[nn-1].first == arr[i]);
+        newarr[nn-1].second++;
+    }
+    vector<pair<ll,ll>>::iterator iter;
+    #if debug_mode
+        print(newarr);
+    #endif
+    // reverse(arr.begin(), arr.end());
+    forr(i, n){
+        other = get_counter(arr[i]);
+        #if debug_mode
+            print_var(arr[i])
+            print_var(other);
+            cout << endl;
+        #endif
+        if (other == -1) continue;
+        iter = lower_bound(newarr.begin(), newarr.end(), other, predicate);
+        if (iter == newarr.end() || iter->first != other){
+            #if debug_mode
+            cout << "continuing\n";
+            if (iter != newarr.end()) print(*iter);
+            else cout << "newarr.end()\n";
+            cout << endl;
+            #endif
+            continue;
+        }
+        // if (iter > arr.begin()) assert(*(prev(iter)) != other);
+        assert(iter->first == other);
+        assert(other != arr[i]);
+        #if debug_mode
+        cout << "found!\n";
+        print(*iter);
+        cout << endl;
+        #endif
+        ans += iter->second;
+        // while(iter != arr.end() && *iter == other){
+        //     ans++;
+        //     iter = next(iter);
+        // }
+    }
+    cout << ans << endl;
+    return;
+}
+
+// void solve(){
+//     ll n, ans = 0;
+//     cin >> n;
+//     vector<ll> arr(n);
+//     forn(i, n) cin >> arr[i];
+//     forn(i, n)
+//         forsn(j, i + 1, n-1)
+//             if (2ll * (arr[i] ^ arr[j]) == arr[i] + arr[j]) ans++;
+//     cout << ans << endl;
+// }
 
 int main(){
 	fastIO;
-	TEST;
+	TEST1;
 	return 0;
 }
 
@@ -84,7 +173,6 @@ template <typename type> void print(const vector<type> &arr){
 template <typename type> void off_print(const vector<type> &arr){
 	forn(i, arr.size())
 		cout << arr[i] << " ";
-	cout << endl;
 }
 
 

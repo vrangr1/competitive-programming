@@ -46,8 +46,41 @@ template <typename t1, typename t2> void print(const vector<pair<t1,t2> > &arr);
 template <typename t1, typename t2> void print(const vector<vector<pair<t1,t2> > > &arr);
 template <typename t1, typename t2> void print(const pair<t1, t2> &p);
 
-void solve(){
+inline bool check_all_zeros(const vector<int> &b, const int k){
+    forn(i, k)
+        if (b[i] != 0) return false;
+    return true;
+}
 
+void solve(){
+    int n;
+    cin >> n;
+    vector<int> b(n +1);
+    forn(i, n+1) cin >> b[i];
+    if (check_all_zeros(b, n+1)){
+        forn(i, n) cout << "0 ";
+        cout << endl;
+        return;
+    }
+    vector<int> ans;
+    if (n % 2 == 1){
+        int total = 0;
+        forn(i, n + 1) total = total ^ b[i];
+        bool found = false;
+        forn(i, n + 1){
+            if (b[i] == total && !found){
+                found = true;
+                continue;
+            }
+            ans.push_back(total ^ b[i]);
+        }
+        assert(ans.size() == n);
+        off_print(ans);
+        return;
+    }
+    forsn(i, 1, n)
+        cout << (b[0] ^ b[i]) << " ";
+    cout << endl;
 }
 
 int main(){
@@ -84,7 +117,7 @@ template <typename type> void print(const vector<type> &arr){
 template <typename type> void off_print(const vector<type> &arr){
 	forn(i, arr.size())
 		cout << arr[i] << " ";
-	cout << endl;
+    cout << endl;
 }
 
 

@@ -22,7 +22,6 @@ using namespace std;
 #define endl "\n"
 #define fastIO ios_base::sync_with_stdio(false),cin.tie(0)
 #define TEST int T;cin>>T;while(T--)solve();
-#define TEST1 solve();
 #define forn(i, n) for (int i = 0; i < n; i++)
 #define forsn(i, st_val, n) for (int i = st_val; i <= n; ++i)
 #define forr(i, n) for (int i = n - 1; i >= 0; --i)
@@ -34,9 +33,6 @@ using namespace std;
 #define pass (void)0
 #define print_var(x) cout << #x << ": " << x << "\n";
 #define space " "
-
-#define debug_mode true
-
 typedef long long int ll;
 typedef unsigned long long int ull;
 template <typename type> void print(const vector<vector<type> > &arr);
@@ -47,6 +43,37 @@ template <typename t1, typename t2> void print(const vector<vector<pair<t1,t2> >
 template <typename t1, typename t2> void print(const pair<t1, t2> &p);
 
 void solve(){
+    int n;
+    cin >> n;
+    if (n % 2){
+        forn(i, ((n-1)/2))
+            cout << 0;
+        cout << 1;
+        forn(i, ((n-1)/2))
+            cout << 0;
+        cout << endl;
+        return;
+    }
+    cout << 1;
+    forn(i,n-2)
+        cout << 0;
+    cout << "1\n";
+    // if (n % 4 == 0){
+    //     while(n > 0){
+    //         cout << "1001";
+    //         n-=4;
+    //     }
+    //     cout << endl;
+    //     return;
+    // }
+    // if (n % 3 == 0){
+    //     while(n > 0){
+    //         cout << "010";
+    //         n -= 3;
+    //     }
+    //     cout << endl;
+    //     return;
+    // }
 
 }
 
@@ -84,7 +111,6 @@ template <typename type> void print(const vector<type> &arr){
 template <typename type> void off_print(const vector<type> &arr){
 	forn(i, arr.size())
 		cout << arr[i] << " ";
-	cout << endl;
 }
 
 

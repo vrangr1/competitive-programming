@@ -47,7 +47,30 @@ template <typename t1, typename t2> void print(const vector<vector<pair<t1,t2> >
 template <typename t1, typename t2> void print(const pair<t1, t2> &p);
 
 void solve(){
-
+    ll n;
+    cin >> n;
+    vector<ll> arr(2*n), xors(2*n);
+    forn(i, n) cin >> arr[i];
+    forn(i, n) arr[i+n] = arr[i];
+    xors[0] = arr[0];
+    forsn(i, 1, 2*n-1) xors[i] = xors[i-1]^arr[i];
+    map<ll, int> counts;
+    forn(i, 2*n) counts[xors[i]] = 0;
+    int maxval = INT_MIN;
+    int curct = 0;
+    forn(i, n){
+        counts[xors[i]]++;
+        if (counts[xors[i]] == 1) curct++;
+    }
+    maxval = curct;
+    forsn(i, 1, n-1){
+        counts[xors[i-1]]--;
+        if (counts[xors[i-1]] == 0) curct--;
+        counts[xors[i+n-1]]++;
+        if(counts[xors[i+n-1]] == 1) curct++;
+        maxval = max(curct, maxval);
+    }
+    cout << maxval << endl;
 }
 
 int main(){
