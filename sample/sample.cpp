@@ -1,3 +1,11 @@
+#if 0
+    me=`basename $0 .cpp`
+    g++ $me.cpp -o $me
+    ./$me
+    rm $me
+    exit
+#endif
+
 /***************************************************
 * AUTHOR : Anav Prasad
 * Nick : vrangr
@@ -16,6 +24,9 @@
 #include <numeric>
 #include <cmath>
 #include <queue>
+#include <unordered_map>
+#include <bit>
+#include <bitset>
 #include <assert.h>
 
 using namespace std;
@@ -34,6 +45,7 @@ using namespace std;
 #define pb(...) GET_MACRO(__VA_ARGS__, pb1, pb2)(__VA_ARGS__)
 #define pass (void)0
 #define print_var(x) cout << #x << ": " << x << "\n";
+#define print_iter(x) cout << "*" << #x << ": " << *x << endl;
 #define space " "
 
 #define debug_mode true
