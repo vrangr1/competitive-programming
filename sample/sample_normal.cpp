@@ -1,8 +1,10 @@
 #if 0
     me=`basename $0 .cpp`
-    g++ $me.cpp -o $me
-    ./$me
-    rm $me
+    g++ -std=c++20 $me.cpp -o $me
+    if test -f $me; then
+    	./$me
+    	rm $me
+    fi
     exit
 #endif
 
