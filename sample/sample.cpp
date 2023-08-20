@@ -48,6 +48,8 @@ using namespace std;
 #define pass (void)0
 #define print_var(x) cout << #x << ": " << x << "\n";
 #define print_iter(x) cout << "*" << #x << ": " << *x << endl;
+#define print_arr(arr) cout << #arr << ": ";print(arr);
+#define print_pair(pr) cout << #pr << ": ";print(pr);
 #define space " "
 
 #define debug_mode true
