@@ -2,8 +2,10 @@
     me=`basename $0 .cpp`
     g++ -std=c++20 $me.cpp -o $me
     if test -f $me; then
-    	./$me
+	    ./$me > $me.out
     	rm $me
+        cat $me.out
+        rm $me.out
     fi
     exit
 #endif

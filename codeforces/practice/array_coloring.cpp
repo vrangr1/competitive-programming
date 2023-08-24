@@ -66,7 +66,17 @@ template <typename t1, typename t2> void print(const vector<vector<pair<t1,t2> >
 template <typename t1, typename t2> void print(const pair<t1, t2> &p);
 
 void solve(){
-
+    int n, num;
+    cin >> n;
+    bool odd = false;
+    forn(i, n){
+        cin >> num;
+        if (num % 2) odd = !odd;
+    }
+    if (!odd)
+        cout << "YES\n";
+    else
+        cout << "NO\n";
 }
 
 int main(){
