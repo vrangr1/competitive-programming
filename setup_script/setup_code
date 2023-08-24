@@ -1,0 +1,4 @@
+
+file_name=${1:-"file.cpp"}
+echo "Setup file: $file_name"
+cp /Users/anavp/home/acads/competitive-coding/sample/sample.cpp $file_name
