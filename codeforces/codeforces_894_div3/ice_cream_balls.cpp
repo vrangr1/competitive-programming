@@ -68,7 +68,17 @@ template <typename t1, typename t2> void print(const vector<vector<pair<t1,t2> >
 template <typename t1, typename t2> void print(const pair<t1, t2> &p);
 
 void solve(){
-
+    ll n; cin >> n;
+    if (n == 1) return void(cout << 2 << endl);
+    ll k = sqrt(8*n + 1);
+    k++;
+    k/=2;
+    if (k * (k-1) > 2ll*n){
+        k--;
+    }
+    assert(k*(k-1) <= 2ll*n);
+    if (k*(k-1) == 2ll*n) return void(cout << k << endl);
+    return void(cout << k + (n - ((k * (k-1))/2ll)) << endl);   
 }
 
 int main(){

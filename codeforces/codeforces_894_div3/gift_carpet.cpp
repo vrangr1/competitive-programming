@@ -17,6 +17,8 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <set>
+#include <unordered_set>
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
@@ -50,25 +52,70 @@ using namespace std;
 #define pass (void)0
 #define print_var(x) cout << #x << ": " << x << "\n";
 #define print_iter(x) cout << "*" << #x << ": " << *x << endl;
-#define print_arr(arr) cout << #arr << ": ";print(arr);
+#define print_cont(arr) cout << #arr << ": ";print(arr);
 #define print_pair(pr) cout << #pr << ": ";print(pr);
 #define space " "
-#define yes "YES\n"
-#define no "NO\n"
 
-#define debug_mode true
+#define debug_mode false
 
 typedef long long int ll;
 typedef unsigned long long int ull;
 template <typename type> void print(const vector<vector<type> > &arr);
 template <typename type> void print(const vector<type> &arr);
+template <typename type> void print(const vector<unordered_set<type>> &arr);
 template <typename type> void off_print(const vector<type> &arr);
+template <typename type> void print(const unordered_set<type> &uset);
 template <typename t1, typename t2> void print(const vector<pair<t1,t2> > &arr);
 template <typename t1, typename t2> void print(const vector<vector<pair<t1,t2> > > &arr);
 template <typename t1, typename t2> void print(const pair<t1, t2> &p);
 
 void solve(){
-
+    int n, m;
+    cin >> n >> m;
+    string temp;
+    vector<unordered_set<char>> sets(m);
+    forn(i, n){
+        cin >> temp;
+        #if debug
+            assert(temp.size() == m);
+            print_var(temp);
+        #endif
+        forn(j, m){
+            sets[j].insert(temp[j]);
+        }
+        #if debug
+            print_cont(sets);
+        #endif
+        temp.clear();
+    }
+    temp = "vika";
+    int index = 0;
+    forn(i, m){
+        if (index == temp.size()){
+            cout << "YES\n";
+            return;
+        }
+        #if debug
+        print_cont(sets[i]);
+        print_var(index);
+        print_var(temp[index]);
+        #endif
+        if (sets[i].find(temp[index]) != sets[i].end()){
+            #if debug
+            cout << "found\n";
+            #endif
+            index++;
+            continue;
+        }
+        #if debug
+            cout << endl;
+        #endif
+    }
+    if (index == temp.size()){
+        cout << "YES\n";
+        return;
+    }
+    cout << "NO\n";
 }
 
 int main(){
@@ -100,6 +147,19 @@ template <typename type> void print(const vector<type> &arr){
 			cout << ", ";
 	}
 	cout << "], 1D Vector\n";
+}
+
+template <typename type> void print(const vector<unordered_set<type>> &arr){
+    cout << "\n[";
+    forn(i, arr.size()){
+        cout << "{";
+        for (auto it = arr[i].begin(); it != arr[i].end(); ++it)
+            cout << *it << ", ";
+        cout << "}";
+        if (i != arr.size() - 1)
+            cout << ", ";
+    }
+    cout << "], 1D Vector of Unordered Sets\n";
 }
 
 template <typename type> void off_print(const vector<type> &arr){
@@ -138,4 +198,11 @@ template <typename t1, typename t2> void print(const vector<vector<pair<t1,t2> >
 
 template <typename t1, typename t2> void print(const pair<t1, t2> &p){
 	cout << "\n{" << p.first << "," << p.second << "}, Pair\n";
+}
+
+template <typename type> void print(const unordered_set<type> &uset){
+    cout << "\n{";
+    for (auto it = uset.begin(); it != uset.end(); ++it)
+        cout << *it << ", ";
+    cout << "}, Unordered Set\n";
 }

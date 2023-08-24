@@ -53,8 +53,6 @@ using namespace std;
 #define print_arr(arr) cout << #arr << ": ";print(arr);
 #define print_pair(pr) cout << #pr << ": ";print(pr);
 #define space " "
-#define yes "YES\n"
-#define no "NO\n"
 
 #define debug_mode true
 
@@ -68,7 +66,27 @@ template <typename t1, typename t2> void print(const vector<vector<pair<t1,t2> >
 template <typename t1, typename t2> void print(const pair<t1, t2> &p);
 
 void solve(){
-
+    int n;
+    cin >> n;
+    vector<int> b(n);
+    forn(i, n)
+        cin >> b[i];
+    vector<int> a;
+    a.pb1(b[0]);
+    int alen = 1;
+    forsn(i, 1, n - 1){
+        if (a[alen-1] <= b[i]){
+            a.pb1(b[i]);
+            alen++;
+        }
+        else{
+            a.pb1(b[i]);
+            a.pb1(b[i]);
+            alen += 2;
+        }
+    }
+    cout << alen << endl;
+    off_print(a);
 }
 
 int main(){

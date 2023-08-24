@@ -68,7 +68,37 @@ template <typename t1, typename t2> void print(const vector<vector<pair<t1,t2> >
 template <typename t1, typename t2> void print(const pair<t1, t2> &p);
 
 void solve(){
-
+    int n; cin >> n;
+    vector<int> a(n);
+    forn(i, n){
+        cin >> a[i];
+    }
+    if (a[0] != n){
+        cout << no;
+        return;
+    }
+    vector<int> transpose(n, 0);
+    int index = 0;
+    for (int i = 0; i < n; ++i){
+        if (index == n){
+            transpose[i] = index;
+            continue;
+        }
+        while(index < n && a[index] >= n-i){
+            index++;
+        }
+        if (index == n)
+            transpose[i] = index;
+        else
+            transpose[i] = index;
+    }
+    forn(i, n){
+        if (a[i] != transpose[n-i-1]){
+            cout << no;
+            return;
+        }
+    }
+    cout << yes;
 }
 
 int main(){

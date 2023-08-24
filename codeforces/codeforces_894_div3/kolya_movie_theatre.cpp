@@ -56,7 +56,7 @@ using namespace std;
 #define yes "YES\n"
 #define no "NO\n"
 
-#define debug_mode true
+#define debug_mode false
 
 typedef long long int ll;
 typedef unsigned long long int ull;
@@ -68,7 +68,23 @@ template <typename t1, typename t2> void print(const vector<vector<pair<t1,t2> >
 template <typename t1, typename t2> void print(const pair<t1, t2> &p);
 
 void solve(){
-
+    ll n, m, d;
+    cin >> n >> m >> d;
+    vector<ll> a(n);
+    forn(i, n) cin >> a[i];
+    ll ans = 0, sum = 0;
+    priority_queue<int, vector<int>, greater<int> > pq;
+    for (int i = 0; i < n; ++i){
+        if (a[i] <= 0) continue;
+        sum += (ll)a[i];
+        pq.push(a[i]);
+        if (pq.size() > m){
+            sum -= (ll)pq.top();
+            pq.pop();
+        }
+        ans = max(ans, sum - d * ((ll)(i+1)));
+    }
+    cout << ans << endl;
 }
 
 int main(){
