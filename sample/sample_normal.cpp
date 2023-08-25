@@ -33,6 +33,7 @@
 #include <bit>
 #include <bitset>
 #include <assert.h>
+#define debug true
 
 using namespace std;
 
@@ -47,8 +48,6 @@ using namespace std;
 #define print_pair(pr) cout << #pr << ": ";print(pr);
 #define space " "
 
-#define debug_mode true
-
 typedef long long int ll;
 typedef unsigned long long int ull;
 template <typename type> void print(const vector<vector<type> > &arr);
@@ -58,9 +57,7 @@ template <typename t1, typename t2> void print(const vector<pair<t1,t2> > &arr);
 template <typename t1, typename t2> void print(const vector<vector<pair<t1,t2> > > &arr);
 template <typename t1, typename t2> void print(const pair<t1, t2> &p);
 
-void solve(){
-
-}
+void solve();
 
 int main(){
 	fastIO;
@@ -128,4 +125,9 @@ template <typename t1, typename t2> void print(const vector<vector<pair<t1,t2> >
 
 template <typename t1, typename t2> void print(const pair<t1, t2> &p){
 	cout << "\n{" << p.first << "," << p.second << "}, Pair\n";
+}
+
+
+void solve(){
+
 }
