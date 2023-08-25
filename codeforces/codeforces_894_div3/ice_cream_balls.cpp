@@ -73,10 +73,8 @@ void solve(){
     ll k = sqrt(8*n + 1);
     k++;
     k/=2;
-    if (k * (k-1) > 2ll*n){
+    while (k * (k-1) > 2ll*n)
         k--;
-    }
-    assert(k*(k-1) <= 2ll*n);
     if (k*(k-1) == 2ll*n) return void(cout << k << endl);
     return void(cout << k + (n - ((k * (k-1))/2ll)) << endl);   
 }

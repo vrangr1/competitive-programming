@@ -4,6 +4,7 @@
     if test -f $me; then
 	    ./$me > $me.out
     	rm $me
+        echo "\noutput begins now:"
         cat $me.out
         rm $me.out
     fi
