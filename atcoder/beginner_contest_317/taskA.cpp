@@ -20,8 +20,6 @@
 #include <vector>
 #include <string.h>
 #include <ctype.h>
-#include <unordered_set>
-#include <set>
 #include <stdlib.h>
 #include <map>
 #include <iterator>
@@ -73,7 +71,7 @@ void solve();
 
 int main(){
 	fastIO;
-	TEST;
+	TEST1;
 	return 0;
 }
 
@@ -142,5 +140,15 @@ template <typename t1, typename t2> void print(const pair<t1, t2> &p){
 
 
 void solve(){
-
+    int n, h, x; cin>>n>>h>>x;
+    int p;
+    bool found = false;
+    forn(i,n){
+        cin >> p;
+        if (found) continue;
+        if (h + p >= x){
+            cout << (i + 1) << endl;
+            found = true;
+        }
+    }
 }

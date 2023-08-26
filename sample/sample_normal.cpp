@@ -20,6 +20,8 @@
 #include <vector>
 #include <string.h>
 #include <ctype.h>
+#include <unordered_set>
+#include <set>
 #include <stdlib.h>
 #include <map>
 #include <iterator>

@@ -73,7 +73,7 @@ void solve();
 
 int main(){
 	fastIO;
-	TEST;
+	TEST1;
 	return 0;
 }
 
@@ -142,5 +142,15 @@ template <typename t1, typename t2> void print(const pair<t1, t2> &p){
 
 
 void solve(){
-
+    int n; cin >> n;
+    vector<int> a(n);
+    forn(i,n) cin >> a[i];
+    int mn = *min_element(a.begin(), a.end()), mx = *max_element(a.begin(), a.end());
+    unordered_set<int> uset(a.begin(), a.end());
+    for (int val = mn; val <= mx; ++val){
+        if (uset.find(val) == uset.end()){
+            cout << val << endl;
+            return;
+        }
+    }
 }

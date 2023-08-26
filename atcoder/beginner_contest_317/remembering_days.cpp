@@ -73,7 +73,7 @@ void solve();
 
 int main(){
 	fastIO;
-	TEST;
+	TEST1;
 	return 0;
 }
 
@@ -142,5 +142,13 @@ template <typename t1, typename t2> void print(const pair<t1, t2> &p){
 
 
 void solve(){
-
+    int n,m,a,b,c;
+    cin>>n>>m;
+    vector<vector<int>> roads(n+1,vector<int>(n+1,-1));
+    forn(i, m){
+        cin >> a >> b >> c;
+        roads[a][b] = c;
+        roads[b][a] = c;
+    }
+    
 }

@@ -73,7 +73,7 @@ void solve();
 
 int main(){
 	fastIO;
-	TEST;
+	TEST1;
 	return 0;
 }
 
@@ -142,5 +142,34 @@ template <typename t1, typename t2> void print(const pair<t1, t2> &p){
 
 
 void solve(){
-
+    int n; cin >> n;
+    ll x, y, z;
+    vector<vector<ll>> cost_value;
+    ll seats_tak = 0, seats_aoki = 0;
+    forn(i,n){
+        cin >> x >> y >> z;
+        if (x > y) seats_tak += z;
+        else{
+            cost_value.push_back({(x+y)/2 + 1 - x, z});
+            seats_aoki += z;
+        }
+    }
+    if (seats_tak > seats_aoki) return void(cout << 0 << endl);
+    ll req = (seats_aoki + seats_tak)/2 + 1 - seats_tak;
+    n = cost_value.size();
+    ll pool = seats_aoki;
+    vector<ll> dp(pool+1, INT_MAX);
+    if (cost_value[0][1] <= pool)
+        fill(dp.begin(), dp.begin() + cost_value[0][1] + 1, cost_value[0][0]);
+    dp[0] = 0;
+    forsn(i,1,n-1){
+        forsr(j, pool, 0){
+            if (j >= cost_value[i][1])
+                dp[j] = min(dp[j], dp[j-cost_value[i][1]] + cost_value[i][0]);
+            if (j < pool)
+                dp[j] = min(dp[j], dp[j+1]);
+        }
+    }
+    cout << *min_element(dp.begin() + req, dp.end()) << endl;
+    // cout << dp[req] << endl;
 }
