@@ -91,22 +91,10 @@ int binary_search(const vector<ll> &s, const vector<ll> &dp, ll w, ll f, int low
         return -1;
     }
     int mid = (low + high)/2;
-    #if debug
-        cout << "\nbinary search:\n";
-        print_var(low);
-        print_var(high);
-        print_var(mid);
-    #endif
     if (check(s, dp, w, f, mid, sum)){
-        #if debug
-            cout << "mid check passed\n";
-        #endif
         if (mid == low) return low;
         return binary_search(s, dp, w, f, low, mid, sum);
     }
-    #if debug
-        cout << "didn't pass\n";
-    #endif
     return binary_search(s, dp, w, f, mid + 1, high, sum);
 }
 
@@ -114,24 +102,17 @@ void solve(){
     int w, f; cin>>w>>f;
     int n; cin >> n;
     vector<ll> s(n);
-    forn(i,n) cin>>s[i];
-    int sum = accumulate(s.begin(), s.end(), 0);
+    int sum = 0;
+    forn(i,n){
+        cin>>s[i];
+        sum += s[i];
+    }
     if (w >= sum || f >= sum) return void(cout << 1 << endl);
+    if (w < f) swap(w,f);
     int low = (sum)/(w+f), high = (sum%w?sum/w+1:sum/w);
     vector<ll> dp(high*w + 1, 0);
     build_knapsack_array(s, dp, dp.size()-1);
-    #if debug
-        print_var(w);
-        print_var(f);
-        print_var(sum);
-        print_var(low);
-        print_var(high);
-        print_var(dp[high*w]);
-    #endif
     cout << binary_search(s, dp, w, f, low, high, sum) << endl;
-    #if debug
-        testend;
-    #endif
 }
 
 int main(){
