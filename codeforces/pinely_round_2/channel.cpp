@@ -1,8 +1,6 @@
 #if 0
     me=`basename $0 .cpp`
     g++ -std=c++20 $me.cpp -o $me
-    rm -f $me
-    rm -f $me.out
     if test -f $me; then
 	    ./$me > $me.out
     	rm $me
@@ -144,5 +142,23 @@ template <typename t1, typename t2> void print(const pair<t1, t2> &p){
 
 
 void solve(){
-
+    int n, a, q;
+    cin >> n >> a >> q;
+    string nots;
+    cin >> nots;
+    if (a == n) return void(cout << "YES\n");
+    int pcount = count(nots.begin(), nots.end(), '+');
+    int mcount = count(nots.begin(), nots.end(), '-');
+    if (pcount < n-a) return void(cout << "NO\n");
+    pcount = 0;
+    mcount = 0;
+    for (int i = 0; i < q; ++i){
+        if (nots[i] == '+') pcount++;
+        else mcount++;
+        if (a - mcount + pcount >= n){
+            cout << "YES\n";
+            return;
+        }
+    }
+    cout << "MAYBE\n";
 }

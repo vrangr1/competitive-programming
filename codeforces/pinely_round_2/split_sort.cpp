@@ -1,8 +1,6 @@
 #if 0
     me=`basename $0 .cpp`
     g++ -std=c++20 $me.cpp -o $me
-    rm -f $me
-    rm -f $me.out
     if test -f $me; then
 	    ./$me > $me.out
     	rm $me
@@ -143,6 +141,24 @@ template <typename t1, typename t2> void print(const pair<t1, t2> &p){
 }
 
 
+
+int partition(vector<int> &p, int start, int end){
+    
+    return 0;
+}
+
+void quick_sort(vector<int> &p, int start, int end, int &count){
+    if (start >= end) return;
+    count++;
+    int index = partition(p, start, end);
+    quick_sort(p, start, index-1, count);
+    quick_sort(p, index, end, count);
+}
+
 void solve(){
+    int n; cin >> n;
+    vector<int> p(n);
+    forn(i,n) cin >> p[i];
+    if (n == 1) return void(cout << "0\n");
 
 }
