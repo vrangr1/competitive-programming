@@ -141,14 +141,28 @@ template <typename t1, typename t2> void print(const pair<t1, t2> &p){
 }
 
 
+void dfs(const vector<vector<pair<int,int>>> &roads, vector<bool> &visited, int town, ll &maxsum, ll cursum){
+    visited[town] = true;
+    maxsum = max(cursum, maxsum);
+    for (auto new_town : roads[town]){
+        if (visited[new_town.first]) continue;
+        dfs(roads,visited, new_town.first, maxsum, cursum+new_town.second);
+    }
+    visited[town] = false;
+}
+
 void solve(){
     int n,m,a,b,c;
     cin>>n>>m;
-    vector<vector<int>> roads(n+1,vector<int>(n+1,-1));
+    vector<vector<pair<int,int>>> roads(n+1);
     forn(i, m){
         cin >> a >> b >> c;
-        roads[a][b] = c;
-        roads[b][a] = c;
+        roads[a].push_back(make_pair(b,c));
+        roads[b].push_back(make_pair(a,c));
     }
-    
+    vector<bool> visited(n+1, false);
+    ll maxsum = 0;
+    for (int i = 1; i <= n; ++i)
+        dfs(roads,visited,i,maxsum,0);
+    cout << maxsum << endl;
 }

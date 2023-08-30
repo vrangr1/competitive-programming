@@ -171,5 +171,4 @@ void solve(){
         }
     }
     cout << *min_element(dp.begin() + req, dp.end()) << endl;
-    // cout << dp[req] << endl;
 }

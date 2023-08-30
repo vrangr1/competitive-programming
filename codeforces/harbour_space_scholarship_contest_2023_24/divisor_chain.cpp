@@ -221,7 +221,7 @@ void solve(){
     }
     cout << k << endl << output << endl;
 }
-
+`
 void solve10(){
     int x; cin >> x;
     vector<int> seen;
