@@ -143,109 +143,11 @@ template <typename t1, typename t2> void print(const pair<t1, t2> &p){
 	cout << "\n{" << p.first << "," << p.second << "}, Pair\n";
 }
 
-bool find_this(string &a, int left, int right, int n, char ch){
-    bool foundleft = false, foundright = false;
-    for (int i = 0; i < left; ++i){
-        if (a[i] == ch){
-            foundleft = true;
-            break;
-        }
-    }
-    for (int i = right+1; i < n; ++i){
-        if (a[i] == ch){
-            foundright = true;
-            break;
-        }
-    }
-    return foundleft && foundright;
-}
-
-int find_left(const string &a, const string &b, int index, char ch){
-    for (;index >= 0; index--)
-        if (a[index] == ch && b[index] == ch) return index;
-    return -1;
-}
-
-int find_right(const string &a, const string &b, int index, char ch){
-    for (;index < a.size(); index++)
-        if (a[index] == ch && b[index] == ch) return index;
-    return -1;
-}
-
-void solve1(){
-    string a, b;
-    cin >> a >> b;
-    int n = a.size(), i = 1, index;
-    if (a == b) return void(cout << yes);
-    int left = 0, right = n-1, l2, r2;
-    while(left <= right){
-        if (a[left] == b[left]) left++;
-        else if (a[right] == b[right]) right--;
-        else break;
-    }
-    if (find_this(a, left, right, n, '1') || find_this(a, left, right, n, '0'))
-        return void(cout << yes);
-    i = 1;
-    while (i < n){
-        if (a[i] == b[i]){
-            i++;
-            continue;
-        }
-        left = find_left(a, b, i, '1');
-        right = find_right(a, b, i, '1');
-        l2 = find_left(a, b, i, '0');
-        r2 = find_right(a, b, i, '0');
-        if (left != -1 && right != -1 && l2 != -1 && r2 != -1){
-            if (r2 < right){
-                fill(a.begin() + l2, a.begin() + r2, a[l2]);
-                fill(b.begin() + l2, b.begin() + r2, b[r2]);
-                i = r2 + 1;
-                continue;
-            }
-            fill(a.begin() + left, a.begin() + right, a[right]);
-            fill(b.begin() + left, b.begin() + right, b[right]);
-            i = right+1;
-            continue;
-        }
-        if ((left == -1 || right == -1) && (l2 == -1 || r2 == -1)){
-            cout << no;
-            return;
-        }
-        if (left == -1 || right == -1){
-            fill(a.begin() + l2, a.begin() + r2, a[l2]);
-            fill(b.begin() + l2, b.begin() + r2, b[r2]);
-            i = r2 + 1;
-            continue;
-        }
-        fill(a.begin() + left, a.begin() + right, a[right]);
-        fill(b.begin() + left, b.begin() + right, b[right]);
-        i = right+1;
-        continue;
-    }
-    cout << yes;
-}
-
 void solve(){
-    string a, b; cin >> a >> b;
-    if (a==b) return void(cout << yes);
-    int n = a.size(), j;
-    vector<vector<bool>> dp(n, vector<bool>(n, false));
-    for (int len = 1; len <= n; ++len){
-        for (int i = 0; i < n - len + 1; ++i){
-            j = i+len-1;
-            if (len == 1){
-                dp[i][j] = a[i] == b[i];
-                continue;
-            }
-            if (len == 2){
-                dp[i][j] = (a[i] == b[i]) && (a[j] == b[j]);
-                continue;
-            }
-            if (a[i] == b[i] && a[j] == b[j] && a[i] == a[j])
-                dp[i][j] = true;
-            dp[i][j] = dp[i][j] || (dp[i][j-1] && a[j] == b[j]) || (dp[i+1][j] && a[i] == b[i]);
-        }
-    }
-    if (dp[0][n-1]) cout << yes;
-    else cout << no;
+    string a, b; cin >>a>>b;
+    int n = a.size();
+    forn(i, n-1)
+        if (a[i] == b[i] && a[i] == '0' && a[i+1] == b[i+1] && a[i+1] == '1')
+            return void(cout << yes);
+    cout << no;
 }
