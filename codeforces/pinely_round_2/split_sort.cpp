@@ -141,24 +141,20 @@ template <typename t1, typename t2> void print(const pair<t1, t2> &p){
 }
 
 
-
-int partition(vector<int> &p, int start, int end){
-    
-    return 0;
-}
-
-void quick_sort(vector<int> &p, int start, int end, int &count){
-    if (start >= end) return;
-    count++;
-    int index = partition(p, start, end);
-    quick_sort(p, start, index-1, count);
-    quick_sort(p, index, end, count);
-}
-
 void solve(){
     int n; cin >> n;
     vector<int> p(n);
-    forn(i,n) cin >> p[i];
+    forn(i,n){
+        cin >> p[i];
+        p[i]--;
+    }
     if (n == 1) return void(cout << "0\n");
-
+    vector<int> pos(n);
+    forn(i, n)
+        pos[p[i]] = i;
+    int count = 0;
+    forn(i, n-1)
+        if (pos[i+1] < pos[i])
+            count++;
+    cout << count << endl;
 }
