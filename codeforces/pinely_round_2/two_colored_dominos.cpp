@@ -247,7 +247,7 @@ void process_adjacent(int ghh, vector<string> &answer, vector<string> &board, ve
     }
 }
 
-void solve(){
+void solve1(){
     int n, m; cin >> n >> m;
     vector<string> board(n);
     unordered_set<int> dominos;
@@ -338,4 +338,59 @@ void solve(){
         }
     forn(i, n)
         cout << answer[i] << "\n";
+}
+
+void solve(){
+    int n, m; cin >> n >> m;
+    vector<string> board(n);
+    forn(i, n) cin >> board[i];
+    vector<string> answer(n, string(m, '.'));
+    int wcount = 0, bcount = 0;
+    forn(i, n){
+        wcount = 0;
+        bcount = 0;
+        forn(j, m){
+            if (answer[i][j] == 'W')
+                wcount++;
+            else if (answer[i][j] == 'B')
+                bcount++;
+        }
+        forn(j, m){
+            if (board[i][j] != 'U') continue;
+            if (wcount <= bcount){
+                answer[i][j] = 'W';
+                wcount++;
+                answer[i+1][j] = 'B';
+                continue;
+            }
+            answer[i][j] = 'B';
+            bcount++;
+            answer[i+1][j] = 'W';
+        }
+        if (wcount != bcount) return void(cout << "-1\n");
+    }
+    forn(j, m){
+        wcount = 0;
+        bcount = 0;
+        forn(i, n){
+            if (answer[i][j] == 'W')
+                wcount++;
+            else if (answer[i][j] == 'B')
+                bcount++;
+        }
+        forn(i, n){
+            if (board[i][j] != 'L') continue;
+            if (wcount <= bcount){
+                answer[i][j] = 'W';
+                wcount++;
+                answer[i][j+1] = 'B';
+                continue;
+            }
+            answer[i][j] = 'B';
+            bcount++;
+            answer[i][j+1] = 'W';
+        }
+        if (wcount != bcount) return void(cout << "-1\n");
+    }
+    forn(i, n) cout << answer[i] << endl;
 }

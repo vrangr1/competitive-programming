@@ -33,6 +33,7 @@
 #include <numeric>
 #include <cmath>
 #include <queue>
+#include <stack>
 #include <unordered_map>
 #include <bit>
 #include <bitset>

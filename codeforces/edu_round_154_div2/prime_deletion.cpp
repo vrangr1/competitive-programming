@@ -33,7 +33,6 @@
 #include <numeric>
 #include <cmath>
 #include <queue>
-#include <stack>
 #include <unordered_map>
 #include <bit>
 #include <bitset>
@@ -145,5 +144,7 @@ template <typename t1, typename t2> void print(const pair<t1, t2> &p){
 
 
 void solve(){
-
+    string num; cin >> num;
+    if (num.find('1') < num.find('3')) cout << "13\n";
+    else cout << "31\n";
 }

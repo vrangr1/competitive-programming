@@ -31,14 +31,14 @@
 #include <algorithm>
 #include <climits>
 #include <numeric>
+#include <stack>
 #include <cmath>
 #include <queue>
-#include <stack>
 #include <unordered_map>
 #include <bit>
 #include <bitset>
 #include <assert.h>
-#define debug true
+#define debug false
 
 using namespace std;
 
@@ -142,8 +142,69 @@ template <typename t1, typename t2> void print(const vector<vector<pair<t1,t2> >
 template <typename t1, typename t2> void print(const pair<t1, t2> &p){
 	cout << "\n{" << p.first << "," << p.second << "}, Pair\n";
 }
-
+#define print_stk(stk) cout << #stk << ": ";print(stk);
+void print(stack<pair<char,bool>> stk){
+    while(!stk.empty()){
+        cout << "{" << stk.top().first << "," << stk.top().second << "} ";
+        stk.pop();
+    }
+    cout << endl;
+}
+void print(stack<char> stk){
+    while(!stk.empty()){
+        cout << stk.top() << " ";
+        stk.pop();
+    }
+    cout << endl;
+}
 
 void solve(){
-
+    string s;
+    cin >> s;
+    stack<pair<char, bool>> check_sorted;
+    stack<char> check_sorted2;
+    // int pcount = 0;
+    bool must_be_sorted = false;
+    char temp;
+    for (int i = 0; i < s.size(); ++i){
+        switch(s[i]){
+            case '-':
+                assert(check_sorted.size() > 0);
+                must_be_sorted = check_sorted.top().second;
+                check_sorted.pop();
+                if (check_sorted.size()){
+                    must_be_sorted |= check_sorted.top().second;
+                    temp = check_sorted.top().first;
+                    check_sorted.pop();
+                    check_sorted.push(make_pair(temp, must_be_sorted));
+                }
+                if (check_sorted2.size()) check_sorted2.pop();
+                break;
+            case '+':
+                if (check_sorted.size())
+                    check_sorted.push(make_pair(s[i], false));
+                else
+                    check_sorted.push(make_pair(s[i], true));
+                if (check_sorted2.size()) check_sorted2.push(s[i]);
+                break;
+            case '1':
+                if (check_sorted2.size()) return void(std::cout << no);
+                if (check_sorted.size())
+                    check_sorted.top().second = true;
+                break;
+            case '0':
+                if (check_sorted.empty()) return void(std::cout << no);
+                if (check_sorted.top().second) return void(std::cout << no);
+                check_sorted2.push(s[i]);
+                break;
+        }
+        #if debug
+            print_var(i);
+            print_var(s[i]);
+            print_stk(check_sorted);
+            print_stk(check_sorted2);
+            cout << endl;
+        #endif
+    }
+    std::cout << yes;
 }
