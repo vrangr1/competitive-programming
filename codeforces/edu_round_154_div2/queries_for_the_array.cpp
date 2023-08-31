@@ -195,7 +195,8 @@ void solve(){
             case '0':
                 if (check_sorted.empty()) return void(std::cout << no);
                 if (check_sorted.top().second) return void(std::cout << no);
-                check_sorted2.push(s[i]);
+                if (check_sorted2.empty())
+                    check_sorted2.push(s[i]);
                 break;
         }
         #if debug
