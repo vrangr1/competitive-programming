@@ -1,8 +1,8 @@
 #if 0
     me=`basename $0 .cpp`
-    g++ -std=c++20 $me.cpp -o $me
     rm -f $me
     rm -f $me.out
+    g++ -std=c++20 $me.cpp -o $me
     if test -f $me; then
 	    ./$me > $me.out
     	rm $me
