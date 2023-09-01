@@ -1,5 +1,7 @@
 #if 0
     me=`basename $0 .cpp`
+    rm -f $me
+    rm -f $me.out
     g++ -std=c++20 $me.cpp -o $me
     if test -f $me; then
 	    ./$me > $me.out
@@ -31,11 +33,12 @@
 #include <numeric>
 #include <cmath>
 #include <queue>
+#include <stack>
 #include <unordered_map>
 #include <bit>
 #include <bitset>
 #include <assert.h>
-#define debug false
+#define debug true
 
 using namespace std;
 
@@ -68,6 +71,7 @@ template <typename type> void off_print(const vector<type> &arr);
 template <typename t1, typename t2> void print(const vector<pair<t1,t2> > &arr);
 template <typename t1, typename t2> void print(const vector<vector<pair<t1,t2> > > &arr);
 template <typename t1, typename t2> void print(const pair<t1, t2> &p);
+
 void solve();
 
 int main(){
@@ -139,147 +143,25 @@ template <typename t1, typename t2> void print(const pair<t1, t2> &p){
 	cout << "\n{" << p.first << "," << p.second << "}, Pair\n";
 }
 
-void initialize_factors(int x, map<int,int> &factors){
-    if (x == 1) return;
-    int num = 2;
-    if (num % 2 == 0) factors[num] = 0;
-    while(x % 2 == 0){
-        x/=2;
-        factors[num]++;
-    }
-    for (num = 3; x != 1 && num <= sqrt(x); num+=2){
-        if (x%num == 0) factors[num] = 0;
-        while(x % num == 0){
-            x/=num;
-            factors[num]++;
-        }
-    }
-    if (factors.find(x) == factors.end()) factors[x] = 1;
-    else factors[x]++;
-}
-
-int get_number(const vector<int> &factor, vector<int> &counts, int diff, int &sum){
-    int ans = 1, n = counts.size();
-    for (int i = 0; i < n; ++i){
-        if (counts[i] > 0){
-            ans *= ((int)pow(factor[i], diff));
-            counts[i] -= diff;
-            // assert(counts[i] >= 0);
-            if (counts[i] < 0){
-                cout << "early end\n";
-                exit(0);
-            }
-            sum -= diff;
-        }
-    }
-    return ans;
-}
-
-int get_min(const vector<int> &counts){
-    int mn = INT_MAX;
-    for(int ct : counts){
-        if (ct == 0) continue;
-        mn = min(mn, ct);
-    }
-    return mn;
-}
-
-int get_num(int x, map<int,int> &deductions){
-    int num = 2;
-    while(x % num != 0 || (deductions.find(x/num) != deductions.end() && deductions[x/num] >= 2)){
-        if (num > x){
-            return -1;
-        }
-        num++;
-    }
-    assert(x%num == 0 && (deductions.find(x/num) == deductions.end() || deductions[x/num] < 2));
-    return x/num;
-}
 
 void solve(){
-    int x, num; cin >> x;
-    map<int,int> deductions;
-    int k = 1;
-    string output = "";
-    output += to_string(x) + space;
-    int itercount = 0;
-    while(x != 1){
-        itercount++;
-        if (itercount > 50) assert(false);
-        num = get_num(x, deductions);
-        if (num == -1){
-            cout << "problem!!\n";
-            print_var(k);
-            print_var(output);
-            exit(0);
-        }
-        if (deductions.find(num) == deductions.end()) deductions[num] = 0;
-        deductions[num]++;
-        x -= num;
-        k++;
-        output += to_string(x) + space;
-    }
-    cout << k << endl << output << endl;
-}
-`
-void solve10(){
     int x; cin >> x;
-    vector<int> seen;
-    int k = 1;
-    map<int, int> factors, deductions;
-    string output = "";
-    output += to_string(x) + space;
-    if (x % 2 != 0){
-        x--;
+    int count = 1, num;
+    string output = to_string(x) + space;
+    while(__builtin_popcount(x) != 1){
+        num = x&(-x);
+        x -= num;
         output += to_string(x) + space;
-        k++;
-        deductions[1] = 1;
+        count++;
     }
-    if (x == 1){
-        cout << k << endl;
-        cout << output << endl;
-        return;
+    int power = __builtin_ctz(x);
+    while(power >= 1){
+        power--;
+        num = 1<<power;
+        x -= num;
+        output += to_string(x) + " \n"[x==1];
+        count++;
     }
-    #if debug
-        print_var(x);
-    #endif
-    initialize_factors(x, factors);
-    #if debug
-        cout << "factors: ";
-        for (auto iter = factors.begin(); iter != factors.end(); ++iter)
-            cout << "{" << iter->first << ", " << iter->second << "} ";
-        cout << endl;
-    #endif
-    assert(factors[2] > 0);
-    factors[2]--;
-    vector<int> factor(factors.size()), counts(factors.size());
-    int index = 0;
-    for (auto iter = factors.begin(); iter != factors.end(); ++iter){
-        factor[index] = iter->first;
-        counts[index++] = iter->second;
-    }
-    int n = factors.size();
-    int sum = accumulate(counts.begin(), counts.end(), 0), mn, temp;
-    #if debug
-        // print_var(sum);
-        // print_arr(counts);
-    #endif
-    while(sum > 0){
-        mn = get_min(counts);
-        #if debug
-            print_var(sum);
-            print_arr(counts);
-            print_var(mn);
-        #endif
-        k++;
-        temp = get_number(factor,counts, mn, sum);
-        x -= temp;
-        // assert(x > 1);
-        output += to_string(x) + space;
-        // if (sum > 0) output += space;
-    }
-    k++;
-    output += "1";
-    cout << k << endl;
-    cout << output << endl;
+    cout << count << endl;
+    cout << output;
 }
