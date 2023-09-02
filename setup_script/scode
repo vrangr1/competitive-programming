@@ -8,3 +8,4 @@ echo "Setup file: $file_name"
 echo "$(date)"
 cp /Users/anavp/home/acads/competitive-coding/sample/sample.cpp $file_name
 chmod +x $file_name
+code $file_name

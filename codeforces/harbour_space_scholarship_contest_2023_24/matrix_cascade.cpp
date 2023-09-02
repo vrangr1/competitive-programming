@@ -1,5 +1,7 @@
 #if 0
     me=`basename $0 .cpp`
+    rm -f $me
+    rm -f $me.out
     g++ -std=c++20 $me.cpp -o $me
     if test -f $me; then
 	    ./$me > $me.out
@@ -31,6 +33,7 @@
 #include <numeric>
 #include <cmath>
 #include <queue>
+#include <stack>
 #include <unordered_map>
 #include <bit>
 #include <bitset>
@@ -140,61 +143,29 @@ template <typename t1, typename t2> void print(const pair<t1, t2> &p){
 	cout << "\n{" << p.first << "," << p.second << "}, Pair\n";
 }
 
-inline int get_hash(int i, int j, int n){
-    return (n*i + j);
-}
-
-inline void set_indices(int hash, int &i, int &j, int n){
-    j = hash%n;
-    i = hash/n;
-}
-
-void cascade(const vector<string> &mat, const int x, const int y, unordered_map<int, unordered_set<int>> &umap){
-    int n = mat.size();
-    if (x == n) return;
-    int original = get_hash(x,y,n), hashval;
-    
-    hashval = get_hash(x+1,y,n);
-    if (umap.find(hashval) == umap.end()) umap[hashval] = umap[original];
-    else umap[hashval].insert(umap[original].begin(), umap[original].end());
-    
-    if (y > 0){
-        hashval = get_hash(x+1,y-1,n);
-        if (umap.find(hashval) == umap.end()) umap[hashval] = umap[original];
-        else umap[hashval].insert(umap[original].begin(), umap[original].end());
-    }
-    
-    if (y < n-1){
-        hashval = get_hash(x+1,y+1,n);
-        if (umap.find(hashval) == umap.end()) umap[hashval] = umap[original];
-        else umap[hashval].insert(umap[original].begin(), umap[original].end());
-    }
-}
-
-inline bool if_condition(const vector<string> &mat, unordered_map<int, unordered_set<int>> &umap, int i, int j, int hashval){
-    return ((mat[i][j] == '1' && ( (umap.find(hashval) == umap.end()) || umap[hashval].size() % 2 == 0)) || 
-            (mat[i][j] == '0' && umap.find(hashval) != umap.end() && umap[hashval].size() % 2 == 1));
-}
 
 void solve(){
     int n; cin >> n;
-    unordered_map<int, unordered_set<int>> umap;
-    vector<string> mat(n);
-    forn(i, n)
-        cin >> mat[i];
-    int ans = 0, hashval;
+    int count = 0, in_effect = 0;
+    string row;
+    vector<int> s1(n+3,0), s2(n+3,0), t1(n+3,0), t2(n+3,0);
     forn(i, n){
+        cin >> row;
+        in_effect = s1[0];
         forn(j, n){
-            hashval = get_hash(i,j,n);
-            if (if_condition(mat,umap,i,j, hashval)){
-                ans++;
-                if (i == n-1) continue;
-                if (umap.find(hashval) == umap.end())
-                    umap[hashval] = unordered_set<int>({hashval});
-                else umap[hashval].insert(hashval);
-            }
-            cascade(mat, i, j, umap);
+            in_effect += s1[j+1] - s2[j+1];
+            t1[j] += s1[j+1];
+            t2[j+2] += s2[j+1];
+            if (in_effect%2 == (int)(row[j] - '0')) continue;
+            count++;
+            t1[j]++;
+            t2[j+3]++;
         }
+        t1[0] += s1[0];
+        s1 = t1;
+        s2 = t2;
+        fill(t1.begin(), t1.end(), 0);
+        fill(t2.begin(), t2.end(), 0);
     }
-    cout << ans << endl;
+    cout << count << endl;
 }
