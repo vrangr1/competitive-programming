@@ -4,8 +4,13 @@ if [[ $file_name != *.cpp ]]
 then
     file_name="$file_name.cpp"
 fi
+if test -f $file_name
+then
+    echo "File already exists"
+    exit 1
+fi
 echo "Setup file: $file_name"
 echo "$(date)"
-cp /Users/anavp/home/acads/competitive-coding/sample/sample.cpp $file_name
+cp /Users/anavp/home/acads/competitive-coding/algo/template.cpp $file_name
 chmod +x $file_name
 code $file_name

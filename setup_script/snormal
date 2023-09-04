@@ -7,5 +7,5 @@ then
     file_name="$file_name.cpp"
 fi
 
-cp /Users/anavp/home/acads/competitive-coding/sample/sample_normal.cpp $file_name
+cp /Users/anavp/home/acads/competitive-coding/algo/template_normal.cpp $file_name
 chmod +x $file_name
