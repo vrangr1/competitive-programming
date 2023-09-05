@@ -24,6 +24,8 @@
 #include <unordered_map>
 #include <bit>
 #include <bitset>
+#include <list>
+#include <forward_list>
 #include <assert.h>
 extern const bool DEBUG;
 
@@ -52,44 +54,10 @@ template<typename type> void print(const unordered_set<type> &uset);
 template<typename type> void print(const set<type> &uset);
 template <typename t1, typename t2> void print(const unordered_map<t1,t2> &umap);
 template <typename t1, typename t2> void print(const map<t1,t2> &mp);
-
-template <class Container, class Stream> 
-Stream& printOneValueContainer(Stream& outputstream, const Container& container){
-    typename Container::const_iterator beg = container.begin();
-    outputstream << "[";
-    while(beg != container.end()){
-        outputstream << " \0"[beg==container.begin()] << *beg++;
-    }
-    outputstream << "]";
-    return outputstream;
-}
-
-template < class Type, class Container >
-const Container& container(const std::stack<Type, Container>& stack){
-    struct HackedStack : private std::stack<Type, Container>{
-        static const Container& container
-            (const std::stack<Type, Container>& stack)
-        {
-            return stack.*&HackedStack::c;
-        }
-    };
-    return HackedStack::container(stack);
-}
-
-template < class Type, class Container >
-const Container& container(const std::queue<Type, Container>& queue){
-    struct HackedQueue : private std::queue<Type, Container>{
-        static const Container& container(const std::queue<Type, Container>& queue){
-            return queue.*&HackedQueue::c;
-        }
-    };
-    return HackedQueue::container(queue);
-}
-
-template <class Type,template <class t2, class Container = std::deque<t2>> class Adapter, class Stream>
-Stream& operator<<(Stream& outputstream, const Adapter<Type>& adapter){
-    return printOneValueContainer(outputstream, container(adapter));
-}
+template <typename type> void print(stack<type> stck);
+template <typename type> void print(queue<type> que);
+template <typename type> void print(const list<type> &lst);
+template <typename type> void print(const forward_list<type> &flst);
 
 template<typename type> void print(const type &var){
     cout << var;
@@ -108,34 +76,34 @@ template <typename t1, typename t2> void print(pair<t1,t2> *p){
 }
 
 template <typename type> void print(const vector<type> &vec){
-    cout << "[";
+    cout << "[ ";
     for (int i = 0; i < vec.size(); ++i){
         print(vec[i]);
         cout << " \0"[i + 1 == vec.size()];
     }
-    cout << "]";
+    cout << " ]";
 }
 
 template<typename type> void print(const unordered_set<type> &uset){
-    cout << "{";
+    cout << "{ ";
     for (auto i = uset.begin(); i != uset.end(); ++i){
         cout << " \0"[i == uset.begin()];
         print(*i);
     }
-    cout << "}";
+    cout << " }";
 }
 
 template<typename type> void print(const set<type> &st){
-    cout << "{";
+    cout << "{ ";
     for (auto i = st.begin(); i != st.end(); ++i){
         cout << " \0"[i == st.begin()];
         print(*i);
     }
-    cout << "}";
+    cout << " }";
 }
 
 template <typename t1, typename t2> void print(const unordered_map<t1,t2> &umap){
-    cout << "{";
+    cout << "{ ";
     for (auto i = umap.begin(); i != umap.end(); ++i){
         cout << " \0"[i == umap.begin()] << "(";
         print(i->first);
@@ -143,11 +111,11 @@ template <typename t1, typename t2> void print(const unordered_map<t1,t2> &umap)
         print(i->second);
         cout << ")";
     }
-    cout << "}";
+    cout << " }";
 }
 
 template <typename t1, typename t2> void print(const map<t1,t2> &mp){
-    cout << "{";
+    cout << "{ ";
     for (auto i = mp.begin(); i != mp.end(); ++i){
         cout << " \0"[i == mp.begin()] << "(";
         print(i->first);
@@ -155,7 +123,54 @@ template <typename t1, typename t2> void print(const map<t1,t2> &mp){
         print(i->second);
         cout << ")";
     }
-    cout << "}";
+    cout << " }";
+}
+
+template <typename type> void print(stack<type> stck){
+    cout << "[ ";
+    while (!stck.empty()){
+        print(stck.top());
+        cout << " \0"[stck.size() == 1];
+        stck.pop();
+    }
+    cout << " ]";
+}
+
+template <typename type> void print(queue<type> que){
+    cout << "[ ";
+    while (!que.empty()){
+        print(que.front());
+        cout << " \0"[que.size() == 1];
+        que.pop();
+    }
+    cout << " ]";
+}
+
+template <typename type> void print(const list<type> &lst){
+    cout << "[ ";
+    for (auto i = lst.begin(); i != lst.end(); ++i){
+        cout << " \0"[i == lst.begin()];
+        print(*i);
+    }
+    cout << " ]";
+}
+
+template <typename type> void print(const forward_list<type> &flst){
+    cout << "[";
+    for (auto i = flst.begin(); i != flst.end(); ++i){
+        cout << " \0"[i == flst.begin()];
+        print(*i);
+    }
+    cout << "]";
+}
+
+template <typename type> void print(const deque<type> &deq){
+    cout << "[ ";
+    for (auto i = deq.begin(); i != deq.end(); ++i){
+        cout << " \0"[i == deq.begin()];
+        print(*i);
+    }
+    cout << " ]";
 }
 
 template <typename Arg1> void debug_encapsulate(const char* name, Arg1&& arg1){
@@ -168,8 +183,9 @@ template <typename Arg1> void debug_encapsulate(const char* name, Arg1&& arg1){
 template <typename Arg1, typename... Args> void debug_encapsulate(const char* names, Arg1&& arg1, Args&&... args){
     if (!DEBUG) return;
     const char* comma = strchr(names + 1, ',');
-    cout.write(names, comma + 1 - names) << ": ";
+    cout.write(names, comma - names) << ": ";
     print(arg1);
-    debug_encapsulate(comma, args...);
+    cout << endl;
+    debug_encapsulate(comma+1, args...);
 }
 #endif

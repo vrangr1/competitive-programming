@@ -37,9 +37,11 @@
 #include <unordered_map>
 #include <bit>
 #include <bitset>
+#include <list>
+#include <forward_list>
 #include <assert.h>
 #include "debug.hpp"
-const bool DEBUG = false;
+const bool DEBUG = true;
 
 using namespace std;
 
@@ -108,7 +110,26 @@ void solve(){
     que.push(1);
     que.push(2);
     que.push(3);
+    list<int> lst;
+    lst.push_back(1);
+    lst.push_back(2);
+    lst.push_back(3);
+    forward_list<int> flst;
+    flst.push_front(1);
+    flst.push_front(2);
+    flst.push_front(3);
+    deque<int> deq;
+    deq.push_back(1);
+    deq.push_back(2);
+    deq.push_back(3);
+    deque<pair<int,char>> deq_pair;
+    deq_pair.push_back({1,'a'});
+    deq_pair.push_back({2,'b'});
+    deq_pair.push_back({3,'c'});
+
     int *ptr = &a;
+    debug(vec_pair,vec_pair2d,vec2d,vec, uset, st,umap,mp,mp2,stck,stck_pair,que,lst,flst,deq,deq_pair, ptr);
+    cout << "double\n";
     debug(vec_pair2d);
     debug(vec_pair);
     debug(vec2d);
@@ -119,7 +140,14 @@ void solve(){
     debug(mp);
     debug(mp2);
     debug(stck);
-    // debug(stck_pair);
+    debug(stck_pair);
     debug(que);
+    debug(stck);
+    debug(stck_pair);
+    debug(que);
+    debug(lst);
+    debug(flst);
+    debug(deq);
+    debug(deq_pair);
     debug(ptr);
 }
