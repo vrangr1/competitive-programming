@@ -1,18 +1,5 @@
-#if 0
-    me=`basename $0 .cpp`
-    rm -f $me
-    rm -f $me.out
-    g++ -std=c++20 $me.cpp -o $me
-    if test -f $me; then
-	    ./$me > $me.out
-    	rm $me
-        echo "\noutput begins now:"
-        cat $me.out
-        rm $me.out
-    fi
-    exit
-#endif
-
+#ifndef DEBUG_HPP
+#define DEBUG_HPP
 /***************************************************
 * AUTHOR : Anav Prasad
 * Nick : vrangr
@@ -38,14 +25,12 @@
 #include <bit>
 #include <bitset>
 #include <assert.h>
-#define debug true
+extern const bool DEBUG;
 
 using namespace std;
 
+#define debug(...) if (DEBUG) debug_encapsulate(#__VA_ARGS__, __VA_ARGS__);
 #define endl "\n"
-#define fastIO ios_base::sync_with_stdio(false),cin.tie(0)
-#define TEST int T;cin>>T;while(T--)solve();
-#define TEST1 solve();
 #define forn(i, n) for (int i = 0; i < n; i++)
 #define forsn(i, st_val, n) for (int i = st_val; i <= n; ++i)
 #define forr(i, n) for (int i = n - 1; i >= 0; --i)
@@ -55,95 +40,136 @@ using namespace std;
 #define GET_MACRO(_1,_2,_3,NAME,...) NAME
 #define pb(...) GET_MACRO(__VA_ARGS__, pb1, pb2)(__VA_ARGS__)
 #define pass (void)0
-#define print_var(x) cout << #x << ": " << x << "\n";
-#define print_iter(x) cout << "*" << #x << ": " << *x << endl;
-#define print_arr(arr) cout << #arr << ": ";print(arr);
-#define print_pair(pr) cout << #pr << ": ";print(pr);
-#define space " "
-#define yes "YES\n"
-#define no "NO\n"
 
 typedef long long int ll;
 typedef unsigned long long int ull;
-template <typename type> void print(const vector<vector<type> > &arr);
-template <typename type> void print(const vector<type> &arr);
-template <typename type> void off_print(const vector<type> &arr);
-template <typename t1, typename t2> void print(const vector<pair<t1,t2> > &arr);
-template <typename t1, typename t2> void print(const vector<vector<pair<t1,t2> > > &arr);
+template<typename type> void print(const type &var);
+template<typename type> void print(type *var);
 template <typename t1, typename t2> void print(const pair<t1, t2> &p);
+template <typename t1, typename t2> void print(pair<t1,t2> *p);
+template <typename type> void print(const vector<type> &vec);
+template<typename type> void print(const unordered_set<type> &uset);
+template<typename type> void print(const set<type> &uset);
+template <typename t1, typename t2> void print(const unordered_map<t1,t2> &umap);
+template <typename t1, typename t2> void print(const map<t1,t2> &mp);
 
-void solve();
-
-int main(){
-	fastIO;
-	TEST;
-	return 0;
+template <class Container, class Stream> 
+Stream& printOneValueContainer(Stream& outputstream, const Container& container){
+    typename Container::const_iterator beg = container.begin();
+    outputstream << "[";
+    while(beg != container.end()){
+        outputstream << " \0"[beg==container.begin()] << *beg++;
+    }
+    outputstream << "]";
+    return outputstream;
 }
 
-
-template <typename type> void print(const vector<vector<type> > &arr){
-	cout << "\n[";
-	forn(i, arr.size()){
-		cout << "[";
-		forn(j, arr[i].size() - 1)
-			cout << arr[i][j] << ", ";
-		cout << arr[i][arr[i].size() - 1] << "]";
-		if (i != arr.size() - 1)
-			cout << "," << endl;
-	}
-	cout << "], 2D Vector\n";
+template < class Type, class Container >
+const Container& container(const std::stack<Type, Container>& stack){
+    struct HackedStack : private std::stack<Type, Container>{
+        static const Container& container
+            (const std::stack<Type, Container>& stack)
+        {
+            return stack.*&HackedStack::c;
+        }
+    };
+    return HackedStack::container(stack);
 }
 
-
-template <typename type> void print(const vector<type> &arr){
-	cout << "\n[";
-	forn(i, arr.size()){
-		cout << arr[i];
-		if (i != arr.size() - 1)
-			cout << ", ";
-	}
-	cout << "], 1D Vector\n";
+template < class Type, class Container >
+const Container& container(const std::queue<Type, Container>& queue){
+    struct HackedQueue : private std::queue<Type, Container>{
+        static const Container& container(const std::queue<Type, Container>& queue){
+            return queue.*&HackedQueue::c;
+        }
+    };
+    return HackedQueue::container(queue);
 }
 
-template <typename type> void off_print(const vector<type> &arr){
-	forn(i, arr.size())
-		cout << arr[i] << " ";
-	cout << endl;
+template <class Type,template <class t2, class Container = std::deque<t2>> class Adapter, class Stream>
+Stream& operator<<(Stream& outputstream, const Adapter<Type>& adapter){
+    return printOneValueContainer(outputstream, container(adapter));
 }
 
-
-template <typename t1, typename t2> void print(const vector<pair<t1,t2> > &arr){
-	int n = arr.size();
-	cout << "\n[";
-	forn(i, n - 1){
-		cout << "{" << arr[i].first << "," << arr[i].second << "}, ";
-	}
-	cout << "{" << arr[n - 1].first << "," << arr[n - 1].second << "}], 1D Vector of Pairs\n";
+template<typename type> void print(const type &var){
+    cout << var;
 }
 
-
-template <typename t1, typename t2> void print(const vector<vector<pair<t1,t2> > > &arr){
-	cout << "\n[";
-	forn(i, arr.size()){
-		cout << "[";
-		forn(j, arr[i].size()){
-			cout << "{" << arr[i][j].first << "," << arr[i][j].second << "}";
-			if (j != arr[i].size() - 1)
-				cout << ", ";
-		}
-		cout << "]";
-		if (i != arr.size() - 1)
-			cout << "," << endl;
-	}
-	cout << "], 2D Vector of Pairs\n";
+template<typename type> void print(type *var){
+    cout << *var;
 }
-
 
 template <typename t1, typename t2> void print(const pair<t1, t2> &p){
-	cout << "\n{" << p.first << "," << p.second << "}, Pair\n";
+	cout << "(" << p.first << "," << p.second << ")";
 }
 
-
-void solve(){
-
+template <typename t1, typename t2> void print(pair<t1,t2> *p){
+    cout << "(" << p->first << "," << p->second << ")";
 }
+
+template <typename type> void print(const vector<type> &vec){
+    cout << "[";
+    for (int i = 0; i < vec.size(); ++i){
+        print(vec[i]);
+        cout << " \0"[i + 1 == vec.size()];
+    }
+    cout << "]";
+}
+
+template<typename type> void print(const unordered_set<type> &uset){
+    cout << "{";
+    for (auto i = uset.begin(); i != uset.end(); ++i){
+        cout << " \0"[i == uset.begin()];
+        print(*i);
+    }
+    cout << "}";
+}
+
+template<typename type> void print(const set<type> &st){
+    cout << "{";
+    for (auto i = st.begin(); i != st.end(); ++i){
+        cout << " \0"[i == st.begin()];
+        print(*i);
+    }
+    cout << "}";
+}
+
+template <typename t1, typename t2> void print(const unordered_map<t1,t2> &umap){
+    cout << "{";
+    for (auto i = umap.begin(); i != umap.end(); ++i){
+        cout << " \0"[i == umap.begin()] << "(";
+        print(i->first);
+        cout << ":";
+        print(i->second);
+        cout << ")";
+    }
+    cout << "}";
+}
+
+template <typename t1, typename t2> void print(const map<t1,t2> &mp){
+    cout << "{";
+    for (auto i = mp.begin(); i != mp.end(); ++i){
+        cout << " \0"[i == mp.begin()] << "(";
+        print(i->first);
+        cout << ":";
+        print(i->second);
+        cout << ")";
+    }
+    cout << "}";
+}
+
+template <typename Arg1> void debug_encapsulate(const char* name, Arg1&& arg1){
+    if (!DEBUG) return;
+    cout << name << ": ";
+    print(arg1);
+    cout << endl;
+}
+
+template <typename Arg1, typename... Args> void debug_encapsulate(const char* names, Arg1&& arg1, Args&&... args){
+    if (!DEBUG) return;
+    const char* comma = strchr(names + 1, ',');
+    cout.write(names, comma + 1 - names) << ": ";
+    print(arg1);
+    debug_encapsulate(comma, args...);
+}
+#endif
