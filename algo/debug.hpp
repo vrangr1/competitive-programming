@@ -182,9 +182,22 @@ template <typename Arg1> void debug_encapsulate(const char* names, Arg1&& arg1){
     cout << endl;
 }
 
+char* get_name(char *names){
+    while (isspace(*names)) names++;
+    int n = strlen(names);
+    int count = 0;
+    for (int i = 0; i < n; ++i){
+        if (count == 0 && names[i] == ',') return names+i;
+        if (names[i] == '(') count++;
+        else if (names[i] == ')') count--;
+    }
+    assert(false);
+    return names;
+}
+
 template <typename Arg1, typename... Args> void debug_encapsulate(const char* names, Arg1&& arg1, Args&&... args){
     if (!DEBUG) return;
-    const char* comma = strchr(names + 1, ',');
+    char *comma = get_name((char*)names);
     char *name = (char*)names;
     while (isspace(*name)) name++;
     cout.write(name, comma - name) << ": ";

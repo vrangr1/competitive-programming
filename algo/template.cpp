@@ -40,7 +40,7 @@
 #define debug
 #ifdef LOCAL
     #undef debug
-    #include "debug.hpp"
+    #include <algo/debug.hpp>
     const bool DEBUG = true;
 #else
     const bool DEBUG = false;
