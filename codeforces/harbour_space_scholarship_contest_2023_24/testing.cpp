@@ -37,8 +37,10 @@
 #include <bit>
 #include <bitset>
 #include <assert.h>
+#define debug
 #ifdef LOCAL
-    #include "debug.hpp"
+    #undef debug
+    #include <algo/debug.hpp>
     const bool DEBUG = true;
 #else
     const bool DEBUG = false;
@@ -68,10 +70,12 @@ void solve();
 
 int main(){
 	fastIO;
-	TEST;
+	TEST1;
 	return 0;
 }
 
 void solve(){
-    
+    int a = 32;
+    string me = "vrangr";
+    debug(a, me);
 }

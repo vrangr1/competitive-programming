@@ -45,13 +45,13 @@ using namespace std;
 
 typedef long long int ll;
 typedef unsigned long long int ull;
-template<typename type> void print(const type &var);
-template<typename type> void print(type *var);
+template <typename type> void print(const type &var);
+template <typename type> void print(type *var);
 template <typename t1, typename t2> void print(const pair<t1, t2> &p);
 template <typename t1, typename t2> void print(pair<t1,t2> *p);
 template <typename type> void print(const vector<type> &vec);
-template<typename type> void print(const unordered_set<type> &uset);
-template<typename type> void print(const set<type> &uset);
+template <typename type> void print(const unordered_set<type> &uset);
+template <typename type> void print(const set<type> &uset);
 template <typename t1, typename t2> void print(const unordered_map<t1,t2> &umap);
 template <typename t1, typename t2> void print(const map<t1,t2> &mp);
 template <typename type> void print(stack<type> stck);
@@ -59,11 +59,11 @@ template <typename type> void print(queue<type> que);
 template <typename type> void print(const list<type> &lst);
 template <typename type> void print(const forward_list<type> &flst);
 
-template<typename type> void print(const type &var){
+template <typename type> void print(const type &var){
     cout << var;
 }
 
-template<typename type> void print(type *var){
+template <typename type> void print(type *var){
     cout << *var;
 }
 
@@ -84,7 +84,7 @@ template <typename type> void print(const vector<type> &vec){
     cout << " ]";
 }
 
-template<typename type> void print(const unordered_set<type> &uset){
+template <typename type> void print(const unordered_set<type> &uset){
     cout << "{ ";
     for (auto i = uset.begin(); i != uset.end(); ++i){
         cout << " \0"[i == uset.begin()];
@@ -93,7 +93,7 @@ template<typename type> void print(const unordered_set<type> &uset){
     cout << " }";
 }
 
-template<typename type> void print(const set<type> &st){
+template <typename type> void print(const set<type> &st){
     cout << "{ ";
     for (auto i = st.begin(); i != st.end(); ++i){
         cout << " \0"[i == st.begin()];
@@ -173,8 +173,10 @@ template <typename type> void print(const deque<type> &deq){
     cout << " ]";
 }
 
-template <typename Arg1> void debug_encapsulate(const char* name, Arg1&& arg1){
+template <typename Arg1> void debug_encapsulate(const char* names, Arg1&& arg1){
     if (!DEBUG) return;
+    char *name = (char*)names;
+    while(isspace(*name)) name++;
     cout << name << ": ";
     print(arg1);
     cout << endl;
@@ -183,7 +185,9 @@ template <typename Arg1> void debug_encapsulate(const char* name, Arg1&& arg1){
 template <typename Arg1, typename... Args> void debug_encapsulate(const char* names, Arg1&& arg1, Args&&... args){
     if (!DEBUG) return;
     const char* comma = strchr(names + 1, ',');
-    cout.write(names, comma - names) << ": ";
+    char *name = (char*)names;
+    while (isspace(*name)) name++;
+    cout.write(name, comma - name) << ": ";
     print(arg1);
     cout << endl;
     debug_encapsulate(comma+1, args...);
