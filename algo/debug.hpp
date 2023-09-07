@@ -177,8 +177,11 @@ template <typename Arg1> void debug_encapsulate(const char* names, Arg1&& arg1){
     if (!DEBUG) return;
     char *name = (char*)names;
     while(isspace(*name)) name++;
-    cout << name << ": ";
+    string comp(name);
+    if (comp != "endl")
+        cout << name << ": ";
     print(arg1);
+    if (comp != "endl");
     cout << endl;
 }
 
@@ -200,8 +203,11 @@ template <typename Arg1, typename... Args> void debug_encapsulate(const char* na
     char *comma = get_name((char*)names);
     char *name = (char*)names;
     while (isspace(*name)) name++;
-    cout.write(name, comma - name) << ": ";
+    string comp(name, comma-name);
+    if (comp != "endl")
+        cout.write(name, comma - name) << ": ";
     print(arg1);
+    if (comp!="endl")
     cout << endl;
     debug_encapsulate(comma+1, args...);
 }
