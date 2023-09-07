@@ -76,16 +76,9 @@ int main(){
 
 void solve(){
     int n; cin >> n;
-    vector<int> traps(201, INT_MAX);
-    int d, s;
+    int d, s, k = INT_MAX;
     forn(i,n){
         cin >> d >> s;
-        traps[d] = min(traps[d], s);
-    }
-    int k = INT_MAX;
-    forn(i, traps.size()){
-        if (traps[i] == INT_MAX) continue;
-        k = min(k, i + ((traps[i]-1)/2));
-    }
+        k = min(k, d + (s-1)/2);
     cout << k << endl;
 }
