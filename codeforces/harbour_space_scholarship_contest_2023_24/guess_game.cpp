@@ -81,12 +81,7 @@ public:
     bool end;
     int count, depth;
     vector<trie*> children;
-    trie():children(2,nullptr){
-        this->val = -1;
-        this->end = false;
-        this->count = 0;
-        this->depth = 0;
-    }
+    trie():children(2,nullptr){}
     trie(int val, int depth) : children(2,nullptr){
         this->val = val;
         this->end = false;
@@ -103,8 +98,7 @@ trie* getnode(int val, int depth){
     trie *node = &nodepool[nodepoolindex++];
     node->val = val;
     node->depth = depth;
-    node->children[0] = nullptr;
-    node->children[1] = nullptr;
+    fill(node->children.begin(), node->children.end(), nullptr);
     node->count = 0;
     node->end = false;
     return node;
@@ -114,21 +108,13 @@ void insert(string number, trie *node){
     int n = number.size(), num;
     for (int i = 0; i < n; ++i){
         node->count++;
-        // node->len_counts[n]++;
         num = (int)(number[i]-'0');
         if (node->children[num] == nullptr)
             node->children[num] = getnode(num, node->depth + num);
-            // node->children[num] = new trie(num, node->depth + num);
         node = node->children[num];
     }
     node->count++;
-    // node->len_counts[n]++;
     node->end = true;
-}
-
-inline ll nc2(ll n){
-    if (n&1) return (n * ((n-1ll)/2ll)) % mod;
-    return ((n/2ll) * (n-1ll)) % mod;
 }
 
 void inverse_recursion(ll a, ll b, ll &x, ll &y){
@@ -154,9 +140,6 @@ ll get_inverse(ll q, ll b){
 #define aequalsb 1
 ll expected_moves(ll pos, int type){
     switch(type){
-        // case alessb:
-        //     return pos + 1 - (pos%2ll);
-        // case agreaterb:
         case anotequalsb:
             return (2ll*pos + 1ll) % mod;
         case aequalsb:
@@ -166,87 +149,39 @@ ll expected_moves(ll pos, int type){
     return -1;
 }
 
-ll compute(ll zero_count, ll one_count, ll index, const string &path){
-    ll ans = 0;
-    ll pairs = (one_count * zero_count)%mod;
-    // ans = (pairs*(index+1 - (index%2)))%mod;
-    // ans += ((pairs * (index + (index%2)))%mod);
-    ans += (pairs*expected_moves(index, anotequalsb))%mod;
-    debug(path, index, zero_count, one_count, ans);
-    debug(endl);
-    return ans;
+inline ll compute(trie *zero, trie *one){
+    return ((((ll)zero->count*(ll)one->count)%mod)*expected_moves(one->depth,anotequalsb))%mod;
 }
 
-ll compute(trie *zero, trie *one, const string &path){
-    ll ans = 0;
-    ll pairs = ((ll)zero->count * (ll)one->count)%mod;
-    ans += (pairs*expected_moves(one->depth, anotequalsb))%mod;
-    debug(path, one->depth, zero->count, one->count, ans);
-    debug(endl);
-    return ans;
+inline ll compute(ll count, ll index){
+    return (((count*count)%mod)*expected_moves(index, aequalsb))%mod;
 }
 
-ll compute(ll count, ll index, const string &path){
-    ll ans, pairs = (count*count)%mod;
-    ans = (pairs*(index+1))%mod;
-    debug(path, index, count, ans);
-    debug(endl);
-    return ans;
-}
-
-void dfs(trie *node, ll &ans, ll last_index, string &path){
+void dfs(trie *node, ll &ans){
     if (node == nullptr) return;
-    path.push_back((char)(node->val + '0'));
-    // if (node->val) last_index = max(last_index, node->depth);
     if (node->children[0] && node->children[1])
-        ans += compute(node->children[0], node->children[1], path);
-        // ans += compute(node->children[0]->count, node->children[1]->count, node->children[0]->depth, path);
+        ans += compute(node->children[0], node->children[1]);
     if (node->end)
-        ans += compute(node->count, node->depth, path);
+        ans += compute(node->count, node->depth);
     ans %= mod;
-    dfs(node->children[0], ans, last_index, path);
-    dfs(node->children[1], ans, last_index, path);
-    path.pop_back();
+    dfs(node->children[0], ans);
+    dfs(node->children[1], ans);
 }
 
 void solve(){
     ll n; cin >> n;
     vector<int> s(n);
     nodepoolindex = 0;
-    // trie *root = new trie(' '-'0', 0);
     trie *root = getnode(' '-'0', 0);
     string number;
     ll ans = 0ll;
-    string path = "";
     forn(i, n){
         cin >> s[i];
         number = bitset<32>(s[i]).to_string();
-        // number = number.substr(__builtin_clz(s[i]));
-        debug(number);
         insert(number, root);
     }
-    debug(endl);
-    ll last_index = 0;
-    dfs(root, ans, last_index, path);
+    dfs(root, ans);
     ll inv = get_inverse(n*n, mod) % mod;
-    debug(ans, inv);
     ans = (ans * inv)%mod;
     cout << ans << endl;
 }
-
-// kth set bit different
-// if a > b: k + 1 - (k&1)
-// if a < b: k + (k%2)
-// if a == b: k+1
-
-// 1
-// 3
-// 9 9 6
-// 1001 1001 0110
-// 00 : 3
-// 01 : 6
-// 02 : 
-
-// 1
-// 2
-// 2 3
