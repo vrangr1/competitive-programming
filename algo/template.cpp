@@ -37,7 +37,7 @@
 #include <bit>
 #include <bitset>
 #include <assert.h>
-#define debug
+#define debug(...)
 #ifdef LOCAL
     #undef debug
     #include <algo/debug.hpp>
