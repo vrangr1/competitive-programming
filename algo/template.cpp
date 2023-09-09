@@ -52,14 +52,11 @@ using namespace std;
 #define fastIO ios_base::sync_with_stdio(false),cin.tie(0)
 #define TEST int T;cin>>T;while(T--)solve();
 #define TEST1 solve();
+#define GET_MACRO(_1,_2,_3,_4,NAME,...) NAME
+#define rep(...) GET_MACRO(__VA_ARGS__, forsn, qwe, forn)(__VA_ARGS__)
+#define qwe(r,t,y)
 #define forn(i, n) for (int i = 0; i < n; i++)
-#define forsn(i, st_val, n) for (int i = st_val; i <= n; ++i)
-#define forr(i, n) for (int i = n - 1; i >= 0; --i)
-#define forsr(i, st_val, n) for (int i = st_val; i >= n; --i)
-#define pb1(a) push_back(a)
-#define pb2(a,b) push_back({a, b})
-#define GET_MACRO(_1,_2,_3,NAME,...) NAME
-#define pb(...) GET_MACRO(__VA_ARGS__, pb1, pb2)(__VA_ARGS__)
+#define forsn(i, st, end, d) for(int i = st; (st<=end?i<=end:i>=end); i+=d)
 #define pass (void)0
 #define space " "
 #define yes "YES\n"

@@ -33,15 +33,6 @@ using namespace std;
 
 #define debug(...) if (DEBUG) debug_encapsulate(#__VA_ARGS__, __VA_ARGS__);
 #define endl "\n"
-#define forn(i, n) for (int i = 0; i < n; i++)
-#define forsn(i, st_val, n) for (int i = st_val; i <= n; ++i)
-#define forr(i, n) for (int i = n - 1; i >= 0; --i)
-#define forsr(i, st_val, n) for (int i = st_val; i >= n; --i)
-#define pb1(a) push_back(a)
-#define pb2(a,b) push_back({a, b})
-#define GET_MACRO(_1,_2,_3,NAME,...) NAME
-#define pb(...) GET_MACRO(__VA_ARGS__, pb1, pb2)(__VA_ARGS__)
-#define pass (void)0
 
 typedef long long int ll;
 typedef unsigned long long int ull;
@@ -58,6 +49,9 @@ template <typename type> void print(stack<type> stck);
 template <typename type> void print(queue<type> que);
 template <typename type> void print(const list<type> &lst);
 template <typename type> void print(const forward_list<type> &flst);
+template <typename type> void print(const deque<type> &deq);
+template <typename Arg1> void debug_encapsulate(const char* names, Arg1&& arg1);
+template <typename Arg1, typename... Args> void debug_encapsulate(const char* names, Arg1&& arg1, Args&&... args);
 
 template <typename type> void print(const type &var){
     cout << var;
@@ -182,7 +176,7 @@ template <typename Arg1> void debug_encapsulate(const char* names, Arg1&& arg1){
         cout << name << ": ";
     print(arg1);
     if (comp != "endl");
-    cout << endl;
+        cout << endl;
 }
 
 char* get_name(char *names){
@@ -208,7 +202,7 @@ template <typename Arg1, typename... Args> void debug_encapsulate(const char* na
         cout.write(name, comma - name) << ": ";
     print(arg1);
     if (comp!="endl")
-    cout << endl;
+        cout << endl;
     debug_encapsulate(comma+1, args...);
 }
 #endif
