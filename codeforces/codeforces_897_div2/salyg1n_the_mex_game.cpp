@@ -79,7 +79,8 @@ void solve(){
     int mex = INT_MIN;
     if (s[0] != 0) mex = 0;
     else{
-        rep(i,1,n-1,1){
+        rep(i,n){
+            if (i == 0) continue;
             if (s[i] != s[i-1] + 1){
                 mex = s[i-1]+1;
                 break;
