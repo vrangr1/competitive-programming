@@ -12,7 +12,7 @@
 #endif
 /***************************************************
 * AUTHOR : Anav Prasad
-* Nick : vrangr
+* Nick   : vrangr
 ****************************************************/
 #include <iostream>
 #include <fstream>
@@ -56,7 +56,7 @@ using namespace std;
 #define rep(...) GET_MACRO(__VA_ARGS__, forsn, qwe, forn)(__VA_ARGS__)
 #define qwe(r,t,y)
 #define forn(i, n) for (int i = 0; i < n; i++)
-#define forsn(i, st, end, d) for(int i = st; (st<=end?i<=end:i>=end); i+=d)
+#define forsn(i, st, end, d) for(int i = st; (d>0?i<=end:i>=end); i+=d)
 #define pass (void)0
 #define space " "
 #define yes "YES\n"

@@ -41,7 +41,7 @@
 #ifdef LOCAL
     #undef debug
     #include <algo/debug.hpp>
-    const bool DEBUG = true;
+    const bool DEBUG = false;
 #else
     const bool DEBUG = false;
 #endif
@@ -104,16 +104,17 @@ void solve(){
     vector<int> parent(n,-1);
     rep(i,n){
         cin >> b[i];
-        if (b[i] != 1) all_ones = false;
+        // if (b[i] != 1) all_ones = false;
         b[i]--;
         parent[b[i]] = i;
     }
     rep(i,n){
         if (k == 1 && b[i] != i) return void(cout << no);
     }
-    if (all_ones) return void(cout << yes);
+    // if (all_ones) return void(cout << yes);
     vector<bool> visited(n, false), cur(n,false);
     vector<int> counts(n,-1);
+    debug(parent);
     rep(i, n){
         if (parent[i] != -1) continue;
         if (!dfs(i, b, counts, visited, cur, 0, k))
@@ -126,3 +127,6 @@ void solve(){
     }
     cout << yes;
 }
+// 1
+// 2 2
+// 1 1
