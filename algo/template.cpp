@@ -57,6 +57,7 @@ using namespace std;
 #define qwe(r,t,y)
 #define forn(i, n) for (int i = 0; i < n; i++)
 #define forsn(i, st, end, d) for(int i = st; (d>0?i<=end:i>=end); i+=d)
+#define all(x) (x).begin(), (x).end()
 #define pass (void)0
 #define space " "
 #define yes "YES\n"
