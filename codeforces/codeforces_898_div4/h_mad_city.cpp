@@ -107,11 +107,11 @@ bool dfs(int node, const int parent){
 }
 
 void solve(){
-    int n, M, V; cin >> n >> M >> V; 
+    int n, M, V; cin >> n >> M >> V; M--; V--;
     create.reset();
     int u, v;
     rep(i,n){
-        cin >> u >> v;
+        cin >> u >> v; u--; v--;
         if (!create[u]) edges[u].clear();
         if (!create[v]) edges[v].clear();
         create[u] = true;
