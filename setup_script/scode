@@ -7,6 +7,7 @@ fi
 if test -f $file_name
 then
     echo "File already exists"
+    code $file_name
     exit 1
 fi
 echo "Setup file: $file_name"
