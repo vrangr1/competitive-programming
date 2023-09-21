@@ -77,10 +77,8 @@ inline ll get_dist(const pair<ll,ll> &a, const pair<ll,ll> &b){
 
 void solve(){
     ll n, k, a, b; cin >> n >> k >> a >> b;
-    // debug(a,b);
     a--;b--;
-    // debug(a,b);
-    ll amn = INT_MAX, bmn = INT_MAX;
+    ll amn = LLONG_MAX/2ll-1ll, bmn = LLONG_MAX/2ll-1ll;
     vector<pair<ll,ll>> cities(n);
     rep(i,n){
         cin >> cities[i].first;
