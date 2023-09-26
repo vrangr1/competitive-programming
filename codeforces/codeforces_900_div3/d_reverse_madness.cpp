@@ -111,7 +111,7 @@ void solve(){
         else if (ops[i].first != -1) end = make_pair(-1,-1);
         
         if (end.first == -1) continue;
-        int mid = (end.first+end.second)/2;
+        int mid = (end.first+end.second+1)/2;
         if (i >= mid){
             end = make_pair(-1,-1);
             continue;

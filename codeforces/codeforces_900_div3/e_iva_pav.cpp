@@ -113,7 +113,7 @@ int bsch(int low, int high, const int k, const vector<vector<int>> &bitcounts, c
     if (mid == low) mid++;
     // int andnum = get_and(low,mid, bitcounts);
     // debug(mid, andnum,k);
-    if (check(get_and(low,mid, bitcounts), k)) return bsch(mid,high,k, bitcounts, start);
+    if (check(get_and(start,mid, bitcounts), k)) return bsch(mid,high,k, bitcounts, start);
     return bsch(low,mid-1,k, bitcounts, start);
 }
 
