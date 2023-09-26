@@ -72,13 +72,9 @@ int main(){
 	return 0;
 }
 
-// bitset<(int)2e5> vis;
-
 void process(int node, int parent, const vector<int> &a, const vector<vector<int>> &edges, vector<unordered_map<int, vector<vector<ll>>>> &dp, vector<unordered_map<int,ll>> &sizes, vector<ll> &answers){
     if (parent == -1 && answers[node] != LLONG_MAX) return;
     if (dp[node].find(parent) != dp[node].end()) return;
-    // if (subtree_answers[node].find(parent) != subtree_answers[node].end())
-    //     return;
     sizes[node][parent] = 1;
     dp[node][parent] = vector<vector<ll>>(20, vector<ll>(2,0ll));
     if (edges[node].size() == 0){
@@ -86,7 +82,6 @@ void process(int node, int parent, const vector<int> &a, const vector<vector<int
         return;
     }
     ll num;
-    // subtree_answers[node][parent] = 1;
     if (edges[node].size() == 1 && parent != -1){
         assert(edges[node][0] == parent);
         rep(bit, 20){
@@ -124,7 +119,6 @@ void process(int node, int parent, const vector<int> &a, const vector<vector<int
     }
     if (parent == -1){
         answers[node] = 0ll;
-        debug(node, dp[node][parent],endl);
         rep(bit, 20)
             answers[node] += min(dp[node][parent][bit][0], dp[node][parent][bit][1]);
     }
@@ -138,25 +132,17 @@ vector<ll> answers(2e5);
 void solve(){
     int n; cin >> n;
     vector<int> a(n);
-    // vector<vector<int>> edges(n);
     rep(i,n){
         edges[i].clear();
         dp[i].clear();
         answers[i] = LLONG_MAX;
     }
-    // vector<unordered_map<int, vector<vector<ll>>>> dp(n);
-    // vector<unordered_map<int, ll>> subtree_answers(n);
-    // vector<unordered_map<int, ll>> sizes(n);
-    // vector<ll> answers(n, LLONG_MAX);
-    
-    // vis.reset();
     rep(i,n){
         cin >> a[i];
         edges[i].clear();
         dp[i].clear();
     }
     if (n == 1) return void(cout << "0\n");
-    // fill(answers.begin(), answers.begin() + n, LLONG_MAX);
     int u, v;
     rep(i,n-1){
         cin >> u >> v;
