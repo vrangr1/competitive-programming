@@ -54,9 +54,12 @@ using namespace std;
 #define TEST1 solve();
 #define GET_MACRO(_1,_2,_3,_4,NAME,...) NAME
 #define rep(...) GET_MACRO(__VA_ARGS__, forsn, qwe, forn)(__VA_ARGS__)
+#define repll(...) GET_MACRO(__VA_ARGS__, forsnll, qwe, fornll)(__VA_ARGS__)
 #define qwe(r,t,y)
 #define forn(i, n) for (int i = 0; i < n; i++)
+#define fornll(i, n) for (ll i = 0ll; i < n; i++)
 #define forsn(i, st, end, d) for(int i = st; (d>0?i<=end:i>=end); i+=d)
+#define forsnll(i, st, end, d) for(ll i = st; (d>0?i<=end:i>=end); i+=(ll)d)
 #define all(x) (x).begin(), (x).end()
 #define pass (void)0
 #define space " "
@@ -72,51 +75,58 @@ int main(){
 	return 0;
 }
 
-void solve(){
-    int n, k; cin >> n >> k;
-    string s; cin >> s;
-    int t;
-    rep(i,k) cin >> t;
-    vector<int> r(k+1);
-    r[0] = 0;
-    rep(i,k)
-        cin >> r[i+1];
-    int q; cin >> q;
-    int x, ind;
-    vector<int>::iterator iter;
-    vector<pair<int,int>> ops(n, make_pair(-1,-1));
-    debug(r);
-    rep(_,q){
-        cin >> x;
-        iter = lower_bound(all(r), x);
-        ind = iter-r.begin();
-        ind--;
-        assert(ind >= 0 && ind < k);
-        int a = min(x,r[ind+1]+r[ind]+1-x), b = max(x,r[ind+1]+r[ind]+1-x);
+void pfac(ll num, unordered_map<ll,ll> &umap){
+    ll fac = 2ll, count = 1ll;
+    while(num%fac == 0ll){
+        count++;
+        num/=fac;
+    }
+    umap[fac]=count-1ll;
+    repll(i,3ll,sqrt(num),2ll){
+        count = 1ll;
+        while(num%i == 0){
+            count++;
+            num/=i;
+        }
+        umap[i]=count-1ll;
+        if (num == 1ll) break;
+    }
+    if (num>1ll) umap[num]++;
+}
 
-        a--;b--;
-        debug(a,b,endl);
-        assert(a>=0 && a <= b && b < n);
-        if (ops[a].first == -1){
-            ops[a] = make_pair(a, b);
+bool check(unordered_map<ll,ll> &npfac, unordered_map<ll,ll> &xpfac){
+    unordered_map<ll,ll> dnpfac;
+    ll dn = 1ll;
+    for (auto &it : xpfac)
+        npfac[it.first]+=it.second;
+    for (auto &it : npfac)
+        dn *= (it.second+1ll);
+    pfac(dn,dnpfac);
+    for (auto &it : dnpfac)
+        if (npfac[it.first] < it.second) return false;
+    return true;
+}
+
+void solve(){
+    ll n, q; cin >> n >> q;
+    unordered_map<ll,ll> npfac, tpfac, xpfac;
+    pfac(n,npfac);
+    tpfac.insert(all(npfac));
+    while(q--){
+        ll k, x;
+        cin >> k;
+        if (k == 2){
+            tpfac.clear();
+            tpfac.insert(all(npfac));
             continue;
         }
-        assert(ops[a].first == a && ops[a].second == b);
-        ops[a] = make_pair(-1,-1);
+        cin >> x;
+        xpfac.clear();
+        pfac(x, xpfac);
+        debug(tpfac, xpfac);
+        if (check(tpfac, xpfac))
+            cout << yes;
+        else cout << no;
     }
-    debug(ops);
-    pair<int,int> end = make_pair(-1,-1);
-    rep(i,n){
-        if (end.first == -1) end = ops[i];
-        else if (ops[i].first != -1) end = make_pair(-1,-1);
-        
-        if (end.first == -1) continue;
-        int mid = (end.first+end.second+1)/2;
-        if (i >= mid){
-            end = make_pair(-1,-1);
-            continue;
-        }
-        swap(s[i],s[end.second-(i-end.first)]);
-    }
-    cout << s << endl;
+    cout<<endl;
 }
