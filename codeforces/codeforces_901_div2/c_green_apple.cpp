@@ -41,7 +41,7 @@
 #ifdef LOCAL
     #undef debug
     #include <algo/debug.hpp>
-    const bool DEBUG = true;
+    const bool DEBUG = false;
 #else
     const bool DEBUG = false;
 #endif
@@ -75,33 +75,27 @@ int main(){
 	return 0;
 }
 
-ll get_count(ll n, ll m, unordered_set<ll> &vis){
+ll get_count(ull n, ull m){
     if (n == m) return 0;
-    if (n > m)
-        return get_count(n%m, m, vis);
-    if (vis.find(n) != vis.end()) return -1;
-    vis.insert(n);
-    ll count = 0ll;
-    while(n < m){
-        count += n;
-        n*=2ll;
+    ll gcd = __gcd(n,m);
+    ll p = n/gcd, q = m/gcd;
+    if ((q-(q&(-q))) != 0) return -1;
+    debug(p,q);
+    ll bit, sol = 0ll;
+    while(p>0ll){
+        bit = (p&(-p));
+        p-=bit;
+        // debug(q,bit);
+        assert(q%bit == 0ll);
+        bit = q/bit;
+        sol += (bit-1ll)*(m/bit);
     }
-    if (n == m) return count;
-    assert(m%2 == 0);
-    count -= (n/2ll);
-    count += (m/2ll);
-    n/=2ll;
-    n = n-(m/2ll);
-    assert(n>0);
-    ll ans = get_count(n,m,vis);
-    if(ans == -1) return -1;
-    return ans + count;
+    return sol;
 }
-
+// 
 void solve(){
     ll n, m; cin >> n >> m;
     if (m%2 && n%m) return void(cout << "-1\n");
     if (n%m == 0) return void(cout << "0\n");
-    unordered_set<ll> vis;
-    cout << get_count(n,m, vis) << endl;
+    cout << get_count(n%m,m) << endl;
 }
