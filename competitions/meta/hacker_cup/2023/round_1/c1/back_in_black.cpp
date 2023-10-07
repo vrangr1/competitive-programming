@@ -82,27 +82,15 @@ int main(){
 	return 0;
 }
 
-// vector<int> seen(4e6+1);
+bitset<(int)4e6+1> seen, flip;
 
-int get_count(int ind, vector<int> &seen){
-    int ct = 0;
-    rep(i,1,sqrt(ind),1){
-        if (ind%i == 0) ct += seen[i];
-    }
-    if (ind > sqrt(ind))
-        ct += seen[ind];
-    return ct%2;
-}
-
-int compute_count(const string &state, vector<int> &seen){
-    int ct, n = state.size();
-    int sol = 0;
+int compute_count(string &state){
+    int n = state.size(), sol = 0;
     rep(i,1,n,1){
-        ct = get_count(i,seen)%2 + (state[i-1] == '1');
-        ct %= 2;
-        if (ct == 1){
-            seen[i]++;
-            sol++;
+        if (state[i-1] == '0') continue;
+        sol++;
+        rep(j,i,n,i){
+            state[j-1] = (state[j-1] == '0'?'1':'0');
         }
     }
     return sol;
@@ -114,106 +102,22 @@ void solve(int T){
     string state; cin >> state;
     ll q; cin >> q;
     ll b;
-    vector<int> seen(n+1,0);
-    // fill(seen.begin(), seen.begin() + n + 1, 0);
+    rep(i,1,n,1){
+        seen[i] = false;
+        flip[i] = false;
+    }
     while(q--){
         cin >> b;
-        seen[b]++;
-        seen[b] %= 2;
+        seen[b] = !seen[b];
     }
-    int ct = 0;
-    // debug(seen,state);
+    rep(i,1,n,1){
+        if(!seen[i]) continue;
+        rep(j,i,n,i)
+            flip[j] = !flip[j];
+    }
     rep(i, 1, n, 1){
-        // debug(i,get_count(i,seen));
-        ct = get_count(i,seen)%2 + (state[i-1] == '1');
-        ct %= 2;
-        state[i-1] = '0' + ct;
+        if (!flip[i]) continue;
+        state[i-1] = (state[i-1] == '0'?'1':'0');
     }
-    debug(state);
-    fill(seen.begin(), seen.end(), 0);
-    cout << compute_count(state, seen) << endl;
+    cout << compute_count(state) << endl;
 }
-
-/*
-5
-
-4
-1010
-1
-1   0101
-
-4
-0001
-4
-2   0100
-3   0110  0011
-2   0011
-4   0010  0010
-
-7
-0101101
-8
-1
-3
-2
-6
-7
-4
-2
-5
-
-7
-0101100
-1
-7
-
-7
-1111111
-1
-1
-
-
-
-
-
-
-5
-
-1
-4
-1010
-1
-1
-
-1
-4
-0001
-4
-2
-3
-2
-4
-
-7
-0101101
-8
-1
-3
-2
-6
-7
-4
-2
-5
-
-7
-0101100
-1
-7
-
-7
-1111111
-1
-1
-
-*/
