@@ -1,11 +1,12 @@
 #if 0
     me=`basename $0 .cpp`
     rm -f $me $me.out
-    g++ -std=c++20 -DLOCAL $me.cpp -o $me
     only_compile=${1:-0}
     if [ $only_compile == compile ]; then
+        g++ -std=c++20 $me.cpp -o $me -Wall -O2 -Wextra -Wno-sign-conversion -Wshadow
         exit
     fi
+    g++ -std=c++20 -DLOCAL $me.cpp -o $me -Wall -O2 -Wextra -Wno-sign-conversion -Wshadow
     if test -f $me; then
 	    ./$me > $me.out
         echo "\noutput begins now:"
@@ -47,8 +48,6 @@
     #undef debug
     #include <algo/debug.hpp>
     const bool DEBUG = true;
-#else
-    const bool DEBUG = false;
 #endif
 
 using namespace std;
