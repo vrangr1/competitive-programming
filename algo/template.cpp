@@ -2,6 +2,10 @@
     me=`basename $0 .cpp`
     rm -f $me $me.out
     g++ -std=c++20 -DLOCAL $me.cpp -o $me
+    only_compile=${1:-0}
+    if [ $only_compile == compile ]; then
+        exit
+    fi
     if test -f $me; then
 	    ./$me > $me.out
         echo "\noutput begins now:"
@@ -36,6 +40,7 @@
 #include <unordered_map>
 #include <bit>
 #include <bitset>
+#include <random>
 #include <assert.h>
 #define debug(...)
 #ifdef LOCAL

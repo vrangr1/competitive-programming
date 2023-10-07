@@ -54,117 +54,117 @@ template <typename Arg1> void debug_encapsulate(const char* names, Arg1&& arg1);
 template <typename Arg1, typename... Args> void debug_encapsulate(const char* names, Arg1&& arg1, Args&&... args);
 
 template <typename type> void print(const type &var){
-    cout << var;
+    cerr << var;
 }
 
 template <typename type> void print(type *var){
-    cout << *var;
+    cerr << *var;
 }
 
 template <typename t1, typename t2> void print(const pair<t1, t2> &p){
-	cout << "(" << p.first << "," << p.second << ")";
+	cerr << "(" << p.first << "," << p.second << ")";
 }
 
 template <typename t1, typename t2> void print(pair<t1,t2> *p){
-    cout << "(" << p->first << "," << p->second << ")";
+    cerr << "(" << p->first << "," << p->second << ")";
 }
 
 template <typename type> void print(const vector<type> &vec){
-    cout << "[ ";
+    cerr << "[ ";
     for (int i = 0; i < vec.size(); ++i){
         print(vec[i]);
-        cout << " \0"[i + 1 == vec.size()];
+        cerr << " \0"[i + 1 == vec.size()];
     }
-    cout << " ]";
+    cerr << " ]";
 }
 
 template <typename type> void print(const unordered_set<type> &uset){
-    cout << "{ ";
+    cerr << "{ ";
     for (auto i = uset.begin(); i != uset.end(); ++i){
-        cout << " \0"[i == uset.begin()];
+        cerr << " \0"[i == uset.begin()];
         print(*i);
     }
-    cout << " }";
+    cerr << " }";
 }
 
 template <typename type> void print(const set<type> &st){
-    cout << "{ ";
+    cerr << "{ ";
     for (auto i = st.begin(); i != st.end(); ++i){
-        cout << " \0"[i == st.begin()];
+        cerr << " \0"[i == st.begin()];
         print(*i);
     }
-    cout << " }";
+    cerr << " }";
 }
 
 template <typename t1, typename t2> void print(const unordered_map<t1,t2> &umap){
-    cout << "{ ";
+    cerr << "{ ";
     for (auto i = umap.begin(); i != umap.end(); ++i){
-        cout << " \0"[i == umap.begin()] << "(";
+        cerr << " \0"[i == umap.begin()] << "(";
         print(i->first);
-        cout << ":";
+        cerr << ":";
         print(i->second);
-        cout << ")";
+        cerr << ")";
     }
-    cout << " }";
+    cerr << " }";
 }
 
 template <typename t1, typename t2> void print(const map<t1,t2> &mp){
-    cout << "{ ";
+    cerr << "{ ";
     for (auto i = mp.begin(); i != mp.end(); ++i){
-        cout << " \0"[i == mp.begin()] << "(";
+        cerr << " \0"[i == mp.begin()] << "(";
         print(i->first);
-        cout << ":";
+        cerr << ":";
         print(i->second);
-        cout << ")";
+        cerr << ")";
     }
-    cout << " }";
+    cerr << " }";
 }
 
 template <typename type> void print(stack<type> stck){
-    cout << "[ ";
+    cerr << "[ ";
     while (!stck.empty()){
         print(stck.top());
-        cout << " \0"[stck.size() == 1];
+        cerr << " \0"[stck.size() == 1];
         stck.pop();
     }
-    cout << " ]";
+    cerr << " ]";
 }
 
 template <typename type> void print(queue<type> que){
-    cout << "[ ";
+    cerr << "[ ";
     while (!que.empty()){
         print(que.front());
-        cout << " \0"[que.size() == 1];
+        cerr << " \0"[que.size() == 1];
         que.pop();
     }
-    cout << " ]";
+    cerr << " ]";
 }
 
 template <typename type> void print(const list<type> &lst){
-    cout << "[ ";
+    cerr << "[ ";
     for (auto i = lst.begin(); i != lst.end(); ++i){
-        cout << " \0"[i == lst.begin()];
+        cerr << " \0"[i == lst.begin()];
         print(*i);
     }
-    cout << " ]";
+    cerr << " ]";
 }
 
 template <typename type> void print(const forward_list<type> &flst){
-    cout << "[";
+    cerr << "[";
     for (auto i = flst.begin(); i != flst.end(); ++i){
-        cout << " \0"[i == flst.begin()];
+        cerr << " \0"[i == flst.begin()];
         print(*i);
     }
-    cout << "]";
+    cerr << "]";
 }
 
 template <typename type> void print(const deque<type> &deq){
-    cout << "[ ";
+    cerr << "[ ";
     for (auto i = deq.begin(); i != deq.end(); ++i){
-        cout << " \0"[i == deq.begin()];
+        cerr << " \0"[i == deq.begin()];
         print(*i);
     }
-    cout << " ]";
+    cerr << " ]";
 }
 
 template <typename Arg1> void debug_encapsulate(const char* names, Arg1&& arg1){
@@ -173,10 +173,10 @@ template <typename Arg1> void debug_encapsulate(const char* names, Arg1&& arg1){
     while(isspace(*name)) name++;
     string comp(name);
     if (comp != "endl")
-        cout << name << ": ";
+        cerr << name << ": ";
     print(arg1);
     if (comp != "endl");
-        cout << endl;
+        cerr << endl;
 }
 
 char* get_name(char *names){
@@ -199,10 +199,39 @@ template <typename Arg1, typename... Args> void debug_encapsulate(const char* na
     while (isspace(*name)) name++;
     string comp(name, comma-name);
     if (comp != "endl")
-        cout.write(name, comma - name) << ": ";
+        cerr.write(name, comma - name) << ": ";
     print(arg1);
     if (comp!="endl")
-        cout << endl;
+        cerr << endl;
     debug_encapsulate(comma+1, args...);
 }
 #endif
+
+
+
+
+/*
+TODO: Could be useful. Take a look at later on.
+
+// === Debug macro starts here ===
+
+int recur_depth = 0;
+#ifdef DEBUG
+#define dbg(x) {++recur_depth; auto x_=x; --recur_depth; cerr<<string(recur_depth, '\t')<<"\e[91m"<<__func__<<":"<<__LINE__<<"\t"<<#x<<" = "<<x_<<"\e[39m"<<endl;}
+#else
+#define dbg(x)
+#endif
+template<typename Ostream, typename Cont>
+typename enable_if<is_same<Ostream,ostream>::value, Ostream&>::type operator<<(Ostream& os,  const Cont& v){
+	os<<"[";
+	for(auto& x:v){os<<x<<", ";}
+	return os<<"]";
+}
+template<typename Ostream, typename ...Ts>
+Ostream& operator<<(Ostream& os,  const pair<Ts...>& p){
+	return os<<"{"<<p.first<<", "<<p.second<<"}";
+}
+
+// === Debug macro ends here ===
+
+*/
