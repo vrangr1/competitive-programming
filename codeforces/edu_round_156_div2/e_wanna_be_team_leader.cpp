@@ -132,7 +132,7 @@ bool process(int tid, double task, vector<vector<int>> &assigns, set<pair<int,in
     return true;
 }
 
-void solve(){
+void solve1(){
     double n, m; cin >> n >> m;
     vector<double> a(n), b(m);
     rep(i,n) cin >> a[i];
@@ -181,6 +181,66 @@ void solve(){
     //     assigns[0].push_back(p.begin()->second);
     //     p.erase(p.begin());
     // }
+    rep(i,m){
+        cout << assigns[i].size() << " ";
+        rep(j,(int)assigns[i].size())
+            cout << assigns[i][j]+1 << " \n"[j == (int)assigns[i].size()-1];
+    }
+}
+
+
+void solve(){
+    double n, m; cin >> n >> m;
+    vector<double> prog(n), b(m);
+    rep(i,n) cin >> prog[i];
+    rep(i,m) cin >> b[i];
+    vector<vector<int>> assigns(m);
+    vector<int> progord(n), bord(m);
+    iota(all(progord),0);
+    iota(all(bord),0);
+    sort(all(progord),[&prog](const int &i, const int &j){
+        return prog[i] < prog[j];
+    });
+    sort(all(bord),[&b](const int &i, const int &j){
+        return b[i] < b[j];
+    });
+    double last = 0ll, sum = 0ll;
+    vector<int> indices;
+    set<pair<int,int>> tasks;
+    rep(i,m)
+        tasks.insert(make_pair(b[i],i));
+    set<pair<int,int>>::iterator iter;
+    debug(tasks);
+    rep(i,n){
+        debug(i);
+        if (last == 0ll) last = prog[progord[i]];
+        sum += last;
+        debug(sum);
+        indices.push_back(progord[i]);
+        iter = tasks.lower_bound(make_pair(sum,-1));
+        
+        // if (iter != tasks.end()) debug(*iter);
+        if (iter == tasks.end()) iter--;
+        while(iter != tasks.begin() && iter->first > sum)
+            iter--;
+        if (iter == tasks.begin() && iter->first > sum) continue;
+        // if (iter == tasks.end()) return void(cout << no);
+        // debug(*iter, sum);
+        // iter--;
+        
+        debug(*iter);
+        debug(sum);
+        assigns[iter->second].insert(assigns[iter->second].end(), all(indices));
+        indices.clear();
+        last = 0ll;
+        sum = 0ll;
+        tasks.erase(iter);
+    }
+    if (tasks.size()){
+        debug(tasks, assigns);
+        return void(cout << no);
+    }
+    cout << yes;
     rep(i,m){
         cout << assigns[i].size() << " ";
         rep(j,(int)assigns[i].size())

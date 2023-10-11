@@ -82,10 +82,38 @@ int main(){
 	return 0;
 }
 
-const ll mod = 998244353ll;
+const ll mod = 998244353;
+
+ll get_inv(ll num){
+    if (num <= 1ll) return num;
+    return (((mod - mod/num)*get_inv(mod%num))+mod)%mod;
+}
 
 void solve(){
     ll n, m; cin >> n >> m;
     string s; cin >> s;
-    
+    ll count = 1ll;
+    repll(i,1,n-2ll,1ll){
+        if (s[i] != '?') continue;
+        count *= i;
+        count %= mod;
+    }
+    bool zeroset = s[0]=='?';
+    cout << (zeroset?0:count) << endl;
+    while(m--){
+        ll ind; cin >> ind; --ind;
+        char c; cin >> c;
+        if (ind == 0ll){
+            zeroset = (c == '?');
+            cout << (zeroset?0:count) << endl;
+            continue;
+        }
+        if (s[ind] != '?' && c == '?')
+            count *= ind;
+        else if (s[ind] == '?' && c != '?')
+            count *= get_inv(ind);
+        count %= mod;
+        cout << (zeroset?0:count) << endl;
+        s[ind] = c;
+    }
 }
