@@ -1,7 +1,12 @@
 #if 0
     me=`basename $0 .cpp`
     rm -f $me $me.out
-    g++ -std=c++20 -Wall -DLOCAL $me.cpp -o $me
+    only_compile=${1:-0}
+    if [ $only_compile == compile ]; then
+        g++ -std=c++20 $me.cpp -o $me -Wall -O2 -Wextra -Wno-sign-conversion -Wshadow
+        exit
+    fi
+    g++ -std=c++20 -DLOCAL $me.cpp -o $me -Wall -O2 -Wextra -Wno-sign-conversion -Wshadow
     if test -f $me; then
 	    ./$me > $me.out
         echo "\noutput begins now:"
@@ -12,7 +17,7 @@
 #endif
 /***************************************************
 * AUTHOR : Anav Prasad
-* Nick : vrangr
+* Nick   : vrangr
 ****************************************************/
 #include <iostream>
 #include <fstream>
@@ -36,83 +41,72 @@
 #include <unordered_map>
 #include <bit>
 #include <bitset>
+#include <random>
 #include <assert.h>
 #define debug(...)
 #ifdef LOCAL
     #undef debug
     #include <algo/debug.hpp>
     const bool DEBUG = true;
-#else
-    const bool DEBUG = false;
 #endif
 
 using namespace std;
 
+typedef long long int ll;
+typedef unsigned long long int ull;
 #define endl "\n"
 #define fastIO ios_base::sync_with_stdio(false),cin.tie(0)
 #define TEST int T;cin>>T;while(T--)solve();
 #define TEST1 solve();
 #define GET_MACRO(_1,_2,_3,_4,NAME,...) NAME
 #define rep(...) GET_MACRO(__VA_ARGS__, forsn, qwe, forn)(__VA_ARGS__)
+#define repll(...) GET_MACRO(__VA_ARGS__, forsnll, qwe, fornll)(__VA_ARGS__)
 #define qwe(r,t,y)
 #define forn(i, n) for (int i = 0; i < n; i++)
-#define forsn(i, st, end, d) for(int i = st; (st<=end?i<=end:i>=end); i+=d)
+#define fornll(i, n) for (ll i = 0ll; i < n; i++)
+#define forsn(i, st, end, d) for(int i = st; (d>0?i<=end:i>=end); i+=d)
+#define forsnll(i, st, end, d) for(ll i = st; (d>0?i<=end:i>=end); i+=(ll)d)
+#define all(x) (x).begin(), (x).end()
 #define pass (void)0
 #define space " "
 #define yes "YES\n"
 #define no "NO\n"
-typedef long long int ll;
-typedef unsigned long long int ull;
 void solve();
 
 int main(){
 	fastIO;
 	TEST;
+    #ifdef LOCAL
+        cout << "\nTime elapsed: " << 1.0 * clock() / CLOCKS_PER_SEC << " s.\n";
+    #endif
 	return 0;
 }
 
-void process(ll num, unordered_map<int, pair<int,ll>> &umap, bool skip, ll bit){
-    if (umap.find(num) == umap.end()){
-        if (skip) return;
-        umap[num] = make_pair(0,0);
-    }
-    umap[num].first++;
-    umap[num].second += bit;
-}
-
-void loop(int index, const vector<ll> &a, unordered_map<int, pair<int,ll>> &umap, bool skip = true){
-    ll num;
-    for(ll i = 0ll; i < 32ll; ++i){
-        num = a[index]+(1ll<<i);
-        process(num, umap, skip, (1ll<<i));
-        num = a[index]-(1ll<<i);
-        if (num < 0) continue;
-        process(num, umap, skip, ((ll)(-1))*(1ll<<i));
-    }
-}
-
 void solve(){
-    int n; cin >> n;
+    ll n; cin >> n;
     vector<ll> a(n);
     rep(i,n) cin >> a[i];
-    unordered_map<int, pair<int,ll>> umap;
-    int num, coeff;
-    loop(0, a, umap, false);
-    if (n > 2){
-        rep(i,1,n-2,1){
-            loop(i, a, umap);
+    ll sum = accumulate(all(a),0ll);
+    if (sum%n) return void(cout << no);
+    sum /=n;
+    vector<ll> counts(64,0);
+    rep(i,n){
+        if (a[i] == sum) continue;
+        ll diff = abs(sum-a[i]);
+        int mbit = __builtin_ctzll(diff);
+        int pbit = mbit + __builtin_popcountll(diff);
+        if (pbit >= (int)counts.size() || pbit < 0 || mbit < 0 || mbit >= (int)counts.size()) return void(cout << no);
+        if (64 - __builtin_clzll(diff) != pbit) return void(cout << no);
+        if (a[i] > sum){
+            swap(mbit,pbit);
+            counts[pbit]++;
+            counts[mbit]--;
+        }
+        else{
+            counts[pbit]++;
+            counts[mbit]--;
         }
     }
-    rep(j,32){
-        num = a[n-1]+(1ll<<j);
-        process(num, umap, true, (1ll<<j));
-        if (umap[num].first == n && umap[num].second == 0ll)
-            return void(cout << yes);
-        num = a[n-1]-(1ll<<j);
-        if (num < 0) continue;
-        process(num, umap, true, ((ll)(-1))*(1ll<<j));
-        if (umap[num].first == n && umap[num].second == 0ll)
-            return void(cout << yes);
-    }
+    if(*max_element(all(counts)) == 0 && *min_element(all(counts)) == 0) return void(cout << yes);
     cout << no;
 }
