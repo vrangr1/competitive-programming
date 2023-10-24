@@ -47,7 +47,7 @@
 #ifdef LOCAL
     #undef debug
     #include <algo/debug.hpp>
-    const bool DEBUG = false;
+    const bool DEBUG = true;
 #endif
 
 using namespace std;
@@ -83,132 +83,44 @@ int main(){
 }
 
 bitset<(int)1e5> vis;
-unordered_set<int> path;
 
-void dfs(int node, const vector<int> &a, vector<bool> &isloop, vector<bool> &start, int &loopend, bool &loop_found, bool &last){
-    assert(node < (int)a.size());
-    assert(node >= 0);
-    // debug(node);
+void dfs(int node, vector<int> &deg, vector<int> &order, const vector<int> &a){
     vis[node] = true;
-    path.insert(node);
-    if (path.find(a[node]) != path.end()){
-        // debug('h');
-        loop_found = true;
-        loopend = a[node];
-        isloop[node] = true;
-        return;
-    }
-    if (vis[a[node]]){
-        if (isloop[a[node]]) start[node] = true;
-        return;
-    }
-    dfs(a[node],a,isloop,start,loopend,loop_found,last);
-    // debug(node, loop_found, loopend);
-    isloop[node] = loop_found;
-    if (last){
-        // debug(node, loop_found, loopend, isloop);
-        assert(!loop_found);
-        assert(loopend == -1);
-        start[node] = true;
-        last = false;
-    }
-    if (node == loopend){
-        loopend = -1;
-        loop_found = false;
-        assert(!last);
-        last = true;
-    }
-}
-
-void recog_loops(const vector<int> &a, vector<bool> &isloop, vector<bool> &start){
-    int n = a.size();
-    bool loop_found = false, last = false;
-    int loopend = -1;
-    rep(i,n){
-        if (vis[i]) continue;
-        assert(!loop_found);
-        assert(loopend == -1);
-        path.clear();
-        dfs(i, a, isloop, start, loopend, loop_found, last);
-        last = false;
-    }
-    rep(i,n) vis[i] = false;
-}
-
-void handle_loop(int node, const vector<int> &a, const vector<ll> &cost, vector<int> &order, int &mnind, ll &mncost){
-    vis[node] = true;
+    deg[a[node]]--;
     order.push_back(node);
-    if (mncost > cost[node]){
-        mnind = order.size()-1;
-        mncost = cost[node];
-    }
-    if (vis[a[node]]){
-        assert(mnind >= 0 && mnind < (int)order.size());
-        if(mnind != (int)order.size()-1)
-            rotate(order.begin(), order.begin()+mnind+1,order.end());
-        mnind = -1;
-        mncost = INT_MAX;
-        return;
-    }
-    handle_loop(a[node], a, cost, order, mnind, mncost);
-}
-
-void handle_loops(int n, const vector<int> &a, const vector<ll> &cost, const vector<bool> &isloop, vector<int> &order, vector<int> &loop){
-    int mnind = -1;
-    ll mncost = INT_MAX;
-    rep(i,n){
-        if (vis[i] || !isloop[i]) continue;
-        loop.clear();
-        assert(mnind == -1);
-        assert(mncost == INT_MAX);
-        handle_loop(i, a, cost, loop, mnind, mncost);
-        reverse(all(loop));
-        order.insert(order.end(), all(loop));
-    }
-}
-
-void bfs(int node, const vector<vector<int>> &edges, vector<int> &order){
-    deque<int> dq;
-    dq.push_back(node);
-    while(!dq.empty()){
-        node = dq.front();
-        dq.pop_front();
-        order.push_back(node);
-        assert(node < (int)edges.size());
-        assert(node >= 0);
-        for (const int &ngb : edges[node]){
-            if (vis[ngb]) continue;
-            vis[ngb] = true;
-            dq.push_back(ngb);
-        }
-    }
+    if(deg[a[node]] == 0)
+        dfs(a[node], deg, order, a);
 }
 
 void solve(){
     int n; cin >> n;
-    vector<int> a(n);
-    vector<vector<int>> edges(n);
+    vector<int> a(n), deg(n);
     rep(i,n){
-        cin >> a[i]; a[i]--;
-        assert(a[i] < (int)edges.size());
-        assert(a[i] >= 0);
-        edges[a[i]].push_back(i);
+        cin >> a[i]; --a[i];
+        deg[a[i]]++;
         vis[i] = false;
     }
-    vector<ll> cost(n);
+    vector<int> cost(n);
     rep(i,n) cin >> cost[i];
-    vector<bool> isloop(n,false), start(n,false);
-    debug(a);
-    recog_loops(a, isloop, start);
-    debug(isloop);
-    vector<int> order, loop;
-    handle_loops(n, a, cost, isloop, order, loop);
+    vector<int> order;
     rep(i,n){
-        if(!start[i] || vis[i]) continue;
-        bfs(i, edges, order);
+        if (vis[i] || deg[i] > 0) continue;
+        dfs(i, deg, order, a);
     }
-    reverse(all(order));
-    debug(order);
+    rep(i,n){
+        if (vis[i]) continue;
+        vector<int> cycle, costs;
+        for(int j = i; !vis[j]; j = a[j]){
+            cycle.push_back(j);
+            vis[j] = true;
+            costs.push_back(cost[j]);
+        }
+        int ind = min_element(all(costs)) - costs.begin();
+        if (ind < (int)cycle.size() - 1)
+            rotate(cycle.begin(), cycle.begin() + ind + 1, cycle.end());
+        order.insert(order.end(), all(cycle));
+    }
     assert((int)order.size() == n);
-    rep(i,n) cout << order[i]+1 << " \n"[i==(int)order.size()-1];
+    rep(i,n)
+        cout << order[i]+1 << " \n"[i==n-1];
 }
