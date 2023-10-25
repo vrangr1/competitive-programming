@@ -86,8 +86,6 @@ void solve(){
     int n, m, d; cin >> n >> m >> d;
     vector<int> s(m);
     rep(i,m) cin >> s[i];
-    // ++m;
-    // s.push_back(n);
     int total = 1, last = 1;
     rep(i,m){
         if (s[i] == last) continue;
@@ -96,93 +94,36 @@ void solve(){
         total++;
         last = s[i];
     }
-    assert(last <= n);
     total += (n-last)/d;
     last = 1;
-    debug(total);
-    int mn = total;
+    int mn = total, ct = m;
     rep(i,m){
         if (s[i] == last) continue;
-        if (s[i] > last+d){
+        if (s[i] > last+d)
             last = s[i]-((s[i]-1-last)%d)-1;
-        }
         if (last+d == s[i]){
             last = s[i];
             continue;
         }
         if (i < m-1 && ((s[i+1]-1-last)/d) < (((s[i+1]-s[i]-1)/d)+1)){
-            mn = min(mn, total+(((s[i+1]-1-last)/d) - (((s[i+1]-s[i]-1)/d)+1)));
+            int temp = total+(((s[i+1]-1-last)/d) - (((s[i+1]-s[i]-1)/d)+1));
+            if (mn > temp){
+                mn = temp;
+                ct = 1;
+            }
+            else if (mn == temp)
+                ct++;
         }
         else if (i == m-1 && (((n-last)/d) < (((n-s[i])/d) + 1))){
-            mn = min(mn, total+((n-last)/d) - (((n-s[i])/d) + 1));
+            int temp = total+((n-last)/d) - (((n-s[i])/d) + 1);
+            if (temp == mn)
+                ct++;
+            else if (mn > temp){
+                mn = temp;
+                ct = 1;
+            }
         }
         last = s[i];
     }
-    debug(mn);
-    int ct = 0;
-    debug(n,d,s);
-    if (mn < total){
-        last = 1;
-        rep(i,m){
-            if (s[i] == last) continue;
-            if (s[i] > last+d){
-                last = s[i]-((s[i]-1-last)%d)-1;
-            }
-            if (last+d == s[i]){
-                last = s[i];
-                continue;
-            }
-            if (i < m-1 && ((s[i+1]-1-last)/d) < (((s[i+1]-s[i]-1)/d)+1)){
-                if ((total+(((s[i+1]-1-last)/d) - (((s[i+1]-s[i]-1)/d)+1))) == mn)
-                    ct++;
-            }
-            else if (i == m-1 && (((n-last)/d) < (((n-s[i])/d) + 1))){
-                debug(s[i], last, ((n-last)/d), (((n-s[i])/d) + 1));
-                if ((total+((n-last)/d) - (((n-s[i])/d) + 1)) == mn)
-                    ct++;
-            }
-            last = s[i];
-        }
-    }
-    else{
-        ct = m;
-    }
-    // assert(ct > 0);
     cout << mn << " " << ct << endl;
 }
-
-/*
-8
-
-1
-6 2 2
-2 5
-
-1
-8 3 2
-3 5 8
-
-10 4 9
-2 8 9 10
-
-30 5 8
-6 8 15 24 29
-
-30 5 8
-6 8 12 20 27
-
-8 8 3
-1 2 3 4 5 6 7 8
-
-2 2 2
-1 2
-
-1000000000 3 20000000
-57008429 66778899 837653445
-
-1
-7 2 2
-4 6
-
-
-*/
