@@ -50,121 +50,142 @@ template <typename type> void print(queue<type> que);
 template <typename type> void print(const list<type> &lst);
 template <typename type> void print(const forward_list<type> &flst);
 template <typename type> void print(const deque<type> &deq);
+template <typename type> void print(priority_queue<type> pq);
+template <typename t1, typename t2> void print(priority_queue<t1,vector<t1>,t2> pq);
 template <typename Arg1> void debug_encapsulate(const char* names, Arg1&& arg1);
 template <typename Arg1, typename... Args> void debug_encapsulate(const char* names, Arg1&& arg1, Args&&... args);
 
 template <typename type> void print(const type &var){
-    cerr << var;
+    cout << var;
 }
 
 template <typename type> void print(type *var){
-    cerr << *var;
+    cout << *var;
 }
 
 template <typename t1, typename t2> void print(const pair<t1, t2> &p){
-	cerr << "(" << p.first << "," << p.second << ")";
+	cout << "(" << p.first << "," << p.second << ")";
 }
 
 template <typename t1, typename t2> void print(pair<t1,t2> *p){
-    cerr << "(" << p->first << "," << p->second << ")";
+    cout << "(" << p->first << "," << p->second << ")";
 }
 
 template <typename type> void print(const vector<type> &vec){
-    cerr << "[ ";
+    cout << "[ ";
     for (int i = 0; i < vec.size(); ++i){
         print(vec[i]);
-        cerr << " \0"[i + 1 == vec.size()];
+        cout << " \0"[i + 1 == vec.size()];
     }
-    cerr << " ]";
+    cout << " ]";
 }
 
 template <typename type> void print(const unordered_set<type> &uset){
-    cerr << "{ ";
+    cout << "{ ";
     for (auto i = uset.begin(); i != uset.end(); ++i){
-        cerr << " \0"[i == uset.begin()];
+        cout << " \0"[i == uset.begin()];
         print(*i);
     }
-    cerr << " }";
+    cout << " }";
 }
 
 template <typename type> void print(const set<type> &st){
-    cerr << "{ ";
+    cout << "{ ";
     for (auto i = st.begin(); i != st.end(); ++i){
-        cerr << " \0"[i == st.begin()];
+        cout << " \0"[i == st.begin()];
         print(*i);
     }
-    cerr << " }";
+    cout << " }";
 }
 
 template <typename t1, typename t2> void print(const unordered_map<t1,t2> &umap){
-    cerr << "{ ";
+    cout << "{ ";
     for (auto i = umap.begin(); i != umap.end(); ++i){
-        cerr << " \0"[i == umap.begin()] << "(";
+        cout << " \0"[i == umap.begin()] << "(";
         print(i->first);
-        cerr << ":";
+        cout << ":";
         print(i->second);
-        cerr << ")";
+        cout << ")";
     }
-    cerr << " }";
+    cout << " }";
 }
 
 template <typename t1, typename t2> void print(const map<t1,t2> &mp){
-    cerr << "{ ";
+    cout << "{ ";
     for (auto i = mp.begin(); i != mp.end(); ++i){
-        cerr << " \0"[i == mp.begin()] << "(";
+        cout << " \0"[i == mp.begin()] << "(";
         print(i->first);
-        cerr << ":";
+        cout << ":";
         print(i->second);
-        cerr << ")";
+        cout << ")";
     }
-    cerr << " }";
+    cout << " }";
 }
 
 template <typename type> void print(stack<type> stck){
-    cerr << "[ ";
+    cout << "[ ";
     while (!stck.empty()){
         print(stck.top());
-        cerr << " \0"[stck.size() == 1];
+        cout << " \0"[stck.size() == 1];
         stck.pop();
     }
-    cerr << " ]";
+    cout << " ]";
 }
 
 template <typename type> void print(queue<type> que){
-    cerr << "[ ";
+    cout << "[ ";
     while (!que.empty()){
         print(que.front());
-        cerr << " \0"[que.size() == 1];
+        cout << " \0"[que.size() == 1];
         que.pop();
     }
-    cerr << " ]";
+    cout << " ]";
 }
 
 template <typename type> void print(const list<type> &lst){
-    cerr << "[ ";
+    cout << "[ ";
     for (auto i = lst.begin(); i != lst.end(); ++i){
-        cerr << " \0"[i == lst.begin()];
+        cout << " \0"[i == lst.begin()];
         print(*i);
     }
-    cerr << " ]";
+    cout << " ]";
 }
 
 template <typename type> void print(const forward_list<type> &flst){
-    cerr << "[";
+    cout << "[";
     for (auto i = flst.begin(); i != flst.end(); ++i){
-        cerr << " \0"[i == flst.begin()];
+        cout << " \0"[i == flst.begin()];
         print(*i);
     }
-    cerr << "]";
+    cout << "]";
 }
 
 template <typename type> void print(const deque<type> &deq){
-    cerr << "[ ";
+    cout << "[ ";
     for (auto i = deq.begin(); i != deq.end(); ++i){
-        cerr << " \0"[i == deq.begin()];
+        cout << " \0"[i == deq.begin()];
         print(*i);
     }
-    cerr << " ]";
+    cout << " ]";
+}
+
+template <typename type> void print(priority_queue<type> pq){
+    cout << "{ ";
+    while(!pq.empty()){
+        print(pq.top());
+        pq.pop();
+    }
+    cout << " }";
+}
+
+template <typename t1, typename t2> void print(priority_queue<t1,vector<t1>,t2> pq){
+    cout << "{ ";
+    while(!pq.empty()){
+        print(pq.top());
+        pq.pop();
+        cout << " \0"[pq.empty()];
+    }
+    cout << " }";
 }
 
 template <typename Arg1> void debug_encapsulate(const char* names, Arg1&& arg1){
@@ -173,10 +194,10 @@ template <typename Arg1> void debug_encapsulate(const char* names, Arg1&& arg1){
     while(isspace(*name)) name++;
     string comp(name);
     if (comp != "endl")
-        cerr << name << ": ";
+        cout << name << ": ";
     print(arg1);
     if (comp != "endl");
-        cerr << endl;
+        cout << endl;
 }
 
 char* get_name(char *names){
@@ -199,10 +220,10 @@ template <typename Arg1, typename... Args> void debug_encapsulate(const char* na
     while (isspace(*name)) name++;
     string comp(name, comma-name);
     if (comp != "endl")
-        cerr.write(name, comma - name) << ": ";
+        cout.write(name, comma - name) << ": ";
     print(arg1);
     if (comp!="endl")
-        cerr << endl;
+        cout << endl;
     debug_encapsulate(comma+1, args...);
 }
 #endif
@@ -217,7 +238,7 @@ TODO: Could be useful. Take a look at later on.
 
 int recur_depth = 0;
 #ifdef DEBUG
-#define dbg(x) {++recur_depth; auto x_=x; --recur_depth; cerr<<string(recur_depth, '\t')<<"\e[91m"<<__func__<<":"<<__LINE__<<"\t"<<#x<<" = "<<x_<<"\e[39m"<<endl;}
+#define dbg(x) {++recur_depth; auto x_=x; --recur_depth; cout<<string(recur_depth, '\t')<<"\e[91m"<<__func__<<":"<<__LINE__<<"\t"<<#x<<" = "<<x_<<"\e[39m"<<endl;}
 #else
 #define dbg(x)
 #endif
