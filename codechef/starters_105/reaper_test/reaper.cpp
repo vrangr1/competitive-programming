@@ -6,10 +6,9 @@
         g++ -std=c++20 $me.cpp -o $me -Wall -O2 -Wextra -Wno-sign-conversion -Wshadow
         exit
     fi
-    g++ -std=c++20 -DLOCAL $me.cpp -o $me -Wall -O2 -Wextra -Wno-sign-conversion -Wshadow
+    g++ -std=c++20 $me.cpp -o $me -Wall -O2 -Wextra -Wno-sign-conversion -Wshadow
     if test -f $me; then
 	    ./$me > $me.out
-        echo "\noutput begins now:"
         cat $me.out
     	rm $me $me.out
     fi
@@ -75,7 +74,7 @@ void solve();
 
 int main(){
 	fastIO;
-	TEST;
+	TEST1;
     #ifdef LOCAL
         cout << "\nTime elapsed: " << 1.0 * clock() / CLOCKS_PER_SEC << " s.\n";
     #endif
@@ -94,39 +93,23 @@ void solve(){
     }
     priority_queue<vector<int>> pq;
     rep(i,n){
-        // if(cset.find(i) != cset.end()) continue;
+        if(cset.find(i) != cset.end()) continue;
         pq.push({a[i],-b[i],i});
     }
     int ind = 0;
-    vector<bool> seen(n,false);
     int souls = 0, l = 0;
     while(!pq.empty()){
-        if (seen[pq.top().at(2)]){
-            pq.pop();
-            continue;
-        }
         int s = pq.top().at(0);
         if (ind < m){
-            if (cset.find(pq.top().at(2)) != cset.end()){
-                while(ind < m && c[ind] != pq.top().at(2)){
-                    if (l >= a[c[ind]]) souls += b[c[ind]];
-                    l = a[c[ind]];
-                    assert(!seen[c[ind]]);
-                    seen[c[ind]] = true;
-                    ind++;
-                }
-                assert(ind < m && c[ind] == pq.top().at(2));
+            if (a[c[ind]] >= pq.top().at(0)){
                 if (l >= a[c[ind]]) souls += b[c[ind]];
                 l = a[c[ind]];
-                assert(!seen[c[ind]]);
-                seen[c[ind]] = true;
                 ind++;
-                pq.pop();
+                continue;
             }
             else{
                 if (l >= s) souls += b[pq.top().at(2)];
                 l = s;
-                seen[pq.top().at(2)] = true;
                 pq.pop();
             }
             continue;
@@ -134,26 +117,13 @@ void solve(){
         else{
             if (l >= s) souls += b[pq.top().at(2)];
             l = s;
-            seen[pq.top().at(2)] = true;
             pq.pop();
         }
     }
     while(ind < m){
         if (l >= a[c[ind]]) souls += b[c[ind]];
         l = a[c[ind]];
-        seen[c[ind]] = true;
         ind++;
     }
-    assert(count(all(seen),false) == 0);
     cout << souls << endl;
 }
-
-/*
-Failing Test Case:
-
-7 6
-1 7 5 3 6 8 3
-3 7 9 2 8 10 5
-1 3 5 6 4 7
-
-*/
