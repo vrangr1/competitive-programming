@@ -55,6 +55,8 @@ typedef long long int ll;
 typedef unsigned long long int ull;
 #define endl "\n"
 #define fastIO ios_base::sync_with_stdio(false),cin.tie(0)
+#define TEST cout << "1\n"
+#define TEST1
 #define GET_MACRO(_1,_2,_3,_4,NAME,...) NAME
 #define rep(...) GET_MACRO(__VA_ARGS__, forsn, qwe, forn)(__VA_ARGS__)
 #define repll(...) GET_MACRO(__VA_ARGS__, forsnll, qwe, fornll)(__VA_ARGS__)
@@ -74,6 +76,7 @@ mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 int main(){
 	fastIO;
+    TEST;
     generate_test();
     #ifdef LOCAL
         cout << "\nTime elapsed: " << 1.0 * clock() / CLOCKS_PER_SEC << " s.\n";

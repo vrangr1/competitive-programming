@@ -1,20 +1,39 @@
 #!/bin/bash
-opt_sol=${1:-"opt_sol.cpp"}
-brute_force=${2:-"brute_force.cpp"}
-generator=${3-"generator.cpp"}
-if [[ $opt_sol != *.cpp ]]
+opt_sol=${1:-"opt_sol"}
+brute_force=${2:-"brute_force"}
+generator=${3-"generator"}
+if [[ $opt_sol == *.cpp ]]
 then
-    opt_sol="$opt_sol.cpp"
+    opt_sol=${opt_sol%".cpp"}
 fi
-if [[ $brute_force != *.cpp ]]
+if [[ $brute_force == *.cpp ]]
 then
-    brute_force="$brute_force.cpp"
+    brute_force=${brute_force%".cpp"}
 fi
-if [[ $generator != *.cpp ]]
+if [[ $generator == *.cpp ]]
 then
-    generator="$generator.cpp"
+    generator=${generator%".cpp"}
 fi
-echo "Testing $opt_sol against $brute_force with $generator"
+if ! test -f ../${opt_sol}.cpp
+then
+    echo "${opt_sol}.cpp does not exist"
+    exit 1
+fi
+if ! test -f ${brute_force}.cpp
+then
+    echo "${brute_force}.cpp does not exist"
+    exit 1
+fi
+if ! test -f ${generator}.cpp
+then
+    echo "${generator}.cpp does not exist"
+    exit 1
+fi
+echo "Testing ${opt_sol}.cpp against ${brute_force}.cpp with ${generator}.cpp"
+./${generator}.cpp compile
+g++ -std=c++20 ../${opt_sol}.cpp -o ./${opt_sol} -Wall -O2 -Wextra -Wno-sign-conversion -Wshadow
+./${brute_force}.cpp compile
+# exit
 for((i=1;;++i));do
     echo $i
     # Call generator and pipe to input

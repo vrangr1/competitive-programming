@@ -6,9 +6,10 @@
         g++ -std=c++20 $me.cpp -o $me -Wall -O2 -Wextra -Wno-sign-conversion -Wshadow
         exit
     fi
-    g++ -std=c++20 $me.cpp -o $me -Wall -O2 -Wextra -Wno-sign-conversion -Wshadow
+    g++ -std=c++20 -DLOCAL $me.cpp -o $me -Wall -O2 -Wextra -Wno-sign-conversion -Wshadow
     if test -f $me; then
 	    ./$me > $me.out
+        echo "\noutput begins now:"
         cat $me.out
     	rm $me $me.out
     fi
@@ -74,7 +75,7 @@ void solve();
 
 int main(){
 	fastIO;
-	TEST1;
+	TEST;
     #ifdef LOCAL
         cout << "\nTime elapsed: " << 1.0 * clock() / CLOCKS_PER_SEC << " s.\n";
     #endif
