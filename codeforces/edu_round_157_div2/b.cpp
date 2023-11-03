@@ -58,21 +58,19 @@ typedef unsigned long long int ull;
 #define fastIO ios_base::sync_with_stdio(false),cin.tie(0)
 #define TEST int T;cin>>T;while(T--)solve();
 #define TEST1 solve();
-#define all(x) (x).begin(), (x).end()
-#define sz(v) ((int)(v).size())
 #define GET_MACRO(_1,_2,_3,_4,NAME,...) NAME
 #define rep(...) GET_MACRO(__VA_ARGS__, forsn, qwe, forn)(__VA_ARGS__)
 #define repll(...) GET_MACRO(__VA_ARGS__, forsnll, qwe, fornll)(__VA_ARGS__)
+#define qwe(r,t,y)
 #define forn(i, n) for (int i = 0; i < (int)n; i++)
 #define fornll(i, n) for (ll i = 0ll; i < (ll)n; i++)
 #define forsn(i, st, end, d) for(int i = st; (d>0?i<=(int)end:i>=(int)end); i+=d)
 #define forsnll(i, st, end, d) for(ll i = st; (d>0?i<=(ll)end:i>=(ll)end); i+=(ll)d)
-#define qwe(r,t,y)
+#define all(x) (x).begin(), (x).end()
+#define pass (void)0
 #define space " "
 #define yes "YES\n"
 #define no "NO\n"
-#define pass (void)0
-template<typename type>inline void print_vec(const vector<type> &v){rep(i,sz(v))cout<<v[i]<<" \n"[i==sz(v)-1];}
 void solve();
 
 int main(){
@@ -85,5 +83,19 @@ int main(){
 }
 
 void solve(){
-    
+    int n; cin >> n;
+    vector<int> a(2*n);
+    rep(i,2*n) cin >> a[i];
+    sort(all(a));
+    int sum = 0;
+    rep(i,n-1){
+        sum += abs(a[i]-a[i+1]);
+    }
+    rep(i,n,2*n-2,1){
+        sum += abs(a[i]-a[i+1]);
+    }
+    cout << sum << endl;
+    rep(i,n){
+        cout << a[i] << space << a[i+n] << endl;
+    }
 }
