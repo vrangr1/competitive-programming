@@ -71,11 +71,11 @@ typedef unsigned long long int ull;
 #define space " "
 #define yes "YES\n"
 #define no "NO\n"
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 void generate_test();
 
 int main(){
 	fastIO;
-	mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
     TEST;
     generate_test();
     #ifdef LOCAL

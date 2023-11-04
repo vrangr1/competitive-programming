@@ -21,11 +21,12 @@
 #include <cmath>
 #include <queue>
 #include <stack>
+#include <list>
+#include <forward_list>
 #include <unordered_map>
 #include <bit>
 #include <bitset>
-#include <list>
-#include <forward_list>
+#include <random>
 #include <assert.h>
 extern const bool DEBUG;
 
@@ -43,6 +44,7 @@ template <typename t1, typename t2> void print(pair<t1,t2> *p);
 template <typename type> void print(const vector<type> &vec);
 template <typename type> void print(const unordered_set<type> &uset);
 template <typename type> void print(const set<type> &uset);
+template <typename type> void print(const multiset<type> &mset);
 template <typename t1, typename t2> void print(const unordered_map<t1,t2> &umap);
 template <typename t1, typename t2> void print(const map<t1,t2> &mp);
 template <typename type> void print(stack<type> stck);
@@ -90,6 +92,15 @@ template <typename type> void print(const unordered_set<type> &uset){
 }
 
 template <typename type> void print(const set<type> &st){
+    cout << "{ ";
+    for (auto i = st.begin(); i != st.end(); ++i){
+        cout << " \0"[i == st.begin()];
+        print(*i);
+    }
+    cout << " }";
+}
+
+template <typename type> void print(const multiset<type> &st){
     cout << "{ ";
     for (auto i = st.begin(); i != st.end(); ++i){
         cout << " \0"[i == st.begin()];

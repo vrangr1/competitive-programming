@@ -33,7 +33,6 @@ echo "Testing ${opt_sol}.cpp against ${brute_force}.cpp with ${generator}.cpp"
 ./${generator}.cpp compile
 g++ -std=c++20 ../${opt_sol}.cpp -o ./${opt_sol} -Wall -O2 -Wextra -Wno-sign-conversion -Wshadow
 ./${brute_force}.cpp compile
-exit
 for((i=1;;++i));do
     echo $i
     # Call generator and pipe to input
