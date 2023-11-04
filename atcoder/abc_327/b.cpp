@@ -54,7 +54,6 @@ using namespace std;
 
 typedef long long int ll;
 typedef unsigned long long int ull;
-typedef long double ld;
 #define endl "\n"
 #define fastIO ios_base::sync_with_stdio(false),cin.tie(0)
 #define TEST int T;cin>>T;while(T--)solve();
@@ -78,13 +77,26 @@ void solve();
 
 int main(){
 	fastIO;
-	TEST;
+	TEST1;
     #ifdef LOCAL
         cout << "\nTime elapsed: " << 1.0 * clock() / CLOCKS_PER_SEC << " s.\n";
     #endif
 	return 0;
 }
 
+ll compute_pr(ll n){
+    ll ans = 1ll;
+    rep(i,n)
+        ans *= n;
+    return ans;
+}
+
 void solve(){
-    
+    ll b; cin >> b;
+    repll(n,1ll,15ll,1ll){
+        ll pr = compute_pr(n);
+        if (pr == b) return void(cout << n << endl);
+        else if (pr > b) return void(cout << "-1\n");
+    }
+    cout << "-1\n";
 }

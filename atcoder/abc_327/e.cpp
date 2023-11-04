@@ -47,7 +47,7 @@
 #ifdef LOCAL
     #undef debug
     #include <algo/debug.hpp>
-    const bool DEBUG = true;
+    const bool DEBUG = false;
 #endif
 
 using namespace std;
@@ -78,13 +78,90 @@ void solve();
 
 int main(){
 	fastIO;
-	TEST;
+	TEST1;
     #ifdef LOCAL
         cout << "\nTime elapsed: " << 1.0 * clock() / CLOCKS_PER_SEC << " s.\n";
     #endif
 	return 0;
 }
 
+// ld compute(int ind, const int cur, const vector<ld> &p, vector<pair<ld,int>> &dp){
+//     vector<ld> vals = {p[cur],p[ind]};
+//     while(dp[ind].second != -1){
+//         ind = dp[ind].second;
+//         vals.push_back(p[ind]);
+//     }
+//     ld k = vals.size();
+//     ld nom = 0, coeff = 1.0;
+//     const ld mult = 0.9;
+//     rep(i,k){
+//         nom += (coeff*vals[i]);
+//         coeff *= mult;
+//     }
+//     nom /= (((ld)10)*((ld)1-powl(0.9,k)));
+//     nom -= (((ld)1200)/(sqrtl(k)));
+//     return nom;
+// }
+
+ld compute(int ind, const int cur, const vector<ld> &p, vector<pair<ld,int>> &dp){
+    ld last = dp[ind].first, len = dp[ind].second;
+    last += (((ld)1200)/sqrtl(len));
+    last *= (((ld)10)*((ld)1-powl(0.9,len)));
+    last *= ((ld)0.9);
+    last += (p[cur]);
+    len++;
+    last /= (((ld)10)*((ld)1-powl(0.9,len)));
+    last -= (((ld)1200)/(sqrtl(len)));
+    return last;
+}
+
+ld compute(vector<ld> &vals){
+    ld k = vals.size();
+    ld coeff = 1ll;
+    const ld mult = 0.9;
+    ld rating = 0ll;
+    rep(i,k){
+        rating += (coeff*vals[i]);
+        coeff *= mult;
+    }
+    rating /= (((ld)10)*((ld)1-powl(mult,k)));
+    rating -= (((ld)1200)/(sqrtl(k)));
+    return rating;
+}
+
+void solve1(){
+    ld n; cin >> n;
+    vector<ld> p(n);
+    rep(i,n) cin >> p[i];
+    vector<pair<ld,int>> dp(n, make_pair(LLONG_MIN,-1));
+    dp[0] = make_pair(p[0]-1200,1);
+    ld maxval = dp[0].first;
+    rep(i,n){
+        if (i == 0) continue;
+        rep(j,i){
+            ld cur = compute(j, i, p, dp);
+            if (dp[i].second == -1 || cur > dp[i].first){
+                dp[i].first = cur;
+                dp[i].second = dp[j].second+1.0;
+            }
+        }
+        maxval = max(maxval, dp[i].first);
+    }
+    // debug(dp);
+    cout << fixed << setprecision(8) << maxval << endl;
+}
+
 void solve(){
-    
+    ld n; cin >> n;
+    vector<ld> p(n);
+    rep(i,n) cin >> p[i];
+    vector<ld> vals;
+    rep(i,n-1,0,-1){
+        while(!vals.empty() && vals.back() < p[i]){
+            vals.pop_back();
+        }
+        vals.push_back(p[i]);
+    }
+    debug(vals);
+    cout << fixed << setprecision(8) << compute(vals) << endl;
 }

@@ -54,7 +54,6 @@ using namespace std;
 
 typedef long long int ll;
 typedef unsigned long long int ull;
-typedef long double ld;
 #define endl "\n"
 #define fastIO ios_base::sync_with_stdio(false),cin.tie(0)
 #define TEST int T;cin>>T;while(T--)solve();
@@ -70,15 +69,15 @@ typedef long double ld;
 #define forsnll(i, st, end, d) for(ll i = st; (d>0?i<=(ll)end:i>=(ll)end); i+=(ll)d)
 #define qwe(r,t,y)
 #define space " "
-#define yes "YES\n"
-#define no "NO\n"
+#define yes "Yes\n"
+#define no "No\n"
 #define pass (void)0
 template<typename type>inline void print_vec(const vector<type> &v){rep(i,sz(v))cout<<v[i]<<" \n"[i==sz(v)-1];}
 void solve();
 
 int main(){
 	fastIO;
-	TEST;
+	TEST1;
     #ifdef LOCAL
         cout << "\nTime elapsed: " << 1.0 * clock() / CLOCKS_PER_SEC << " s.\n";
     #endif
@@ -86,5 +85,10 @@ int main(){
 }
 
 void solve(){
-    
+    int n; cin >> n;
+    string s; cin >> s;
+    rep(i,s.size()-1){
+        if ((s[i] == 'a' && s[i+1] == 'b')||(s[i] == 'b' && s[i+1]=='a')) return void(cout << yes);
+    }
+    cout << no;
 }
