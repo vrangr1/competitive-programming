@@ -10,6 +10,10 @@ then
   echo "${opt_sol} does not exist."
   exit 1
 fi
+if [[ $folder_name == *.cpp ]]
+then
+    folder_name=${folder_name%".cpp"}
+fi
 if [[ $folder_name != *test ]]
 then
     folder_name="${folder_name}_test"
@@ -18,5 +22,4 @@ echo "Setting up testing folder for ${opt_sol} as ${folder_name}"
 mkdir -p $folder_name
 cd $folder_name
 cp -n /Users/anavp/home/acads/competitive-coding/algo/generator.cpp ./
-cp -n /Users/anavp/home/acads/competitive-coding/algo/test ./
 cp -n /Users/anavp/home/acads/competitive-coding/algo/brute_force.cpp ./

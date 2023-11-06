@@ -20,12 +20,18 @@ then
     echo "${generator}.cpp does not exist"
     exit 1
 fi
+function handle_ctrlc()
+{
+    rm -f $generator
+    rm -f $opt_sol
+}
+trap handle_ctrlc SIGINT
 echo "Testing ${opt_sol}.cpp with ${generator}.cpp for TLE"
 ./${generator}.cpp compile
-g++ -std=c++20 ../${opt_sol}.cpp -o ./${opt_sol} -Wall -O2 -Wextra -Wno-sign-conversion -Wshadow
+g++ -std=c++20 ../${opt_sol}.cpp -o ./${opt_sol} -Wall -O2 -Wextra -Wno-sign-conversion -Wshadow -Wl,-stack_size -Wl,0x20000000
 for((i=1;;++i));do
     echo $i
     # Call generator and pipe to input
     ./$generator > input
-    ./$opt_sol < input > out1
+    timeout 2s bash -c ./$opt_sol < input > out1
 done
