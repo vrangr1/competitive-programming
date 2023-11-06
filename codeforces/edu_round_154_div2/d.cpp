@@ -90,5 +90,19 @@ int main(){
 }
 
 void solve(){
-    
+    size_t n; cin >> n;
+    vector<int> a(n);
+    rep(i,n) cin >> a[i];
+    vector<int> pos(n), neg(n);
+    neg[0] = 1;
+    rep(i,1,n-1,1)
+        neg[i] = neg[i-1] + (a[i]>=a[i-1]);
+    pos[n-1] = 0;
+    rep(i,n-2,0,-1)
+        pos[i] = pos[i+1] + (a[i]>=a[i+1]);
+    debug(a,pos,neg);
+    int mn = min(pos[0],neg[n-1]);
+    rep(i,1,n-1,1)
+        mn = min(neg[i-1]+pos[i],mn);
+    cout << mn << endl;
 }
