@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 opt_sol=${1:-"opt_sol"}
 brute_force=${2:-"brute_force"}
 generator=${3-"generator"}

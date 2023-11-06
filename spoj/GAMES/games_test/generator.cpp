@@ -85,7 +85,11 @@ int main(){
 	return 0;
 }
 
+const ll nummax = 1e6, decmax = 1e5;
+
 // Generate just a singular test. The multitudinous nature of tests are implemented through a bash script
 void generate_test(){
-    
+    double val = grng(nummax)+1.0, dec = grng(decmax);
+    while(dec >= 1.0) dec /= (double)(10);
+    cout << fixed << setprecision(4) << val+dec << endl;
 }
