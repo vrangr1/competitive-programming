@@ -26,7 +26,7 @@
 #include <bitset>
 #include <random>
 #include <assert.h>
-#define debug(...) 42
+#define debug(...)
 #ifdef LOCAL
     #undef debug
     #include <algo/debug.hpp>
@@ -69,5 +69,26 @@ int main(){
 }
 
 void solve(){
-    
+    int n; cin >> n;
+    vector<int> a(n);
+    rep(i,n) cin >> a[i];
+    vector<int> b(n,-1);
+    int last = 2;
+    rep(i,n){
+        if (b[i] != -1) continue;
+        b[i] = 1;
+        bool found = false;
+        rep(j,i+1,n-1,1){
+            if (a[i] == a[j]){
+                b[j] = last;
+                found = true;
+            }
+        }
+        if (found)
+            last = (last == 2?3:2);
+    }
+    rep(i,n)
+        if (b[i] == -1) b[i] = 1;
+    if (count(all(b),3) == 0) return void(cout << "-1\n");
+    print_vec(b);
 }

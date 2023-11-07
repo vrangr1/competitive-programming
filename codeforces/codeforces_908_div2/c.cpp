@@ -26,7 +26,7 @@
 #include <bitset>
 #include <random>
 #include <assert.h>
-#define debug(...) 42
+#define debug(...)
 #ifdef LOCAL
     #undef debug
     #include <algo/debug.hpp>
@@ -53,8 +53,8 @@ typedef long double ld;
 #define forsnll(i, st, end, d) for(ll i = st; (d>0?i<=(ll)end:i>=(ll)end); i+=(ll)d)
 #define qwe(r,t,y)
 #define space " "
-#define yes "YES\n"
-#define no "NO\n"
+#define yes "Yes\n"
+#define no "No\n"
 #define pass (void)0
 template<typename type>inline void print_vec(const vector<type> &v){rep(i,sz(v))cout<<v[i]<<" \n"[i==sz(v)-1];}
 void solve();
@@ -69,5 +69,22 @@ int main(){
 }
 
 void solve(){
-    
+    int n,k; cin >> n >> k;
+    vector<int> b(n+1);
+    rep(i,n) cin >> b[i+1];
+    if (b.back() == n) return void(cout << yes);
+    unordered_set<int> uset;
+    int ind = n;
+    int ct = 0;
+    while(ct < k){
+        if (b[ind] > n) return void(cout << no);
+        uset.insert(ind);
+        ind -= b[ind];
+        if (ind < 1)
+            ind += n;
+        assert(ind >= 1 && ind <= n);
+        ct++;
+        if (uset.find(ind) != uset.end()) break;
+    }
+    cout << yes;
 }

@@ -26,7 +26,7 @@
 #include <bitset>
 #include <random>
 #include <assert.h>
-#define debug(...) 42
+#define debug(...)
 #ifdef LOCAL
     #undef debug
     #include <algo/debug.hpp>
@@ -69,5 +69,7 @@ int main(){
 }
 
 void solve(){
-    
+    int n; cin >> n;
+    string s; cin >> s;
+    cout << s.back() << endl;
 }
