@@ -1,0 +1,29 @@
+## Bash Script for compiling and/or running cpp files
+file=`basename $1 .cpp`
+rm -f $file $file.out
+file_loc=$1
+if [[ $file_loc != *.cpp ]]
+then
+    file_loc=${file_loc}.cpp
+fi
+if ! test -f $file_loc
+then
+    echo "${file_loc} does not exist"
+    exit 1
+fi
+command=${2:-0}
+if [ $command == compile ]; then
+    g++ -std=c++20 $file_loc -o $file -Wall -O2 -Wextra -Wno-sign-conversion -Wshadow -Wl,-stack_size -Wl,0x20000000
+    exit
+fi
+if [ $command == debug ]; then
+    g++ -std=c++20 -DLOCAL $file_loc -o $file -Wall -O2 -Wextra -Wno-sign-conversion -Wshadow -Wl,-stack_size -Wl,0x20000000
+    exit
+fi
+g++ -std=c++20 -DLOCAL $file_loc -o $file -Wall -O2 -Wextra -Wno-sign-conversion -Wshadow -Wl,-stack_size -Wl,0x20000000
+if test -f $file; then
+    ./$file > $file.out
+    echo "\noutput begins now:"
+    cat $file.out
+    rm $file $file.out
+fi

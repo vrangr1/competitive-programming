@@ -1,4 +1,4 @@
-
+## Script to copy over the template file into the current directory with the given name
 file_name=${1:-"file.cpp"}
 if [[ $file_name != *.cpp ]]
 then

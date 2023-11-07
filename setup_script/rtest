@@ -1,4 +1,4 @@
-#!/bin/bash
+## Script to test the solution against brute force solution with generator cpp providing the inputs
 set -e
 opt_sol=${1:-"opt_sol"}
 brute_force=${2:-"brute_force"}
@@ -35,12 +35,13 @@ function handle_ctrlc()
     rm -f $generator
     rm -f $brute_force
     rm -f $opt_sol
+    exit
 }
 trap handle_ctrlc SIGINT
 echo "Testing ${opt_sol}.cpp against ${brute_force}.cpp with ${generator}.cpp"
-./${generator}.cpp compile
-g++ -std=c++20 ../${opt_sol}.cpp -o ./${opt_sol} -Wall -O2 -Wextra -Wno-sign-conversion -Wshadow -Wl,-stack_size -Wl,0x20000000
-./${brute_force}.cpp compile
+cmc $generator.cpp compile
+cmc ../$opt_sol.cpp compile
+cmc $brute_force.cpp compile
 for((i=1;;++i));do
     echo $i
     # Call generator and pipe to input
@@ -49,3 +50,4 @@ for((i=1;;++i));do
     ./$brute_force < input > out2
     diff -w out1 out2 || break
 done
+handle_ctrlc
