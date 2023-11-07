@@ -11,7 +11,15 @@ then
     echo "${file_loc} does not exist"
     exit 1
 fi
+function handle_ctrlc ()
+{
+    rm -f $file
+    rm -f $file.out
+    exit
+}
+trap handle_ctrlc SIGINT
 command=${2:-0}
+# stack size 0x20000000 is 512 MB (the max allowed by M1 Mac Air)
 if [ $command == compile ]; then
     g++ -std=c++20 $file_loc -o $file -Wall -O2 -Wextra -Wno-sign-conversion -Wshadow -Wl,-stack_size -Wl,0x20000000
     exit

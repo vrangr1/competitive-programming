@@ -43,6 +43,7 @@ typedef long double ld;
 #define TEST int T;cin>>T;while(T--)solve();
 #define TEST1 solve();
 #define all(x) (x).begin(), (x).end()
+#define rall(x) (x).rbegin(), (x).rend()
 #define sz(v) ((int)(v).size())
 #define GET_MACRO(_1,_2,_3,_4,NAME,...) NAME
 #define rep(...) GET_MACRO(__VA_ARGS__, forsn, qwe, forn)(__VA_ARGS__)
