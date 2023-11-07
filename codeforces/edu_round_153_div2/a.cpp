@@ -1,0 +1,136 @@
+#if 0
+    me=`basename $0 .cpp`
+    rm -f $me $me.out
+    only_compile=${1:-0}
+    if [ $only_compile == compile ]; then
+        g++ -std=c++20 $me.cpp -o $me -Wall -O2 -Wextra -Wno-sign-conversion -Wshadow -Wl,-stack_size -Wl,0x20000000
+        exit
+    fi
+    if [ $only_compile == debug ]; then
+        g++ -std=c++20 -DLOCAL $me.cpp -o $me -Wall -O2 -Wextra -Wno-sign-conversion -Wshadow -Wl,-stack_size -Wl,0x20000000
+        exit
+    fi
+    g++ -std=c++20 -DLOCAL $me.cpp -o $me -Wall -O2 -Wextra -Wno-sign-conversion -Wshadow -Wl,-stack_size -Wl,0x20000000
+    if test -f $me; then
+	    ./$me > $me.out
+        echo "\noutput begins now:"
+        cat $me.out
+    	rm $me $me.out
+    fi
+    exit
+#endif
+/***************************************************
+* AUTHOR : Anav Prasad
+* Nick   : vrangr
+****************************************************/
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string.h>
+#include <ctype.h>
+#include <unordered_set>
+#include <set>
+#include <stdlib.h>
+#include <map>
+#include <iterator>
+#include <iomanip>
+#include <algorithm>
+#include <climits>
+#include <numeric>
+#include <cmath>
+#include <queue>
+#include <stack>
+#include <list>
+#include <forward_list>
+#include <unordered_map>
+#include <bit>
+#include <bitset>
+#include <random>
+#include <assert.h>
+#define debug(...)
+#ifdef LOCAL
+    #undef debug
+    #include <algo/debug.hpp>
+    const bool DEBUG = true;
+#endif
+
+using namespace std;
+
+typedef long long int ll;
+typedef unsigned long long int ull;
+typedef long double ld;
+#define endl "\n"
+#define fastIO ios_base::sync_with_stdio(false),cin.tie(0)
+#define TEST int T;cin>>T;while(T--)solve();
+#define TEST1 solve();
+#define all(x) (x).begin(), (x).end()
+#define sz(v) ((int)(v).size())
+#define GET_MACRO(_1,_2,_3,_4,NAME,...) NAME
+#define rep(...) GET_MACRO(__VA_ARGS__, forsn, qwe, forn)(__VA_ARGS__)
+#define repll(...) GET_MACRO(__VA_ARGS__, forsnll, qwe, fornll)(__VA_ARGS__)
+#define forn(i, n) for (int i = 0; i < (int)n; i++)
+#define fornll(i, n) for (ll i = 0ll; i < (ll)n; i++)
+#define forsn(i, st, end, d) for(int i = st; (d>0?i<=(int)end:i>=(int)end); i+=d)
+#define forsnll(i, st, end, d) for(ll i = st; (d>0?i<=(ll)end:i>=(ll)end); i+=(ll)d)
+#define qwe(r,t,y)
+#define space " "
+#define yes "YES\n"
+#define no "NO\n"
+#define pass (void)0
+template<typename type>inline void print_vec(const vector<type> &v){rep(i,sz(v))cout<<v[i]<<" \n"[i==sz(v)-1];}
+void solve();
+
+int main(){
+	fastIO;
+	TEST;
+    #ifdef LOCAL
+        cout << "\nTime elapsed: " << 1.0 * clock() / CLOCKS_PER_SEC << " s.\n";
+    #endif
+	return 0;
+}
+
+bool is_regular(const string &s){
+    int n = s.size();
+    stack<char> stk;
+    rep(i,n){
+        if (s[i] == '('){
+            stk.push(s[i]);
+            continue;
+        }
+        if (stk.empty()) return false;
+        stk.pop();
+    }
+    return stk.empty();
+}
+
+#define open '('
+#define close ')'
+
+bool match(const string &pat, const string &s){
+    int n = s.size(), k = pat.size();
+    rep(i,n-k+1){
+        bool found = true;
+        rep(j,k){
+            if (s[i+j] == pat[j]) continue;
+            found = false;
+            break;
+        }
+        if (found) return true;
+    }
+    return false;
+}
+
+void solve(){
+    string s; cin >> s;
+    int n = s.size();
+    if (s == "()") return void(cout << no);
+    string p1, p2;
+    rep(i,n){
+        p2 += "()";
+        p1.push_back(open);
+    }
+    rep(i,n) p1.push_back(close);
+    if (!match(s,p1)) return void(cout << yes << p1 << endl);
+    assert(!match(s,p2));
+    cout << yes << p2 << endl;
+}
