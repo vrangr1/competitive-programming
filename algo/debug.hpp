@@ -47,6 +47,8 @@ template <typename type> void print(const set<type> &uset);
 template <typename type> void print(const multiset<type> &mset);
 template <typename t1, typename t2> void print(const unordered_map<t1,t2> &umap);
 template <typename t1, typename t2> void print(const map<t1,t2> &mp);
+template <typename t1, typename t2> void print(const unordered_multimap<t1,t2> &ummp);
+template <typename t1, typename t2> void print(const multimap<t1,t2> &mmp);
 template <typename type> void print(stack<type> stck);
 template <typename type> void print(queue<type> que);
 template <typename type> void print(const list<type> &lst);
@@ -62,15 +64,23 @@ template <typename type> void print(const type &var){
 }
 
 template <typename type> void print(type *var){
-    cout << *var;
+    print(*var);
 }
 
 template <typename t1, typename t2> void print(const pair<t1, t2> &p){
-	cout << "(" << p.first << "," << p.second << ")";
+    cout << "(";
+    print(p.first);
+    cout << ",";
+    print(p.second);
+    cout << ")";
 }
 
 template <typename t1, typename t2> void print(pair<t1,t2> *p){
-    cout << "(" << p->first << "," << p->second << ")";
+    cout << "(";
+    print(p->first);
+    cout << ",";
+    print(p->second);
+    cout << ")";
 }
 
 template <typename type> void print(const vector<type> &vec){
@@ -84,8 +94,8 @@ template <typename type> void print(const vector<type> &vec){
 
 template <typename type> void print(const unordered_set<type> &uset){
     cout << "{ ";
-    for (auto i = uset.begin(); i != uset.end(); ++i){
-        cout << " \0"[i == uset.begin()];
+    for (auto i = uset.cbegin(); i != uset.cend(); ++i){
+        cout << " \0"[i == uset.cbegin()];
         print(*i);
     }
     cout << " }";
@@ -93,8 +103,8 @@ template <typename type> void print(const unordered_set<type> &uset){
 
 template <typename type> void print(const set<type> &st){
     cout << "{ ";
-    for (auto i = st.begin(); i != st.end(); ++i){
-        cout << " \0"[i == st.begin()];
+    for (auto i = st.cbegin(); i != st.cend(); ++i){
+        cout << " \0"[i == st.cbegin()];
         print(*i);
     }
     cout << " }";
@@ -102,8 +112,8 @@ template <typename type> void print(const set<type> &st){
 
 template <typename type> void print(const multiset<type> &st){
     cout << "{ ";
-    for (auto i = st.begin(); i != st.end(); ++i){
-        cout << " \0"[i == st.begin()];
+    for (auto i = st.cbegin(); i != st.cend(); ++i){
+        cout << " \0"[i == st.cbegin()];
         print(*i);
     }
     cout << " }";
@@ -111,8 +121,8 @@ template <typename type> void print(const multiset<type> &st){
 
 template <typename t1, typename t2> void print(const unordered_map<t1,t2> &umap){
     cout << "{ ";
-    for (auto i = umap.begin(); i != umap.end(); ++i){
-        cout << " \0"[i == umap.begin()] << "(";
+    for (auto i = umap.cbegin(); i != umap.cend(); ++i){
+        cout << " \0"[i == umap.cbegin()] << "(";
         print(i->first);
         cout << ":";
         print(i->second);
@@ -123,8 +133,32 @@ template <typename t1, typename t2> void print(const unordered_map<t1,t2> &umap)
 
 template <typename t1, typename t2> void print(const map<t1,t2> &mp){
     cout << "{ ";
-    for (auto i = mp.begin(); i != mp.end(); ++i){
-        cout << " \0"[i == mp.begin()] << "(";
+    for (auto i = mp.cbegin(); i != mp.cend(); ++i){
+        cout << " \0"[i == mp.cbegin()] << "(";
+        print(i->first);
+        cout << ":";
+        print(i->second);
+        cout << ")";
+    }
+    cout << " }";
+}
+
+template <typename t1, typename t2> void print(const unordered_multimap<t1,t2> &ummp){
+    cout << "{ ";
+    for (auto i = ummp.cbegin(); i != ummp.cend(); ++i){
+        cout << " \0"[i == ummp.cbegin()] << "(";
+        print(i->first);
+        cout << ":";
+        print(i->second);
+        cout << ")";
+    }
+    cout << " }";
+}
+
+template <typename t1, typename t2> void print(const multimap<t1,t2> &mmp){
+    cout << "{ ";
+    for (auto i = mmp.cbegin(); i != mmp.cend(); ++i){
+        cout << " \0"[i == mmp.cbegin()] << "(";
         print(i->first);
         cout << ":";
         print(i->second);
@@ -155,8 +189,8 @@ template <typename type> void print(queue<type> que){
 
 template <typename type> void print(const list<type> &lst){
     cout << "[ ";
-    for (auto i = lst.begin(); i != lst.end(); ++i){
-        cout << " \0"[i == lst.begin()];
+    for (auto i = lst.cbegin(); i != lst.cend(); ++i){
+        cout << " \0"[i == lst.cbegin()];
         print(*i);
     }
     cout << " ]";
@@ -164,8 +198,8 @@ template <typename type> void print(const list<type> &lst){
 
 template <typename type> void print(const forward_list<type> &flst){
     cout << "[";
-    for (auto i = flst.begin(); i != flst.end(); ++i){
-        cout << " \0"[i == flst.begin()];
+    for (auto i = flst.cbegin(); i != flst.cend(); ++i){
+        cout << " \0"[i == flst.cbegin()];
         print(*i);
     }
     cout << "]";
@@ -173,8 +207,8 @@ template <typename type> void print(const forward_list<type> &flst){
 
 template <typename type> void print(const deque<type> &deq){
     cout << "[ ";
-    for (auto i = deq.begin(); i != deq.end(); ++i){
-        cout << " \0"[i == deq.begin()];
+    for (auto i = deq.cbegin(); i != deq.cend(); ++i){
+        cout << " \0"[i == deq.cbegin()];
         print(*i);
     }
     cout << " ]";
