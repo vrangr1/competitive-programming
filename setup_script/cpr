@@ -28,7 +28,11 @@ if [ $command == debug ]; then
     g++ -std=c++20 -DLOCAL $file_loc -o $file -Wall -O2 -Wextra -Wno-sign-conversion -Wshadow -Wl,-stack_size -Wl,0x20000000
     exit
 fi
-g++ -std=c++20 -DLOCAL $file_loc -o $file -Wall -O2 -Wextra -Wno-sign-conversion -Wshadow -Wl,-stack_size -Wl,0x20000000
+if [ $command == final ]; then
+    g++ -std=c++20 $file_loc -o $file -Wall -O2 -Wextra -Wno-sign-conversion -Wshadow -Wl,-stack_size -Wl,0x20000000
+else
+    g++ -std=c++20 -DLOCAL $file_loc -o $file -Wall -O2 -Wextra -Wno-sign-conversion -Wshadow -Wl,-stack_size -Wl,0x20000000
+fi
 if test -f $file; then
     ./$file > $file.out
     echo "\noutput begins now:"
