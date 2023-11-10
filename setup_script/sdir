@@ -1,0 +1,8 @@
+## Script to setup input and output directories in the current folder
+
+file=$1
+if [[ $file == *.cpp ]]; then file=${file%".cpp"}; fi
+if ! test -f $file.cpp;then echo "${file}.cpp does not exist"; exit;fi
+
+mkdir -p input_$file
+mkdir -p output_$file

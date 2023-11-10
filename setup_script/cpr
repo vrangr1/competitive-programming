@@ -1,38 +1,55 @@
 ## Bash Script for compiling and/or running cpp files
 file=`basename $1 .cpp`
 rm -f $file $file.out
+
+# If file does not exist then exit
 file_loc=$1
-if [[ $file_loc != *.cpp ]]
-then
-    file_loc=${file_loc}.cpp
-fi
-if ! test -f $file_loc
-then
-    echo "${file_loc} does not exist"
-    exit 1
-fi
-function handle_ctrlc ()
-{
-    rm -f $file
-    rm -f $file.out
+if [[ $file_loc != *.cpp ]]; then file_loc=${file_loc}.cpp; fi
+if ! test -f $file_loc;then echo "${file_loc} does not exist"; exit;fi
+
+# Cleanup when forcefully exiting execution
+function handle_ctrlc () {
+    rm -f $file $file.out
+    rm -f in.ans
     exit
 }
 trap handle_ctrlc SIGINT
-command=${2:-0}
+
+
+## All flags:
+warnings="-Wall -Wextra -Wshadow"
 # stack size 0x20000000 is 512 MB (the max allowed by M1 Mac Air)
-if [ $command == compile ]; then
-    g++ -std=c++20 $file_loc -o $file -Wall -O2 -Wextra -Wno-sign-conversion -Wshadow -Wl,-stack_size -Wl,0x20000000
+flags="-O2 -D_GLIBCXX_ASSERTIONS -Wno-sign-conversion -Wl,-stack_size -Wl,0x20000000"
+debug="-DLOCAL"
+
+if [[ ${@:2} == *'silent'* ]]; then warnings="-w"; fi
+if [[ ${@:2} == *'compile'* || ${@:2} == *'final'* || ${@:2} == *'test'* ]]; then debug=""; fi
+
+
+# Compiling
+g++ -std=c++20 $file_loc -o $file $debug $warnings $flags
+
+# If only need to compile for separate running or debugging, then exit
+if [[ ${@:2} == *'compile'* || ${@:2} == *'debug'* ]]; then exit; fi
+
+if [[ ${@:2} == *'test'* ]]; then
+    if ( (! test -d input_$file) || (! test -d output_$file) ); then
+        sdir $file
+    fi
+    for input in input_$file/*.in; do
+        if [[ $input == "./input_$file/*.in" ]] ; then break; fi
+        echo $input
+        outfile=`basename $input`
+        outfile=${outfile%".in"}.ans
+        ./$file < $input > in.ans
+        diff -w in.ans output_$file/$outfile || break
+        rm -f in.ans
+    done
+    rm -f $file $file.out
     exit
 fi
-if [ $command == debug ]; then
-    g++ -std=c++20 -DLOCAL $file_loc -o $file -Wall -O2 -Wextra -Wno-sign-conversion -Wshadow -Wl,-stack_size -Wl,0x20000000
-    exit
-fi
-if [ $command == final ]; then
-    g++ -std=c++20 $file_loc -o $file -Wall -O2 -Wextra -Wno-sign-conversion -Wshadow -Wl,-stack_size -Wl,0x20000000
-else
-    g++ -std=c++20 -DLOCAL $file_loc -o $file -Wall -O2 -Wextra -Wno-sign-conversion -Wshadow -Wl,-stack_size -Wl,0x20000000
-fi
+
+# Finally run the program
 if test -f $file; then
     ./$file > $file.out
     echo "\noutput begins now:"

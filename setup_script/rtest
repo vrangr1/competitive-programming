@@ -1,53 +1,55 @@
 ## Script to test the solution against brute force solution with generator cpp providing the inputs
 set -e
 opt_sol=${1:-"opt_sol"}
-brute_force=${2:-"brute_force"}
-generator=${3-"generator"}
-if [[ $opt_sol == *.cpp ]]
-then
-    opt_sol=${opt_sol%".cpp"}
-fi
-if [[ $brute_force == *.cpp ]]
-then
-    brute_force=${brute_force%".cpp"}
-fi
-if [[ $generator == *.cpp ]]
-then
-    generator=${generator%".cpp"}
-fi
-if ! test -f ../${opt_sol}.cpp
-then
-    echo "${opt_sol}.cpp does not exist"
-    exit 1
-fi
-if ! test -f ${brute_force}.cpp
-then
-    echo "${brute_force}.cpp does not exist"
-    exit 1
-fi
-if ! test -f ${generator}.cpp
-then
-    echo "${generator}.cpp does not exist"
-    exit 1
-fi
-function handle_ctrlc()
-{
+checker=${2:-"not"}
+brute_force=${3:-"brute_force"}
+generator=${4:-"generator"}
+
+function fixname {
+    local file=$1
+    if [[ $file == *.cpp ]]; then file=${file%".cpp"}; fi
+    echo $file
+}
+opt_sol=$(fixname $opt_sol)
+checker=$(fixname $checker)
+brute_force=$(fixname $brute_force)
+generator=$(fixname $generator)
+
+function exists {
+    if ! test -f $2/$1.cpp; then echo "$1.cpp does not exist"; exit 1; fi
+}
+exists $opt_sol ..
+if [[ $checker != "not" ]]; then exists $checker ; fi
+exists $brute_force
+exists $generator
+
+function handle_ctrlc(){
     rm -f $generator
     rm -f $brute_force
     rm -f $opt_sol
     exit
 }
 trap handle_ctrlc SIGINT
+
 echo "Testing ${opt_sol}.cpp against ${brute_force}.cpp with ${generator}.cpp"
-cmc $generator.cpp compile
-cmc ../$opt_sol.cpp compile
-cmc $brute_force.cpp compile
+
+cpr ../$opt_sol.cpp compile
+if [[ $checker != "not" ]]; then cpr $checker.cpp compile; fi
+cpr $brute_force.cpp compile
+cpr $generator.cpp compile
+
 for((i=1;;++i));do
     echo $i
     # Call generator and pipe to input
     ./$generator > input
     ./$opt_sol < input > out1
     ./$brute_force < input > out2
+    if [[ $checker != "not" ]]; then
+        cat input out1 > in1
+        cat input out2 > in2
+        ./$checker < in1 > out1
+        ./$checker < in2 > out2
+    fi
     diff -w out1 out2 || break
 done
 handle_ctrlc
