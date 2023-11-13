@@ -20,8 +20,8 @@ function exists {
 }
 exists $opt_sol ..
 if [[ $checker != "not" ]]; then exists $checker ; fi
-exists $brute_force
-exists $generator
+exists $brute_force .
+exists $generator .
 
 function handle_ctrlc(){
     rm -f $generator

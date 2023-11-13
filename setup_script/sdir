@@ -1,4 +1,5 @@
 ## Script to setup input and output directories in the current folder
+#!/bin/bash
 
 file=$1
 if [[ $file == *.cpp ]]; then file=${file%".cpp"}; fi
@@ -6,3 +7,5 @@ if ! test -f $file.cpp;then echo "${file}.cpp does not exist"; exit;fi
 
 mkdir -p input_$file
 mkdir -p output_$file
+mv *.in input_$file/ 2> /dev/null
+mv *.ans output_$file/ 2> /dev/null

@@ -1,13 +1,6 @@
-## Bash Script for compiling and/or running cpp files
-file=`basename $1 .cpp`
-rm -f $file $file.out
+# Bash Script for compiling and/or running cpp files
 
-# If file does not exist then exit
-file_loc=$1
-if [[ $file_loc != *.cpp ]]; then file_loc=${file_loc}.cpp; fi
-if ! test -f $file_loc;then echo "${file_loc} does not exist"; exit;fi
-
-# Cleanup when forcefully exiting execution
+## Cleanup when forcefully exiting execution
 function handle_ctrlc () {
     rm -f $file $file.out
     rm -f in.ans
@@ -15,32 +8,130 @@ function handle_ctrlc () {
 }
 trap handle_ctrlc SIGINT
 
-
 ## All flags:
 warnings="-Wall -Wextra -Wshadow"
-# stack size 0x20000000 is 512 MB (the max allowed by M1 Mac Air)
+### stack size 0x20000000 is 512 MB (the max allowed by M1 Mac Air)
 flags="-O2 -D_GLIBCXX_ASSERTIONS -Wno-sign-conversion -Wl,-stack_size -Wl,0x20000000"
 debug="-DLOCAL"
 
-if [[ ${@:2} == *'silent'* ]]; then warnings="-w"; fi
-if [[ ${@:2} == *'compile'* || ${@:2} == *'final'* || ${@:2} == *'test'* ]]; then debug=""; fi
+## Modes:
+compile_mode=false
+debug_mode=false
+final_mode=false
+test_mode=false
+gather_mode=false
+help=false
 
+POSITIONAL_ARGS=()
+
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    -c|--compile)
+        compile_mode=true
+        debug=""
+        shift # past argument
+        # shift # past value
+        ;;
+    -d|--debug)
+        debug_mode=true
+        debug="-DLOCAL"
+        shift # past argument
+        ;;
+    -s|--silent)
+        ## Silencing warnings
+        warnings="-w"
+        shift # past argument
+        ;;
+    -f|--final)
+        final_mode=true
+        debug=""
+        shift # past argument
+        ;;
+    -t|--test)
+        test_mode=true
+        debug=""
+        shift # past argument
+        ;;
+    -g|--gather)
+        gather_mode=true
+        debug=""
+        shift # past argument
+        ;;
+    -h|--help)
+        help=true
+        shift # past argument
+        ;;
+    -*|--*)
+        echo "Unknown option $1"
+        cpr -h
+        exit
+        ;;
+    *)
+        POSITIONAL_ARGS+=("$1") # save positional arg
+        shift # past argument
+        ;;
+  esac
+done
+
+if [[ "$help" == true ]]; then
+    echo "\033[1mUsage:\033[1;31m cpr [options] <file_name>\033[0m"
+    echo "\033[1mfile_name\033[0m assumes the extension .cpp if not given."
+    echo "\033[1mOptions:"
+    echo " \033[1;31m -c, --compile\033[0m  \033[1m Compile the file"
+    echo " \033[1;31m -d, --debug\033[0m    \033[1m Compile the file with debug flag"
+    echo " \033[1;31m -s, --silent\033[0m   \033[1m Silences compilation warnings"
+    echo " \033[1;31m -f, --final\033[0m    \033[1m Compile and run the file without the debug flag"
+    echo " \033[1;31m -t, --test\033[0m     \033[1m Compile the file and run it against the saved test cases"
+    echo " \033[1;31m -g, --gather\033[0m   \033[1m Compile the file and run it. Save the input file for future testing. Ask for the output and save it too."
+    echo " \033[1;31m -h, --help\033[0m     \033[1m Display this help message\033[0m"
+    exit
+fi
+
+set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
+
+## File name and location
+if [[ $# -eq 0 ]]; then file="file"; file_loc="file.cpp";
+else file=`basename $1 .cpp`; file_loc=$1; fi
+rm -f $file $file.out
+
+# If file does not exist then exit
+if [[ $file_loc != *.cpp ]]; then file_loc=${file_loc}.cpp; fi
+if ! test -f $file_loc; then echo "${file_loc} does not exist"; exit; fi
+
+if [[ "$compile_mode" == true && ( "$debug_mode" == true || "$final_mode" == true || "$test_mode" == true || "$gather_mode" == true ) ]]; then
+    echo "Can't pass the\033[1;31m compile\033[0m option with any of\033[1;31m debug/final/test/gather\033[0m options at the same time."
+    exit
+fi
+
+if [[ "$final_mode" == true && ( "$test_mode" == true || "$gather_mode" == true || "$debug" != "" ) ]]; then
+    echo "Can't pass the\033[1;31m final\033[0m option with any of\033[1;31m compile/test/gather/debug\033[0m options at the same time."
+    exit
+fi
+
+if [[ "$test_mode" == true && ( "$gather_mode" == true || "$debug" != "" )]]; then
+    echo "Can't pass the\033[1;31m test\033[0m option with any of\033[1;31m compile/debug/final/gather\033[0m options at the same time."
+    exit
+fi
 
 # Compiling
 g++ -std=c++20 $file_loc -o $file $debug $warnings $flags
 
-# If only need to compile for separate running or debugging, then exit
-if [[ ${@:2} == *'compile'* || ${@:2} == *'debug'* ]]; then exit; fi
+## If only need to compile, then exit
+if [[ "$compile_mode" == true || "$debug_mode" == true ]]; then exit; fi
 
-if [[ ${@:2} == *'test'* ]]; then
-    if ( (! test -d input_$file) || (! test -d output_$file) ); then
-        sdir $file
-    fi
+## Testing Mode:
+if [[ "$test_mode" == true ]]; then
+    if ( (! test -d input_$file) || (! test -d output_$file) ); then sdir $file; fi
+    
     for input in input_$file/*.in; do
-        if [[ $input == "./input_$file/*.in" ]] ; then break; fi
+        if [[ $input == "input_$file/*.in" ]] ; then echo "No inputs found."; break; fi
         echo $input
         outfile=`basename $input`
         outfile=${outfile%".in"}.ans
+        if ! test -f output_$file/$outfile; then
+            echo "Output file $outfile does not exist for $input. Skipping..."
+            continue
+        fi
         ./$file < $input > in.ans
         diff -w in.ans output_$file/$outfile || break
         rm -f in.ans
@@ -49,7 +140,36 @@ if [[ ${@:2} == *'test'* ]]; then
     exit
 fi
 
-# Finally run the program
+## Gathering Mode:
+if [[ "$gather_mode" == true ]]
+then
+    input=$(sed '/^$/q')
+    if ! test -f ${file}0.in
+    then 
+        if ! test -d input_${file}; then ct="0";
+        elif ! test -f input_${file}/${file}0.in; then
+            ct="0";
+        else
+            ct=`ls input_${file}/${file}*.in | wc -l`
+        fi
+    else
+        ct=`ls ${file}*.in | wc -l`
+    fi
+    ct="$(sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//'<<<"$ct")"
+    echo "$input" > $file$ct.in
+    ./$file < $file$ct.in > $file.out
+    echo "my output begins now:"
+    cat $file.out
+    echo "\nInput the correct output:"
+    output=$(sed '/^$/q')
+    echo "$output" > $file$ct.ans
+    diff -w $file.out $file$ct.ans || echo "Output does not match."
+    sdir $file
+    rm -f $file $file.out
+    exit
+fi
+
+## Finally run the program
 if test -f $file; then
     ./$file > $file.out
     echo "\noutput begins now:"

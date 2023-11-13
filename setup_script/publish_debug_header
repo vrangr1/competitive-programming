@@ -1,2 +1,2 @@
 ## Publishes the updated debug header file
-sudo cp /Users/anavp/home/acads/competitive-coding/algo/debug.hpp /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/algo/debug.hpp
+sudo cp /Users/anavp/home/coding/competitive-programming/algo/debug.hpp /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/algo/debug.hpp

@@ -21,7 +21,7 @@ fi
 echo "Setting up testing folder for ${opt_sol} as ${folder_name}"
 mkdir -p $folder_name
 cd $folder_name
-cp -n /Users/anavp/home/acads/competitive-coding/algo/generator.cpp ./
-cp -n /Users/anavp/home/acads/competitive-coding/algo/brute_force.cpp ./
+cp -n /Users/anavp/home/coding/competitive-programming/algo/generator.cpp ./
+cp -n /Users/anavp/home/coding/competitive-programming/algo/brute_force.cpp ./
 code brute_force.cpp
 code generator.cpp
