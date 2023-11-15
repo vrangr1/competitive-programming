@@ -77,13 +77,13 @@ if [[ "$help" == true ]]; then
     echo "\033[1mUsage:\033[1;31m cpr [options] <file_name>\033[0m"
     echo "\033[1mfile_name\033[0m assumes the extension .cpp if not given."
     echo "\033[1mOptions:"
-    echo " \033[1;31m -c, --compile\033[0m  \033[1m Compile the file"
-    echo " \033[1;31m -d, --debug\033[0m    \033[1m Compile the file with debug flag"
-    echo " \033[1;31m -s, --silent\033[0m   \033[1m Silences compilation warnings"
-    echo " \033[1;31m -f, --final\033[0m    \033[1m Compile and run the file without the debug flag"
-    echo " \033[1;31m -t, --test\033[0m     \033[1m Compile the file and run it against the saved test cases"
-    echo " \033[1;31m -g, --gather\033[0m   \033[1m Compile the file and run it. Save the input file for future testing. Ask for the output and save it too."
-    echo " \033[1;31m -h, --help\033[0m     \033[1m Display this help message\033[0m"
+    echo " \033[1;31m -c, --compile\033[0m  Compile the file"
+    echo " \033[1;31m -d, --debug\033[0m    Compile the file with debug flag"
+    echo " \033[1;31m -s, --silent\033[0m   Silences compilation warnings"
+    echo " \033[1;31m -f, --final\033[0m    Compile and run the file without the debug flag"
+    echo " \033[1;31m -t, --test\033[0m     Compile the file and run it against the saved test cases"
+    echo " \033[1;31m -g, --gather\033[0m   Compile the file and run it. Save the input file for future testing. Ask for the output and save it too."
+    echo " \033[1;31m -h, --help\033[0m     Display this help message\033[0m"
     exit
 fi
 
