@@ -66,18 +66,45 @@ int main(){
 	return 0;
 }
 
+void print_answer(const string &w1, const string &w2, const char ch, const int k){
+    int i1 = 0, i2 = 0;
+    int enc = 0, target = k/10;
+    while(i1 < k && i2 < k && enc < target){
+        if (w1[i1] != ch){
+            cout << w1[i1++];
+            continue;
+        }
+        if (w2[i2] != ch){
+            cout << w2[i2++];
+            continue;
+        }
+        cout << ch;
+        enc++;
+        i1++;
+        i2++;
+    }
+    cout << w1.substr(i1) << w2.substr(i2) << endl;
+}
+
 void solve(){
     int k; cin >> k;
     vector<string> words(20);
     rep(i,20) cin >> words[i];
+    vector<vector<int>> cts(20,vector<int>(10,0));
     rep(i,20){
-        unordered_set<char> uset(all(words[i]));
+        for (char ch : words[i])
+            cts[i][(int)(ch-'0')]++;
+    }
+    rep(i,20){
+        unordered_set<char> uset;
+        rep(j,10)
+            if (cts[i][j] >= (k/10)) uset.insert((char)(j+'0'));
         rep(j,i+1,19,1){
-            rep(l,k){
-                if (uset.find(words[j][l]) != uset.end()){
-                    cout << words[j].substr(0,l) << words[i] << words[j].substr(l+1) << endl;
-                    return;
-                }
+            rep(l, 10){
+                char curchar = (char)(l+'0');
+                if (cts[j][l] < (k/10) || uset.find(curchar) == uset.end()) continue;
+                print_answer(words[i],words[j], curchar, k);
+                return;
             }
         }
     }

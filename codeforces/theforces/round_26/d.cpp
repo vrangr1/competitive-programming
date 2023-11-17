@@ -91,10 +91,10 @@ void sieve(){
 }
 
 void solve(){
-    // sieve();
+    sieve();
     int x, y; cin >> x >> y;
     int s = x+y;
-    if(s%2){
-        // if (s == 1) 
+    if (prime[s]){
+        
     }
 }
