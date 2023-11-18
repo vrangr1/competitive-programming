@@ -93,31 +93,24 @@ void solve(){
         x = mapping[x];
         queries[x].push_back({l,r,i});
     }
-    // vector<int> enc;
-    // set<int> enc;
     int root = mapping[0];
     vector<bool> sol(q,false);
-    // vector<int>::iterator iter;
     set<int>::iterator iter;
     auto dfs = [&](auto self, const int &node, const int parent) -> set<int>{
         set<int> enc, temp;
         for (int ngb : edges[node]){
             if (ngb == parent) continue;
             temp = self(self,ngb,node);
+            if (sz(temp) > sz(enc)) swap(enc,temp);
             enc.insert(all(temp));
         }
-        // enc.push_back(node);
         enc.insert(node);
-        debug(node,enc,queries[node]);
         for (const vector<int> &query : queries[node]){
-            // iter = lower_bound(all(enc), query[0]);
             iter = enc.lower_bound(query[0]);
-            if (iter == enc.end() || *iter > query[1]){
+            if (iter == enc.end() || *iter > query[1])
                 sol[query[2]] = false;
-            }
-            else{
+            else
                 sol[query[2]] = true;
-            }
         }
         return enc;
     };
@@ -128,31 +121,3 @@ void solve(){
     }
     cout << endl;
 }
-
-
-/*
-
-1
-10 10
-2 6
-2 7
-2 4
-1 7
-2 8
-10 6
-8 5
-9 4
-3 4
-10 2 5 9 1 7 6 4 3 8
-8 9 8
-7 8 1
-7 10 6
-4 8 9
-5 5 10
-7 10 1
-9 9 2
-9 10 6
-6 6 2
-10 10 6
-
-*/
