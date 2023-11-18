@@ -44,6 +44,7 @@ template <typename t1, typename t2> void print(pair<t1,t2> *p);
 template <typename type> void print(const vector<type> &vec);
 template <typename type> void print(const unordered_set<type> &uset);
 template <typename type> void print(const set<type> &uset);
+template <typename type> void print(const unordered_multiset<type> &umset);
 template <typename type> void print(const multiset<type> &mset);
 template <typename t1, typename t2> void print(const unordered_map<t1,t2> &umap);
 template <typename t1, typename t2> void print(const map<t1,t2> &mp);
@@ -105,6 +106,15 @@ template <typename type> void print(const set<type> &st){
     cout << "{ ";
     for (auto i = st.cbegin(); i != st.cend(); ++i){
         cout << " \0"[i == st.cbegin()];
+        print(*i);
+    }
+    cout << " }";
+}
+
+template <typename type> void print(const unordered_multiset<type> &umset){
+    cout << "{ ";
+    for (auto i = umset.cbegin(); i != umset.cend(); ++i){
+        cout << " \0"[i == umset.cbegin()];
         print(*i);
     }
     cout << " }";
