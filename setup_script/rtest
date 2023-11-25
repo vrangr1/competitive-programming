@@ -33,10 +33,10 @@ trap handle_ctrlc SIGINT
 
 echo "Testing ${opt_sol}.cpp against ${brute_force}.cpp with ${generator}.cpp"
 
-cpr ../$opt_sol.cpp compile
+cpr ../$opt_sol.cpp --compile
 if [[ $checker != "not" ]]; then cpr $checker.cpp compile; fi
-cpr $brute_force.cpp compile
-cpr $generator.cpp compile
+cpr $brute_force.cpp --compile
+cpr $generator.cpp --compile
 
 for((i=1;;++i));do
     echo $i

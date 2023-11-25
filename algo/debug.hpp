@@ -43,12 +43,16 @@ template <typename t1, typename t2> void print(const pair<t1, t2> &p);
 template <typename t1, typename t2> void print(pair<t1,t2> *p);
 template <typename type> void print(const vector<type> &vec);
 template <typename type> void print(const unordered_set<type> &uset);
+template <typename t1, typename t2> void print(const unordered_set<t1,t2> &uset);
 template <typename type> void print(const set<type> &uset);
 template <typename type> void print(const unordered_multiset<type> &umset);
+template <typename t1, typename t2> void print(const unordered_multiset<t1,t2> &umset);
 template <typename type> void print(const multiset<type> &mset);
 template <typename t1, typename t2> void print(const unordered_map<t1,t2> &umap);
+template <typename t1, typename t2, typename t3> void print(const unordered_map<t1,t2,t3> &umap);
 template <typename t1, typename t2> void print(const map<t1,t2> &mp);
 template <typename t1, typename t2> void print(const unordered_multimap<t1,t2> &ummp);
+template <typename t1, typename t2, typename t3> void print(const unordered_multimap<t1,t2,t3> &ummp);
 template <typename t1, typename t2> void print(const multimap<t1,t2> &mmp);
 template <typename type> void print(stack<type> stck);
 template <typename type> void print(queue<type> que);
@@ -102,6 +106,15 @@ template <typename type> void print(const unordered_set<type> &uset){
     cout << " }";
 }
 
+template <typename t1, typename t2> void print(const unordered_set<t1,t2> &uset){
+    cout << "{ ";
+    for (auto i = uset.cbegin(); i != uset.cend(); ++i){
+        cout << " \0"[i == uset.cbegin()];
+        print(*i);
+    }
+    cout << " }";
+}
+
 template <typename type> void print(const set<type> &st){
     cout << "{ ";
     for (auto i = st.cbegin(); i != st.cend(); ++i){
@@ -112,6 +125,15 @@ template <typename type> void print(const set<type> &st){
 }
 
 template <typename type> void print(const unordered_multiset<type> &umset){
+    cout << "{ ";
+    for (auto i = umset.cbegin(); i != umset.cend(); ++i){
+        cout << " \0"[i == umset.cbegin()];
+        print(*i);
+    }
+    cout << " }";
+}
+
+template <typename t1, typename t2> void print(const unordered_multiset<t1,t2> &umset){
     cout << "{ ";
     for (auto i = umset.cbegin(); i != umset.cend(); ++i){
         cout << " \0"[i == umset.cbegin()];
@@ -141,6 +163,18 @@ template <typename t1, typename t2> void print(const unordered_map<t1,t2> &umap)
     cout << " }";
 }
 
+template <typename t1, typename t2, typename t3> void print(const unordered_map<t1,t2,t3> &umap){
+    cout << "{ ";
+    for (auto i = umap.cbegin(); i != umap.cend(); ++i){
+        cout << " \0"[i == umap.cbegin()] << "(";
+        print(i->first);
+        cout << ":";
+        print(i->second);
+        cout << ")";
+    }
+    cout << " }";
+}
+
 template <typename t1, typename t2> void print(const map<t1,t2> &mp){
     cout << "{ ";
     for (auto i = mp.cbegin(); i != mp.cend(); ++i){
@@ -154,6 +188,18 @@ template <typename t1, typename t2> void print(const map<t1,t2> &mp){
 }
 
 template <typename t1, typename t2> void print(const unordered_multimap<t1,t2> &ummp){
+    cout << "{ ";
+    for (auto i = ummp.cbegin(); i != ummp.cend(); ++i){
+        cout << " \0"[i == ummp.cbegin()] << "(";
+        print(i->first);
+        cout << ":";
+        print(i->second);
+        cout << ")";
+    }
+    cout << " }";
+}
+
+template <typename t1, typename t2, typename t3> void print(const unordered_multimap<t1,t2,t3> &ummp){
     cout << "{ ";
     for (auto i = ummp.cbegin(); i != ummp.cend(); ++i){
         cout << " \0"[i == ummp.cbegin()] << "(";

@@ -99,7 +99,9 @@
         "compare": "cpp",
         "concepts": "cpp",
         "numeric": "cpp",
-        "ranges": "cpp"
+        "ranges": "cpp",
+        "hash_map": "cpp",
+        "climits": "cpp"
     },
     "C_Cpp.default.compilerPath": "/usr/bin/cpp"
 }
