@@ -3,11 +3,9 @@
 * Nick   : vrangr
 ****************************************************/
 #include <iostream>
-#include <fstream>
 #include <vector>
 #include <string.h>
 #include <ctype.h>
-#include <unordered_set>
 #include <set>
 #include <stdlib.h>
 #include <map>
@@ -21,7 +19,6 @@
 #include <stack>
 #include <list>
 #include <forward_list>
-#include <unordered_map>
 #include <bit>
 #include <bitset>
 #include <random>
@@ -56,6 +53,10 @@ typedef __int128_t i128;
 #define pass (void)0
 template<typename type>inline void print_vec(const vector<type> &v){rep(i,sz(v))cout<<v[i]<<" \n"[i==sz(v)-1];}
 void solve();
+
+// IMPORT SNIPPETS HERE
+
+// END OF SNIPPETS
 
 int main(){
 	fastIO;
