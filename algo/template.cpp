@@ -1,6 +1,6 @@
 /***************************************************
-* AUTHOR : Anav Prasad
-* Nick   : vrangr
+* AUTHOR  : Anav Prasad
+* Nick    : vrangr
 ****************************************************/
 #include <iostream>
 #include <vector>

@@ -11,6 +11,10 @@ then
     exit 1
 fi
 echo "Setup file: $file_name"
-echo "$(date)"
+created=$(date)
+echo $created
 cp /Users/anavp/home/coding/competitive-programming/algo/template.cpp $file_name
+sed -i '' '4i\
+* Created : '"${created}"'\
+' $file_name
 code $file_name
