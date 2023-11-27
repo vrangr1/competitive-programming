@@ -1,6 +1,7 @@
 /***************************************************
 * Author  : Anav Prasad
 * Nick    : vrangr
+* Created : Mon Nov 27 22:06:11 IST 2023
 ****************************************************/
 #include <iostream>
 #include <vector>
@@ -66,6 +67,45 @@ int main(){
 	return 0;
 }
 
+ll get_diff(ll a, ll b, ll x){
+    a+=x;
+    b+=x;
+    a>>=1ll;
+    b>>=1ll;
+    return llabs(a-b);
+}
+
 void solve(){
-    
+    ll n; cin >> n;
+    ll og = n;
+    vector<ll> a(n);
+    rep(i,n) cin >> a[i];
+    sort(all(a));
+    ll ct = 0, cur = 0;
+    vector<ll> ops;
+    while(a.front() < a.back()){
+        if (get_diff(a.front(),a.back(),0ll) <= get_diff(a.front(),a.back(),1ll)){
+            cur++;
+            a.front()>>=1ll;
+            a.back()>>=1ll;
+            if (ct+cur <= og)
+                ops.push_back(0);
+            continue;
+        }
+        else{
+            a.front()++;
+            a.back()++;
+            a.front()>>=1ll;
+            a.back()>>=1ll;
+            ct+=cur;
+            cur = 0ll;
+            if (ct < og) ops.push_back(1);
+            ct++;
+        }
+    }
+    ct += cur;
+    debug(a.front(),a.back());
+    assert(a.front() == a.back());
+    cout << ct << endl;
+    if (ct <= n) print_vec(ops);
 }
