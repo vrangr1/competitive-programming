@@ -21,6 +21,7 @@
 #include <forward_list>
 #include <bit>
 #include <bitset>
+#include <array>
 #include <assert.h>
 #define debug(...) 42
 #ifdef LOCAL
