@@ -72,6 +72,23 @@ void solve(){
     ll n; cin >> n;
     vector<ll> v(n);
     rep(i,n) cin >> v[i];
+    vector<ll> vs(all(v));
+    sort(all(vs));
+    vector<ll> a(n), s(n);
+    partial_sum(all(v),a.begin());
+    partial_sum(all(vs),s.begin());
+    ll m; cin >> m;
+    while(m--){
+        ll t, l, r; cin >> t >> l >> r; --l; --r;
+        if (t == 1) cout << a[r]-(l>0?a[l-1]:0ll) << endl;
+        else cout << s[r] - (l>0?s[l-1]:0ll) << endl;
+    }
+}
+
+void solve1(){ // SQRT DECOMP SOLUTION. Not actually needed...
+    ll n; cin >> n;
+    vector<ll> v(n);
+    rep(i,n) cin >> v[i];
     ll m; cin >> m;
     ll len = sqrt(n) + 1ll;
     vector<ll> s(len, 0ll), c(len,0ll);
