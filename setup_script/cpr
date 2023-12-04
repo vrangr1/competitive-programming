@@ -20,6 +20,7 @@ debug_mode=false
 final_mode=false
 test_mode=false
 gather_mode=false
+input_test_mode=false
 help=false
 
 POSITIONAL_ARGS=()
@@ -52,6 +53,10 @@ while [[ $# -gt 0 ]]; do
         debug=""
         shift # past argument
         ;;
+    -r|--run)
+        input_test_mode=true
+        shift # past argument
+        ;;
     -g|--gather)
         gather_mode=true
         debug=""
@@ -82,6 +87,7 @@ if [[ "$help" == true ]]; then
     echo " \033[1;31m -s, --silent\033[0m   Silences compilation warnings"
     echo " \033[1;31m -f, --final\033[0m    Compile and run the file without the debug flag"
     echo " \033[1;31m -t, --test\033[0m     Compile the file and run it against the saved test cases"
+    echo " \033[1;31m -r, --run\033[0m      Compile the file and run it against a particular saved test case"
     echo " \033[1;31m -g, --gather\033[0m   Compile the file and run it. Save the input file for future testing. Ask for the output and save it too."
     echo " \033[1;31m -h, --help\033[0m     Display this help message\033[0m"
     exit
@@ -98,8 +104,8 @@ rm -f $file $file.out
 if [[ $file_loc != *.cpp ]]; then file_loc=${file_loc}.cpp; fi
 if ! test -f $file_loc; then echo "${file_loc} does not exist"; exit; fi
 
-if [[ "$compile_mode" == true && ( "$debug_mode" == true || "$final_mode" == true || "$test_mode" == true || "$gather_mode" == true ) ]]; then
-    echo "Can't pass the\033[1;31m compile\033[0m option with any of\033[1;31m debug/final/test/gather\033[0m options at the same time."
+if [[ "$compile_mode" == true && ( "$debug_mode" == true || "$final_mode" == true || "$test_mode" == true || "$gather_mode" == true || "$input_test_mode" == true ) ]]; then
+    echo "Can't pass the\033[1;31m compile\033[0m option with any of\033[1;31m debug/final/test/run/gather\033[0m options at the same time."
     exit
 fi
 
@@ -108,9 +114,25 @@ if [[ "$final_mode" == true && ( "$test_mode" == true || "$gather_mode" == true 
     exit
 fi
 
-if [[ "$test_mode" == true && ( "$gather_mode" == true || "$debug" != "" )]]; then
-    echo "Can't pass the\033[1;31m test\033[0m option with any of\033[1;31m compile/debug/final/gather\033[0m options at the same time."
+if [[ "$test_mode" == true && ( "$input_test_mode" == true || "$gather_mode" == true || "$debug" != "" )]]; then
+    echo "Can't pass the\033[1;31m test\033[0m option with any of\033[1;31m compile/debug/run/final/gather\033[0m options at the same time."
     exit
+fi
+
+if [[ "$input_test_mode" == true && ( "$gather_mode" == true )]]; then
+    echo "Can't pass the\033[1;31m run\033[0m option with\033[1;31m gather\033[0m option at the same time."
+    exit
+fi
+
+## Run on a particular test case:
+if [[ "$input_test_mode" == true ]]; then
+    read -r -p "Enter the test case index: " test_case
+    input=input_$file/${file}${test_case}.in
+    if ! test -f "$input"; then
+        echo "$input not found"
+        rm -f $file $file.out
+        exit
+    fi
 fi
 
 # Compiling
@@ -141,6 +163,17 @@ if [[ "$test_mode" == true ]]; then
         diff -w in.ans output_$file/$outfile || break
         rm -f in.ans
     done
+    rm -f $file $file.out
+    exit
+fi
+
+## Run on a particular test case:
+if [[ "$input_test_mode" == true ]]; then
+    echo $input
+    cat $input
+    ./$file < $input > $file.out
+    echo "\noutput begins now:"
+    cat $file.out
     rm -f $file $file.out
     exit
 fi
