@@ -1,5 +1,5 @@
 ## Script to test the solution against brute force solution with generator cpp providing the inputs
-set -e
+
 opt_sol=${1:-"opt_sol"}
 checker=${2:-"not"}
 brute_force=${3:-"brute_force"}
@@ -52,4 +52,25 @@ for((i=1;;++i));do
     fi
     diff -w out1 out2 || break
 done
+function copy_input {
+    file=$1
+    if [[ $2 == ".." ]]; then
+        cp -n input $2/
+        cp -n out2 $2/
+    fi
+    cd $2
+    sdir $file
+    if ! test -f input_${file}/${file}0.in; then
+        ct="0";
+    else
+        ct=`ls input_${file}/${file}*.in | wc -l`
+    fi
+    ct="$(sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//'<<<"$ct")"
+    mv input input_$file/$file$ct.in
+    mv out2 output_$file/$file$ct.ans
+}
+copy_input $opt_sol ..
+cd test_$opt_sol
+copy_input $brute_force .
+rm out1
 handle_ctrlc
