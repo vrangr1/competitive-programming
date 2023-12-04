@@ -126,8 +126,23 @@ fi
 
 ## Run on a particular test case:
 if [[ "$input_test_mode" == true ]]; then
+    if ( (! test -d input_$file) ); then
+        echo "Input directory doesn't exist"
+        exit
+    fi
+    ct=$(ls input_$file/ | wc -l)
+    ct="$(sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//'<<<"$ct")"
+    if [[ $ct == "0" ]]; then
+        echo "Input directory is empty."
+        exit
+    fi
     read -r -p "Enter the test case index: " test_case
-    input=input_$file/${file}${test_case}.in
+    if [[ "$test_case" == "l" || "$test_case" == "last" ]]; then
+        input=$(ls input_$file/ | sort -V | tail -n 1)
+        input="input_$file/$input"
+    else
+        input=input_$file/${file}${test_case}.in
+    fi
     if ! test -f "$input"; then
         echo "$input not found"
         rm -f $file $file.out
