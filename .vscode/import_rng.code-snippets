@@ -1,5 +1,5 @@
 {
-    "Import RNG": {
+    "RNG Snippet": {
         "prefix": "import_rng",
         "body": [
           "#ifndef RANDOM_SNIPPET",

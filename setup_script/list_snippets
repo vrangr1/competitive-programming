@@ -1,4 +1,7 @@
 
 echo "\033[1mList of snippets are as follows:\033[0m"
-echo " \033[1;31m import_rng \033[0m  mt19937 rng"
-echo " \033[1;31m import_hash \033[0m Anti collision unordered_set and maps"
+echo " \033[1;31m import_hash \033[0m  Hash Set/Map Snippet"
+echo " \033[1;31m import_rng \033[0m   mt19937 rng"
+echo " \033[1;31m import_ftree \033[0m Fenwick Tree Snippet"
+echo " \033[1;31m import_dsu \033[0m   Disjoint Set Union Snippet"
+echo " \033[1;31m import_sqrt \033[0m  Integer SQRT Snippet"

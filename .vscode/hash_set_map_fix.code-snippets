@@ -1,5 +1,5 @@
 {
-  "Unordered Map fix": {
+  "Hash Set/Map Snippet": {
     "prefix": "import_hash",
     "body": [
       "#ifndef IMPORT_HASH_SET_SNIPPET",
