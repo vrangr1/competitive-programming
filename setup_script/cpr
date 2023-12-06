@@ -9,7 +9,7 @@ function handle_ctrlc () {
 trap handle_ctrlc SIGINT
 
 ## All flags:
-warnings="-Wall -Wextra -Wshadow"
+warnings="-Wall -Wextra -Wshadow -Wfloat-equal -Wconversion -pedantic"
 ### stack size 0x20000000 is 512 MB (the max allowed by M1 Mac Air)
 flags="-O2 -D_GLIBCXX_ASSERTIONS -Wno-sign-conversion -Wl,-stack_size -Wl,0x20000000"
 debug="-DLOCAL"
