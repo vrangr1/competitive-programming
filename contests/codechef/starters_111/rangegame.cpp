@@ -82,7 +82,26 @@ void solve(){
         ct++;
     }
     temp = pr(p,ct);
+    if (ct == 0ll) return void(cout << "Second\n");
     ct = (r/temp) - ((l-1ll)/temp);
+    debug(temp,ct);
     if (ct%2ll) return void(cout << "First\n");
     cout << "Second\n";
 }
+
+/*
+
+207 273 5
+210 215 220 225 230 235 240 245 250 255 260 265 270
+42 43 44 45 46 47 48 49 50 51 52 53 54
+1 1 1 2 1 1 1 1 3 1 1 1 1
+11 x 1
+1 x 2
+1 x 3
+
+11 x 1
+2 x 2
+
+12 x 1
+// 2 x 1
+*/
