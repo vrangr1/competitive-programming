@@ -35,8 +35,8 @@ function handle_ctrlc()
 trap handle_ctrlc SIGINT
 # trap timed_out SIGTERM
 echo "Testing ${opt_sol}.cpp with ${generator}.cpp for TLE"
-cmc $generator.cpp compile
-cmc ../$opt_sol.cpp compile
+cpr $generator.cpp --compile
+cpr ../$opt_sol.cpp --compile
 for((i=1;;++i));do
     echo $i
     # Call generator and pipe to input
