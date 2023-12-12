@@ -27,6 +27,7 @@ function handle_ctrlc(){
     rm -f $generator
     rm -f $brute_force
     rm -f $opt_sol
+    rm -f input out1 out2
     exit
 }
 trap handle_ctrlc SIGINT

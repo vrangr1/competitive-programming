@@ -140,8 +140,10 @@ if [[ "$input_test_mode" == true ]]; then
     if [[ "$test_case" == "l" || "$test_case" == "last" ]]; then
         input=$(ls input_$file/ | sort -V | tail -n 1)
         input="input_$file/$input"
+        outfile="output_$file/`basename $input .in`.ans"
     else
         input=input_$file/${file}${test_case}.in
+        outfile=output_$file/${file}${test_case}.ans
     fi
     if ! test -f "$input"; then
         echo "$input not found"
@@ -190,6 +192,8 @@ if [[ "$input_test_mode" == true ]]; then
     echo "\noutput begins now:"
     cat $file.out
     rm -f $file $file.out
+    echo "\ncorrect output:"
+    cat $outfile
     exit
 fi
 
