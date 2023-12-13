@@ -1,6 +1,7 @@
 /***************************************************
 * Author  : Anav Prasad
 * Nick    : vrangr
+* Created : Wed Dec 13 17:38:33 IST 2023
 ****************************************************/
 #include <iostream>
 #include <vector>
@@ -63,13 +64,54 @@ void solve();
 
 int main(){
 	fastIO;
-	TEST;
+	TEST1;
     #ifdef LOCAL
         cout << "\nTime elapsed: " << 1.0 * clock() / CLOCKS_PER_SEC << " s.\n";
     #endif
 	return 0;
 }
 
+class segtree{
+private:
+    int n;
+    vector<int> tree;
+    bool oddxor;
+    void update_ind(uint index){
+        if (bit_width(index)%2 == oddxor)
+            tree[index] = (tree[index<<1] ^ tree[index<<1|1]);
+        else tree[index] = (tree[index<<1] | tree[index<<1|1]);
+    }
+public:
+    segtree(const vector<int> &arr){
+        n = sz(arr);
+        assert(n - (n&(-n)) == 0);
+        tree.assign(2*n,0);
+        rep(i,n,2*n-1,1)
+            tree[i] = arr[i-n];
+        oddxor = bit_width((uint)n)%2;
+        rep(i,n-1,1,-1)
+            update_ind(i);
+    }
+
+    void update(int ind, int val){
+        for (tree[ind+=n] = val; ind > 1; ind >>= 1)
+            update_ind(ind>>1);
+    }
+
+    int query(){
+        return tree[1];
+    }
+};
+
 void solve(){
-    
+    int n, m; cin >> n >> m;
+    n = (1<<n);
+    vector<int> a(n);
+    rep(i,n) cin >> a[i];
+    segtree st(a);
+    while(m--){
+        int i, b; cin >> i >> b; --i;
+        st.update(i,b);
+        cout << st.query() << endl;
+    }
 }
