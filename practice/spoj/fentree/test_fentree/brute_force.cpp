@@ -1,6 +1,6 @@
 /***************************************************
-* Author  : Anav Prasad
-* Nick    : vrangr
+* AUTHOR : Anav Prasad
+* Nick   : vrangr
 ****************************************************/
 #include <iostream>
 #include <vector>
@@ -23,13 +23,11 @@
 #include <bitset>
 #include <array>
 #include <assert.h>
-#define debug(...) 42
+#define debug(...)
 #ifdef LOCAL
     #undef debug
     #include <algo/debug.hpp>
     const bool DEBUG = true;
-#else
-    const bool DEBUG = false;
 #endif
 
 using namespace std;
@@ -52,17 +50,13 @@ typedef __int128_t i128;
 #define space " "
 #define yes "YES\n"
 #define no "NO\n"
-#define pass ((void)0)
+#define pass (void)0
 template<typename type>inline void print_vec(const vector<type> &v){rep(i,sz(v))cout<<v[i]<<" \n"[i==sz(v)-1];}
 void solve();
 
-// IMPORT SNIPPETS HERE
-
-// END OF SNIPPETS
-
 int main(){
 	fastIO;
-	TEST;
+	TEST1;
     #ifdef LOCAL
         cout << "\nTime elapsed: " << 1.0 * clock() / CLOCKS_PER_SEC << " s.\n";
     #endif
@@ -70,5 +64,21 @@ int main(){
 }
 
 void solve(){
-    
+    ll n; cin >> n;
+    vector<ll> a(n);
+    rep(i,n) cin >> a[i];
+    int q; cin >> q;
+    while(q--){
+        char op; cin >> op;
+        if (op == 'u'){
+            ll i, x; cin >> i >> x; --i;
+            a[i] += x;
+            continue;
+        }
+        ll l, r; cin >> l >> r; --l;--r;
+        ll sum = 0;
+        rep(i,l,r,1ll)
+            sum += a[i];
+        cout << sum << endl;
+    }
 }

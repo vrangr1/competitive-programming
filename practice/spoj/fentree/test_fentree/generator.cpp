@@ -1,6 +1,6 @@
 /***************************************************
-* Author  : Anav Prasad
-* Nick    : vrangr
+* AUTHOR : Anav Prasad
+* Nick   : vrangr
 ****************************************************/
 #include <iostream>
 #include <vector>
@@ -22,14 +22,13 @@
 #include <bit>
 #include <bitset>
 #include <array>
+#include <random>
 #include <assert.h>
-#define debug(...) 42
+#define debug(...)
 #ifdef LOCAL
     #undef debug
     #include <algo/debug.hpp>
     const bool DEBUG = true;
-#else
-    const bool DEBUG = false;
 #endif
 
 using namespace std;
@@ -40,8 +39,8 @@ typedef long double ld;
 typedef __int128_t i128;
 #define endl "\n"
 #define fastIO ios_base::sync_with_stdio(false),cin.tie(0)
-#define TEST int T;cin>>T;while(T--)solve();
-#define TEST1 solve();
+#define TEST cout << "1\n"
+#define TEST1
 #define all(x) (x).begin(), (x).end()
 #define rall(x) (x).rbegin(), (x).rend()
 #define sz(v) ((int)(v).size())
@@ -52,23 +51,40 @@ typedef __int128_t i128;
 #define space " "
 #define yes "YES\n"
 #define no "NO\n"
-#define pass ((void)0)
+#define pass (void)0
 template<typename type>inline void print_vec(const vector<type> &v){rep(i,sz(v))cout<<v[i]<<" \n"[i==sz(v)-1];}
-void solve();
-
-// IMPORT SNIPPETS HERE
-
-// END OF SNIPPETS
+mt19937 rng((uint)chrono::steady_clock::now().time_since_epoch().count());
+ull grng(const ull maxval){return rng()%maxval;}
+void generate_test();
 
 int main(){
 	fastIO;
-	TEST;
+    TEST1;
+    generate_test();
     #ifdef LOCAL
         cout << "\nTime elapsed: " << 1.0 * clock() / CLOCKS_PER_SEC << " s.\n";
     #endif
 	return 0;
 }
 
-void solve(){
-    
+const ll maxn = 10, maxa = 10, maxq = 5, maxx = 5;
+
+// Generate just a singular test. The multitudinous nature of tests are implemented through a bash script
+void generate_test(){
+    ll n = grng(maxn)+1ll;
+    cout << n << endl;
+    rep(i,n) cout << (grng(2) == 0ll?1ll:-1ll)*((ll)grng(maxa)) << " \n"[i==n-1];
+    ll q = grng(maxq)+1ll;
+    cout << q << endl;
+    while(q--){
+        char op = (grng(2) == 0ll?'q':'u');
+        cout << op << " ";
+        if (op == 'q'){
+            ll r = grng(n)+1ll, l = grng(r)+1ll;
+            cout << l << space << r << endl;
+            continue;
+        }
+        ll i = grng(n)+1ll, x = (grng(2)==0ll?1ll:-1ll)*((ll)grng(maxx));
+        cout << i << space << x << endl;
+    }
 }

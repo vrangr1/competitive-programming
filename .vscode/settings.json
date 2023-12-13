@@ -101,7 +101,12 @@
         "numeric": "cpp",
         "ranges": "cpp",
         "hash_map": "cpp",
-        "climits": "cpp"
+        "climits": "cpp",
+        "__memory": "cpp",
+        "functional": "cpp",
+        "iterator": "cpp",
+        "memory_resource": "cpp",
+        "utility": "cpp"
     },
     "C_Cpp.default.compilerPath": "/usr/bin/cpp"
 }
