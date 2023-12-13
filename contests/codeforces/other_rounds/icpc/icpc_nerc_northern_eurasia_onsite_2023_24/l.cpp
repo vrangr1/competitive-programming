@@ -1,6 +1,7 @@
 /***************************************************
 * Author  : Anav Prasad
 * Nick    : vrangr
+* Created : Wed Dec 13 13:24:29 IST 2023
 ****************************************************/
 #include <iostream>
 #include <vector>
@@ -29,7 +30,7 @@
     #include <algo/debug.hpp>
     const bool DEBUG = true;
 #else
-    [[maybe_unused]] const bool DEBUG = false;
+    // const bool DEBUG = false;
 #endif
 
 using namespace std;
@@ -62,7 +63,7 @@ void solve();
 
 int main(){
 	fastIO;
-	TEST;
+	TEST1;
     #ifdef LOCAL
         cout << "\nTime elapsed: " << 1.0 * clock() / CLOCKS_PER_SEC << " s.\n";
     #endif
@@ -70,5 +71,15 @@ int main(){
 }
 
 void solve(){
-    
+    int n; cin >> n;
+    string s; cin >> s;
+    int loaves = (int)count(all(s),'L'), onions = n-loaves, cl = 0, co = 0, rl, ro;
+    rep(i,n-1){
+        cl += (s[i] == 'L');
+        co += (s[i] == 'O');
+        rl = loaves-cl;
+        ro = onions - co;
+        if (cl != rl && ro != co) return void(cout << i+1 << endl);
+    }
+    cout << "-1\n";
 }

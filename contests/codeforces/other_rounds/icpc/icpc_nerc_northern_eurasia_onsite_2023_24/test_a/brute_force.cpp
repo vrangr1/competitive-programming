@@ -1,6 +1,6 @@
 /***************************************************
-* Author  : Anav Prasad
-* Nick    : vrangr
+* AUTHOR : Anav Prasad
+* Nick   : vrangr
 ****************************************************/
 #include <iostream>
 #include <vector>
@@ -23,13 +23,11 @@
 #include <bitset>
 #include <array>
 #include <assert.h>
-#define debug(...) 42
+#define debug(...)
 #ifdef LOCAL
     #undef debug
     #include <algo/debug.hpp>
     const bool DEBUG = true;
-#else
-    [[maybe_unused]] const bool DEBUG = false;
 #endif
 
 using namespace std;
@@ -52,17 +50,13 @@ typedef __int128_t i128;
 #define space " "
 #define yes "YES\n"
 #define no "NO\n"
-#define pass ((void)0)
+#define pass (void)0
 template<typename type>inline void print_vec(const vector<type> &v){rep(i,sz(v))cout<<v[i]<<" \n"[i==sz(v)-1];}
 void solve();
 
-// IMPORT SNIPPETS HERE
-
-// END OF SNIPPETS
-
 int main(){
 	fastIO;
-	TEST;
+	TEST1;
     #ifdef LOCAL
         cout << "\nTime elapsed: " << 1.0 * clock() / CLOCKS_PER_SEC << " s.\n";
     #endif
@@ -70,5 +64,32 @@ int main(){
 }
 
 void solve(){
-    
+    ll x, k; cin >> x >> k;
+    ll sol = x;
+    vector<vector<ll>> lists(k);
+    rep(i,k){
+        ll n; cin >> n;
+        lists[i].resize(n);
+        rep(j,n) cin >> lists[i][j];
+    }
+    auto bf = [&](auto &&self, ll ind1, ll ind2, ll cur) -> void {
+        sol = max(cur,sol);
+        if (ind1 == sz(lists[0]) && ind2 == sz(lists[1])) return;
+        if (ind1 == sz(lists[0])){
+            if (lists[1][ind2] + cur >= 0ll)
+                self(self,ind1,ind2+1ll,cur+lists[1][ind2]);
+            return;
+        }
+        else if (ind2 == sz(lists[1])){
+            if (lists[0][ind1] + cur >= 0ll)
+                self(self,ind1+1ll,ind2,cur+lists[0][ind1]);
+            return;
+        }
+        if (lists[0][ind1] + cur >= 0ll)
+            self(self,ind1+1ll,ind2,cur+lists[0][ind1]);
+        if (lists[1][ind2] + cur >= 0ll)
+            self(self,ind1,ind2+1ll,cur+lists[1][ind2]);
+    };
+    bf(bf,0,0,x);
+    cout << sol << endl;
 }

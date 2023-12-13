@@ -1,6 +1,7 @@
 /***************************************************
 * Author  : Anav Prasad
 * Nick    : vrangr
+* Created : Wed Dec 13 13:06:37 IST 2023
 ****************************************************/
 #include <iostream>
 #include <vector>
@@ -62,7 +63,7 @@ void solve();
 
 int main(){
 	fastIO;
-	TEST;
+	TEST1;
     #ifdef LOCAL
         cout << "\nTime elapsed: " << 1.0 * clock() / CLOCKS_PER_SEC << " s.\n";
     #endif
@@ -70,5 +71,58 @@ int main(){
 }
 
 void solve(){
-    
+    ll x, k; cin >> x >> k;
+    vector<vector<ll>> lists(k), best(k), costs(k);
+    rep(i,k){
+        ll len; cin >> len;
+        best[i].resize(len);
+        lists[i].resize(len);
+        costs[i].resize(len);
+        rep(j,len)
+            cin >> lists[i][j];
+        best[i].back() = lists[i].back();
+        costs[i].back() = 0ll;
+        rep(j,len-2ll,0ll,-1ll){
+            if (best[i][j+1ll] >= 0ll)
+                best[i][j] = best[i][j+1ll] + lists[i][j];
+            else
+                best[i][j] = lists[i][j];
+            if (best[i][j] < 0ll) continue;
+            if (lists[i][j] >= 0ll){
+                costs[i][j] = max(0ll,costs[i][j+1ll]-lists[i][j]);
+                continue;
+            }
+            costs[i][j] = -lists[i][j] + costs[i][j+1ll];
+        }
+    }
+    auto comp = [](const vector<ll> &a, const vector<ll> &b){
+        return a[0] < b[0];
+    };
+    priority_queue<vector<ll>, vector<vector<ll>>, decltype(comp)> pq(comp);
+    rep(i,k)
+        pq.push({lists[i][0],i,0ll});
+    ll lt, ind, val;
+    ll sol = x;
+    debug(best);
+    while(!pq.empty()){
+        debug(x,pq);
+        val = pq.top().at(0);
+        lt = pq.top().at(1);
+        ind = pq.top().at(2);
+        if (best[lt][ind] < 0ll){
+            pq.pop();
+            continue;
+        }
+        if (pq.top().at(0) + x >= 0ll){
+            x += val;
+            sol = max(sol,x);
+            pq.pop();
+            ++ind;
+            if (ind >= sz(lists[lt])) continue;
+            pq.push({lists[lt][ind],lt,ind});
+            continue;
+        }
+        break;
+    }
+    cout << sol << endl;
 }
