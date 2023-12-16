@@ -1,7 +1,6 @@
 /***************************************************
-* Author  : Anav Prasad
-* Nick    : vrangr
-* Created : Sat Dec 16 20:28:15 IST 2023
+* AUTHOR : Anav Prasad
+* Nick   : vrangr
 ****************************************************/
 #include <iostream>
 #include <vector>
@@ -24,18 +23,15 @@
 #include <bitset>
 #include <array>
 #include <assert.h>
-#define debug(...) 42
+#define debug(...)
 #ifdef LOCAL
     #undef debug
     #include <algo/debug.hpp>
     const bool DEBUG = true;
-#else
-    [[maybe_unused]] const bool DEBUG = false;
 #endif
 
 using namespace std;
 
-typedef unsigned int uint;
 typedef long long int ll;
 typedef unsigned long long int ull;
 typedef long double ld;
@@ -54,13 +50,9 @@ typedef __int128_t i128;
 #define space " "
 #define yes "YES\n"
 #define no "NO\n"
-#define pass ((void)0)
+#define pass (void)0
 template<typename type>inline void print_vec(const vector<type> &v){rep(i,sz(v))cout<<v[i]<<" \n"[i==sz(v)-1];}
 void solve();
-
-// IMPORT SNIPPETS HERE
-
-// END OF SNIPPETS
 
 int main(){
 	fastIO;
@@ -76,35 +68,33 @@ void solve(){
     string s; cin >> s;
     if (is_sorted(all(s))) return void(cout << "0\n");
     vector<int> inds;
-    string maxstr;
-    rep(i,n){
-        if (inds.empty() || s[inds.back()] >= s[i]){
-            inds.push_back(i);
-            maxstr.push_back(s[i]);
-            continue;
-        }
-        while(!inds.empty() && s[inds.back()] < s[i]){
-            inds.pop_back();
-            maxstr.pop_back();
-        }
-        inds.push_back(i);
-        maxstr.push_back(s[i]);
-    }
-    int prev = 0;
-    int k = sz(inds), ct = 0;
-    rep(i,k){
-        if (maxstr.front() == maxstr.back()){
-            rep(j,i,k-1,1)
-                s[inds[j]] = maxstr.front();
-            if (!is_sorted(all(s))) return void(cout << "-1\n");
-            cout << ct << endl;
-            return;
-        }
+    string og;
+    int ct = 0;
+    while(true){
+        og = s;
         ct++;
-        s[inds[i]] = maxstr.back();
-        maxstr.pop_back();
-        if (!is_sorted(s.begin()+prev,s.begin()+inds[i]+1)) return void(cout << "-1\n");
-        prev = inds[i];
+        inds.clear();
+        rep(i,n){
+            if (inds.empty() || s[inds.back()] >= s[i]){
+                inds.push_back(i);
+                continue;
+            }
+            while(!inds.empty() && s[inds.back()] < s[i])
+                inds.pop_back();
+            inds.push_back(i);
+        }
+        string rest;
+        if (!inds.empty()) rest = s.substr(0,inds.front());
+        if (!is_sorted(all(rest))) return void(cout << "-1\n");
+        string maxstr;
+        for (const int &i : inds)
+            maxstr.push_back(s[i]);
+        rotate(maxstr.begin(),prev(maxstr.end()),maxstr.end());
+        rep(i,sz(inds))
+            s[inds[i]] = maxstr[i];
+        if (is_sorted(all(s))) return void(cout << ct << endl);
+        if (og == s) return void(cout << "-1\n");
+        if (ct > 1e8) break;
     }
-    cout << ct << endl;
+    assert(false);
 }

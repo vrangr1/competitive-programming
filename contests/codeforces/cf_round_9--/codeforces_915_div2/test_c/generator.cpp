@@ -1,7 +1,6 @@
 /***************************************************
-* Author  : Anav Prasad
-* Nick    : vrangr
-* Created : Sat Dec 16 20:28:15 IST 2023
+* AUTHOR : Anav Prasad
+* Nick   : vrangr
 ****************************************************/
 #include <iostream>
 #include <vector>
@@ -23,27 +22,25 @@
 #include <bit>
 #include <bitset>
 #include <array>
+#include <random>
 #include <assert.h>
-#define debug(...) 42
+#define debug(...)
 #ifdef LOCAL
     #undef debug
     #include <algo/debug.hpp>
     const bool DEBUG = true;
-#else
-    [[maybe_unused]] const bool DEBUG = false;
 #endif
 
 using namespace std;
 
-typedef unsigned int uint;
 typedef long long int ll;
 typedef unsigned long long int ull;
 typedef long double ld;
 typedef __int128_t i128;
 #define endl "\n"
 #define fastIO ios_base::sync_with_stdio(false),cin.tie(0)
-#define TEST int T;cin>>T;while(T--)solve();
-#define TEST1 solve();
+#define TEST cout << "1\n"
+#define TEST1
 #define all(x) (x).begin(), (x).end()
 #define rall(x) (x).rbegin(), (x).rend()
 #define sz(v) ((int)(v).size())
@@ -54,57 +51,28 @@ typedef __int128_t i128;
 #define space " "
 #define yes "YES\n"
 #define no "NO\n"
-#define pass ((void)0)
+#define pass (void)0
 template<typename type>inline void print_vec(const vector<type> &v){rep(i,sz(v))cout<<v[i]<<" \n"[i==sz(v)-1];}
-void solve();
-
-// IMPORT SNIPPETS HERE
-
-// END OF SNIPPETS
+mt19937 rng((uint)chrono::steady_clock::now().time_since_epoch().count());
+ull grng(const ull maxval){return rng()%maxval;}
+void generate_test();
 
 int main(){
 	fastIO;
-	TEST;
+    TEST;
+    generate_test();
     #ifdef LOCAL
         cout << "\nTime elapsed: " << 1.0 * clock() / CLOCKS_PER_SEC << " s.\n";
     #endif
 	return 0;
 }
 
-void solve(){
-    int n; cin >> n;
-    string s; cin >> s;
-    if (is_sorted(all(s))) return void(cout << "0\n");
-    vector<int> inds;
-    string maxstr;
-    rep(i,n){
-        if (inds.empty() || s[inds.back()] >= s[i]){
-            inds.push_back(i);
-            maxstr.push_back(s[i]);
-            continue;
-        }
-        while(!inds.empty() && s[inds.back()] < s[i]){
-            inds.pop_back();
-            maxstr.pop_back();
-        }
-        inds.push_back(i);
-        maxstr.push_back(s[i]);
-    }
-    int prev = 0;
-    int k = sz(inds), ct = 0;
-    rep(i,k){
-        if (maxstr.front() == maxstr.back()){
-            rep(j,i,k-1,1)
-                s[inds[j]] = maxstr.front();
-            if (!is_sorted(all(s))) return void(cout << "-1\n");
-            cout << ct << endl;
-            return;
-        }
-        ct++;
-        s[inds[i]] = maxstr.back();
-        maxstr.pop_back();
-        if (!is_sorted(s.begin()+prev,s.begin()+inds[i]+1)) return void(cout << "-1\n");
-        prev = inds[i];
-    }
-    cout << ct << endl;
+const ll maxn = 10;
+
+// Generate just a singular test. The multitudinous nature of tests are implemented through a bash script
+void generate_test(){
+    int n = (int)grng(maxn)+1;
+    string s(n,'.');
+    rep(i,n) s[i] = (char)(grng(26)+'a');
+    cout << n << endl << s << endl;
 }
