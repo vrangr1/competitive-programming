@@ -1,5 +1,84 @@
 ## Script to test the solution against brute force solution with generator cpp providing the inputs
 
+## Modes:
+vs_brute_force=true # Assumed in general
+explore_mode=false
+debug_mode=false
+test_mode=false
+case_mode=false
+manual_mode=false
+help=false
+
+POSITIONAL_ARGS=()
+
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    -e|--explore)
+        explore_mode=true
+        test_mode=false
+        vs_brute_force=false
+        case_mode=false
+        shift # past argument
+        ;;
+    -t|--test)
+        test_mode=true
+        explore_mode=false
+        vs_brute_force=false
+        case_mode=false
+        shift # past argument
+        ;;
+    -c|--case)
+        case_mode=true
+        test_mode=false
+        explore_mode=false
+        vs_brute_force=false
+        shift # past argument
+        ;;
+    -d|--debug)
+        debug_mode=true
+        shift # past argument
+        ;;
+    -m|--manual)
+        manual_mode=true
+        shift # past argument
+        ;;
+    -h|--help)
+        help=true
+        explore_mode=false
+        vs_brute_force=false
+        test_mode=false
+        case_mode=false
+        shift # past argument
+        ;;
+    -*|--*)
+        echo "Unknown option $1"
+        rtest -h
+        exit
+        ;;
+    *)
+        POSITIONAL_ARGS+=("$1") # save positional arg
+        shift # past argument
+        ;;
+  esac
+done
+
+if [[ "$help" == true ]]; then
+    echo "\033[1mUsage:\033[1;31m rtest [options] <file_name> [checker] [brute_forcer] [generator]\033[0m"
+    echo "\033[1mfile_name\033[0m assumes the extension .cpp if not given."
+    echo "Normal execution without options runs \033[1m[file]\033[0m vs brute_forcer with the given generator"
+    echo "\033[1mOptions:"
+    echo " \033[1;31m -e, --explore\033[0m  Runs \033[1m[file]\033[0m on a randomly generated input"
+    echo " \033[1;31m -t, --test\033[0m     Runs \033[1m[brute_forcer]\033[0m on a randomly generated input"
+    echo " \033[1;31m -c, --case\033[0m     Generates one test case, runs both \033[1m[file]\033[0m and \033[1m[brute_forcer]\033[0m on it and saves it"
+    echo " \033[1;31m -m, --manual\033[0m   Runs both \033[1m[file]\033[0m and \033[1m[brute_forcer]\033[0m on given manual input"
+    echo " \033[1;31m -d, --debug\033[0m    Enables debug mode while compilation. Can only be enabled with \033[1m-e\033[0m option"
+    echo " \033[1;31m -h, --help\033[0m     Display this help message\033[0m"
+    exit
+fi
+
+set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
+
+
 opt_sol=${1:-"opt_sol"}
 checker=${2:-"not"}
 brute_force=${3:-"brute_force"}
@@ -19,7 +98,9 @@ function exists {
     if ! test -f $2/$1.cpp; then echo "$1.cpp does not exist"; exit 1; fi
 }
 exists $opt_sol ..
-if [[ $checker != "not" ]]; then exists $checker ; fi
+if [[ $checker != "not" ]]; then 
+    exists $checker .
+fi
 exists $brute_force .
 exists $generator .
 
@@ -32,27 +113,39 @@ function handle_ctrlc(){
 }
 trap handle_ctrlc SIGINT
 
-echo "Testing ${opt_sol}.cpp against ${brute_force}.cpp with ${generator}.cpp"
+compile_mode="--compile"
+if [[ "$debug_mode" == true ]]; then compile_mode="--debug"; fi
 
-cpr ../$opt_sol.cpp --compile
-if [[ $checker != "not" ]]; then cpr $checker.cpp compile; fi
-cpr $brute_force.cpp --compile
-cpr $generator.cpp --compile
-
-for((i=1;;++i));do
-    echo $i
-    # Call generator and pipe to input
-    ./$generator > input
+if [[ "$explore_mode" == true ]]; then
+    echo "Exploring behavior of $opt_sol against randomly generated inputs"
+    cpr ../$opt_sol.cpp $compile_mode
+    cpr $generator.cpp --compile
+    ./generator > input
     ./$opt_sol < input > out1
-    ./$brute_force < input > out2
-    if [[ $checker != "not" ]]; then
-        cat input out1 > in1
-        cat input out2 > in2
-        ./$checker < in1 > out1
-        ./$checker < in2 > out2
+    cat input
+    echo "\noutput begins now:"
+    cat out1
+    handle_ctrlc
+    exit
+fi
+
+if [[ "$test_mode" == true ]]; then
+    if [[ "$debug_mode" == true || "$manual_mode" == true ]]; then
+        echo "Cannot have\033[1;31m debug/manual\033[0m option enabled with\033[1;31m test\033[0m mode"
+        exit
     fi
-    diff -w out1 out2 || break
-done
+    echo "Testing $brute_force on randomly generated inputs"
+    cpr $brute_force.cpp --compile
+    cpr $generator.cpp --compile
+    ./generator > input
+    ./$brute_force < input > out2
+    cat input
+    echo "\noutput begins now:"
+    cat out2
+    handle_ctrlc
+    exit
+fi
+
 function copy_input {
     file=$1
     if [[ $2 == ".." ]]; then
@@ -70,8 +163,93 @@ function copy_input {
     mv input input_$file/$file$ct.in
     mv out2 output_$file/$file$ct.ans
 }
+
+if [[ "$case_mode" == true ]]; then
+    if [[ "$debug_mode" == true || "$manual_mode" == true ]]; then
+        echo "Cannot have\033[1;31m debug/manual\033[0m option enabled with\033[1;31m case\033[0m mode"
+        exit
+    fi
+    echo "Testing $opt_sol against ${brute_force} on only one randomly generated input and saving it."
+    cpr ../$opt_sol.cpp --compile
+    if [[ $checker != "not" ]]; then cpr $checker.cpp --compile; fi
+    cpr $brute_force --compile
+    cpr $generator.cpp --compile
+    ./generator > input
+    ./$opt_sol < input > out1
+    ./$brute_force < input > out2
+    cat input
+    echo "\noutput begins now:"
+    cat out1
+    echo "\ncorrect output:"
+    cat out2
+    if [[ $checker != "not" ]]; then
+        cat input out1 > in1
+        cat input out2 > in2
+        ./$checker < in1 > out1
+        ./$checker < in2 > out2
+        rm -f in1 in2
+    fi
+    diff -w out1 out2 || echo "Output does not match."
+    copy_input $opt_sol ..
+    cd test_$opt_sol
+    copy_input $brute_force .
+    handle_ctrlc
+    exit
+fi
+
+if [[ "$manual_mode" == true ]]; then
+    if [[ "$debug_mode" == true ]]; then
+        echo "Cannot have\033[1;31m debug\033[0m option enabled with\033[1;31m manual\033[0m mode"
+        exit
+    fi
+    echo "Testing $opt_sol against ${brute_force} on given manual input."
+    echo "Enter input:"
+    input=$(sed '/^$/q')
+    echo "$input" > input
+    cpr ../$opt_sol.cpp --compile
+    if [[ $checker != "not" ]]; then cpr $checker.cpp --compile; fi
+    cpr $brute_force --compile
+    ./$opt_sol < input > out1
+    ./$brute_force < input > out2
+    echo "\noutput begins now:"
+    cat out1
+    echo "\ncorrect output:"
+    cat out2
+    if [[ $checker != "not" ]]; then
+        cat input out1 > in1
+        cat input out2 > in2
+        ./$checker < in1 > out1
+        ./$checker < in2 > out2
+        rm -f in1 in2
+    fi
+    diff -w out1 out2 || echo "Output does not match."
+    handle_ctrlc
+    exit
+fi
+
+echo "Testing ${opt_sol}.cpp against ${brute_force}.cpp with ${generator}.cpp"
+
+cpr ../$opt_sol.cpp --compile
+if [[ $checker != "not" ]]; then cpr $checker.cpp --compile; fi
+cpr $brute_force.cpp --compile
+cpr $generator.cpp --compile
+
+for((i=1;;++i));do
+    echo $i
+    # Call generator and pipe to input
+    ./$generator > input
+    ./$opt_sol < input > out1
+    ./$brute_force < input > out2
+    if [[ $checker != "not" ]]; then
+        cat input out1 > in1
+        cat input out2 > in2
+        ./$checker < in1 > out1
+        ./$checker < in2 > out2
+        rm -f in1 in2
+    fi
+    diff -w out1 out2 || break
+done
 copy_input $opt_sol ..
 cd test_$opt_sol
 copy_input $brute_force .
-rm out1
 handle_ctrlc
