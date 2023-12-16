@@ -136,6 +136,35 @@ public:
     }
 };
 
+class segtree{
+private:
+    ll n;
+    vector<ll> tree;
+public:
+    segtree(int gn){
+        gn++;
+        if (gn - (gn&(-gn)) != 0)
+            gn = (1<<bit_width((uint)gn));
+        n = gn;
+        tree.assign(2*n,0);
+    }
+
+    void update(ll val){
+        for(tree[val += n]++; val > 0; val >>= 1)
+            tree[val>>1] = tree[val] + tree[val^1];
+    }
+
+    ll query(ll val){
+        ll l = 0, r = val;
+        ll res = 0;
+        for (l += n, r += n; l < r; l>>=1ll, r>>=1ll){
+            if (l&1ll) res += tree[l++];
+            if (r&1ll) res += tree[--r];
+        }
+        return res;
+    }
+};
+
 void solve(){
     int n; cin >> n;
     vector<int> a(n);
@@ -152,10 +181,13 @@ void solve(){
         right[i] = mp[a[i]];
     }
     ll sum = 0;
-    fentree ftree(n);
+    // fentree ftree(n);
+    segtree st(n);
     rep(i,n-1,0,-1){
-        sum += (ll)ftree.get(left[i]);
-        ftree.update(right[i]);
+        // sum += (ll)ftree.get(left[i]);
+        // ftree.update(right[i]);
+        sum += (ll)st.query(left[i]);
+        st.update(right[i]);
     }
     cout << sum << endl;
 }
