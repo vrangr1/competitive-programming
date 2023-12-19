@@ -1,12 +1,5 @@
 ## Script to test the solution against brute force solution with generator cpp providing the inputs
 
-<<COMMENT
-TODO:
--> -s: to save -> DONE!!
--> normal: display last input run when incorrect -> DONE!!
--> get name from folder
-COMMENT
-
 ## Modes:
 vs_brute_force=true # Assumed in general
 explore_mode=false
@@ -92,10 +85,15 @@ fi
 set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
 
 
-opt_sol=${1:-"opt_sol"}
+opt_sol=${1:-"__NA__"}
 checker=${2:-"not"}
 brute_force=${3:-"brute_force"}
 generator=${4:-"generator"}
+
+if [[ $opt_sol == "__NA__" ]]; then
+    opt_sol=`basename $PWD`
+    opt_sol=${opt_sol#"test_"}.cpp
+fi
 
 function fixname {
     local file=$1
@@ -189,7 +187,7 @@ if [[ "$case_mode" == true ]]; then
         echo "Cannot have\033[1;31m debug/manual\033[0m option enabled with\033[1;31m case\033[0m mode"
         exit
     fi
-    echo "Testing $opt_sol against ${brute_force} on only one randomly generated input and saving it."
+    echo "Testing $opt_sol against ${brute_force} on only one randomly generated input."
     cpr ../$opt_sol.cpp --compile
     if [[ $checker != "not" ]]; then cpr $checker.cpp --compile; fi
     cpr $brute_force --compile
