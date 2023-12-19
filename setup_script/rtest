@@ -1,5 +1,12 @@
 ## Script to test the solution against brute force solution with generator cpp providing the inputs
 
+<<COMMENT
+TODO:
+-> -s: to save -> DONE!!
+-> normal: display last input run when incorrect
+-> get name from folder
+COMMENT
+
 ## Modes:
 vs_brute_force=true # Assumed in general
 explore_mode=false
@@ -7,6 +14,7 @@ debug_mode=false
 test_mode=false
 case_mode=false
 manual_mode=false
+save_mode=false
 help=false
 
 POSITIONAL_ARGS=()
@@ -34,12 +42,16 @@ while [[ $# -gt 0 ]]; do
         vs_brute_force=false
         shift # past argument
         ;;
-    -d|--debug)
-        debug_mode=true
-        shift # past argument
-        ;;
     -m|--manual)
         manual_mode=true
+        shift # past argument
+        ;;
+    -s|--save)
+        save_mode=true
+        shift # past argument
+        ;;
+    -d|--debug)
+        debug_mode=true
         shift # past argument
         ;;
     -h|--help)
@@ -69,8 +81,9 @@ if [[ "$help" == true ]]; then
     echo "\033[1mOptions:"
     echo " \033[1;31m -e, --explore\033[0m  Runs \033[1m[file]\033[0m on a randomly generated input"
     echo " \033[1;31m -t, --test\033[0m     Runs \033[1m[brute_forcer]\033[0m on a randomly generated input"
-    echo " \033[1;31m -c, --case\033[0m     Generates one test case, runs both \033[1m[file]\033[0m and \033[1m[brute_forcer]\033[0m on it and saves it"
+    echo " \033[1;31m -c, --case\033[0m     Generates one test case, runs both \033[1m[file]\033[0m and \033[1m[brute_forcer]\033[0m on it"
     echo " \033[1;31m -m, --manual\033[0m   Runs both \033[1m[file]\033[0m and \033[1m[brute_forcer]\033[0m on given manual input"
+    echo " \033[1;31m -s, --save\033[0m     Save the input/output while running a particular case. Only works with \033[1m-m\033[0m or \033[1m-c\033[0m options"
     echo " \033[1;31m -d, --debug\033[0m    Enables debug mode while compilation. Can only be enabled with \033[1m-e\033[0m or \033[1m-t\033[0m options"
     echo " \033[1;31m -h, --help\033[0m     Display this help message\033[0m"
     exit
@@ -115,6 +128,10 @@ trap handle_ctrlc SIGINT
 
 compile_mode="--compile"
 if [[ "$debug_mode" == true ]]; then compile_mode="--debug"; fi
+if [[ "$save_mode" == true && "$manual_mode" == false && "$case_mode" == false ]]; then
+    echo "\033[1;31mSave\033[0m option is only availabe with either \033[1;31mmanual\033[0m or \033[1;31mcase\033[0m options"
+    exit
+fi
 
 # Explore Mode:
 if [[ "$explore_mode" == true ]]; then
@@ -193,6 +210,7 @@ if [[ "$case_mode" == true ]]; then
         rm -f in1 in2
     fi
     diff -w out1 out2 || echo "Output does not match."
+    if [[ "$save_mode" == false ]]; then handle_ctrlc; exit; fi
     copy_input $opt_sol ..
     cd test_$opt_sol
     copy_input $brute_force .
@@ -227,6 +245,10 @@ if [[ "$manual_mode" == true ]]; then
         rm -f in1 in2
     fi
     diff -w out1 out2 || echo "Output does not match."
+    if [[ "$save_mode" == false ]]; then handle_ctrlc; exit; fi
+    copy_input $opt_sol ..
+    cd test_$opt_sol
+    copy_input $brute_force .
     handle_ctrlc
     exit
 fi
