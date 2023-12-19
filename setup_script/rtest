@@ -3,7 +3,7 @@
 <<COMMENT
 TODO:
 -> -s: to save -> DONE!!
--> normal: display last input run when incorrect
+-> normal: display last input run when incorrect -> DONE!!
 -> get name from folder
 COMMENT
 
@@ -275,6 +275,12 @@ for((i=1;;++i));do
     fi
     diff -w out1 out2 || break
 done
+echo "\nFailing input:"
+cat input
+echo "\noutput begins now:"
+cat out1
+echo "\ncorrect output:"
+cat out2
 copy_input $opt_sol ..
 cd test_$opt_sol
 copy_input $brute_force .
