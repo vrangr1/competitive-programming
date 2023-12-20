@@ -183,12 +183,12 @@ function copy_input {
 
 # Case Mode:
 if [[ "$case_mode" == true ]]; then
-    if [[ "$debug_mode" == true || "$manual_mode" == true ]]; then
-        echo "Cannot have\033[1;31m debug/manual\033[0m option enabled with\033[1;31m case\033[0m mode"
+    if [[ "$manual_mode" == true ]]; then
+        echo "Cannot have\033[1;31m manual\033[0m option enabled with\033[1;31m case\033[0m mode"
         exit
     fi
     echo "Testing $opt_sol against ${brute_force} on only one randomly generated input."
-    cpr ../$opt_sol.cpp --compile
+    cpr ../$opt_sol.cpp $compile_mode
     if [[ $checker != "not" ]]; then cpr $checker.cpp --compile; fi
     cpr $brute_force --compile
     cpr $generator.cpp --compile
@@ -218,15 +218,11 @@ fi
 
 # Manual Mode:
 if [[ "$manual_mode" == true ]]; then
-    if [[ "$debug_mode" == true ]]; then
-        echo "Cannot have\033[1;31m debug\033[0m option enabled with\033[1;31m manual\033[0m mode"
-        exit
-    fi
     echo "Testing $opt_sol against ${brute_force} on given manual input."
     echo "Enter input:"
     input=$(sed '/^$/q')
     echo "$input" > input
-    cpr ../$opt_sol.cpp --compile
+    cpr ../$opt_sol.cpp $compile_mode
     if [[ $checker != "not" ]]; then cpr $checker.cpp --compile; fi
     cpr $brute_force --compile
     ./$opt_sol < input > out1
