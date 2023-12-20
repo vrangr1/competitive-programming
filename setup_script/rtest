@@ -1,5 +1,7 @@
 ## Script to test the solution against brute force solution with generator cpp providing the inputs
 
+# set -e
+
 ## Modes:
 vs_brute_force=true # Assumed in general
 explore_mode=false

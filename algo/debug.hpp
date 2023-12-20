@@ -275,6 +275,7 @@ template <typename type> void print(priority_queue<type> pq){
     while(!pq.empty()){
         print(pq.top());
         pq.pop();
+        cout << " \0"[pq.empty()];
     }
     cout << " }";
 }
