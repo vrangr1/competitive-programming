@@ -158,7 +158,7 @@ void solve1(){
 }
 
 
-void solve(){
+void solve4(){
     ll n, m; cin >> n >> m;
     vector<ll> a(n);
     rep(i,n) cin >> a[i];
@@ -216,8 +216,21 @@ void solve(){
     cout << ct << endl;
 }
 
+void solve(){
+    ll n, m; cin >> n >> m;
+    vector<ll> a(n);
+    rep(i,n) cin >> a[i];
+    ll target = *max_element(all(a));
+    ll req = 0ll;
+    rep(i,n) req += target-a[i];
+    cout << max((req+m-1ll)/m,target-*min_element(all(a))) << endl;
+}
+
 
 /*
+
+10x9 10
+
 
 4
 
