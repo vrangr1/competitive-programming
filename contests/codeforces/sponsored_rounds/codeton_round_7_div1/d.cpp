@@ -31,10 +31,13 @@
     #undef debug
     #include <algo/debug.hpp>
     const bool DEBUG = true;
+#else
+    [[maybe_unused]] const bool DEBUG = false;
 #endif
 
 using namespace std;
 
+typedef unsigned int uint;
 typedef long long int ll;
 typedef unsigned long long int ull;
 typedef long double ld;
@@ -66,8 +69,133 @@ int main(){
 	return 0;
 }
 
+class ftree{
+private:
+    vector<int> tree;
+    vector<int> arr;
+    int n;
+
+    bool bsch(int low, int high, const int req){
+        if (low > high) return false;
+        if (low == high) return getsum(low) == req;
+        int mid = (low+high+1)/2, val = getsum(mid);
+        if (val == req) return true;
+        if (val < req) return bsch(mid,high,req);
+        return bsch(low,mid-1,req);
+    }
+
+    int getsum(int i){
+        i++;
+        int sum = 0;
+        while(i > 0){
+            assert(i < sz(tree));
+            sum += tree[i];
+            i -= (i&(-i));
+        }
+        return sum;
+    }
+public:
+    ftree(const vector<int> &a){
+        arr.assign(sz(a),0);
+        n = sz(a)+1;
+        tree.assign(n,0);
+        --n;
+        rep(i,n)
+            update(i,a[i]);
+    }
+
+    void update(int i, int v){
+        v -= arr[i];
+        if (v == 0) return;
+        arr[i]+=v;
+        ++i;
+        while(i <= n){
+            tree[i] += v;
+            i += (i&(-i));
+        }
+    }
+
+    bool query(int s){
+        rep(i,n-1,0,-1){
+            int cur = getsum(i);
+            if (cur == s) return true;
+            if (cur < s) break;
+            if (bsch(0,i-1,cur-s)) return true;
+        }
+        return false;
+    }
+};
+
+class segtree{
+private:
+    vector<int> tree;
+    int n;
+
+    int query(int l, int r){
+        int res = 0;
+        for (l+=n,r+=n; l < r; l>>=1,r>>=1){
+            if (l&1) res += tree[l++];
+            if (r&1) res += tree[--r];
+        }
+        return res;
+    }
+
+    bool bsch(int low, int high, const int req){
+        if (low > high) return false;
+        else if (low == high) return query(0ll,low+1) == req;
+        int mid = (low+high+1)/2, val = query(0,mid+1);
+        if (val == req) return true;
+        else if (val < req) return bsch(mid, high, req);
+        return bsch(low,mid-1,req);
+    }
+
+public:
+
+    segtree(const vector<int> &a){
+        n = sz(a);
+        n*=2;
+        if (n - (n&(-n)) != 0)
+            n = 1<<bit_width((uint)n);
+        tree.assign(n,0);
+        n = sz(a);
+        rep(i,n,2*n-1,1)
+            tree[i] = a[i-n];
+        rep(i,n-1,1,-1)
+            tree[i] = tree[i<<1]+tree[i<<1|1];
+    }
+
+    void update(int i, int v){
+        for (tree[i+=n]=v; i > 0; i>>=1)
+            tree[i>>1] = tree[i] + tree[i^1];
+    }
+
+    bool query(int s){
+        rep(i,n-1,0,-1){
+            int cur = query(0,i+1);
+            if (cur == s) return true;
+            else if (cur < s) break;
+            else if (bsch(0,i,cur-s)) return true;
+        }
+        return false;
+    }
+};
+
 void solve(){
     int n, q; cin >> n >> q;
     vector<int> a(n);
-    
+    rep(i,n) cin >> a[i];
+    // segtree st(a);
+    ftree st(a);
+    rep(Q,q){
+        int op; cin >> op;
+        if (op == 1){
+            int s; cin >> s;
+            if (st.query(s)) cout << yes;
+            else cout << no;
+        }
+        else{
+            int i, v; cin >> i >> v; --i;
+            st.update(i,v);
+        }
+    }
 }
