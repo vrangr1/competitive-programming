@@ -29,6 +29,8 @@
     #undef debug
     #include <algo/debug.hpp>
     const bool DEBUG = true;
+#else
+    [[maybe_unused]] const bool DEBUG = false;
 #endif
 
 using namespace std;

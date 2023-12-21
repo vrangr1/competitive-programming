@@ -88,7 +88,7 @@ set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
 
 
 opt_sol=${1:-"__NA__"}
-checker=${2:-"not"}
+checker=${2:-"none"}
 brute_force=${3:-"brute_force"}
 generator=${4:-"generator"}
 
@@ -111,7 +111,7 @@ function exists {
     if ! test -f $2/$1.cpp; then echo "$1.cpp does not exist"; exit 1; fi
 }
 exists $opt_sol ..
-if [[ $checker != "not" ]]; then 
+if [[ $checker != "none" ]]; then 
     exists $checker .
 fi
 exists $brute_force .
@@ -191,7 +191,7 @@ if [[ "$case_mode" == true ]]; then
     fi
     echo "Testing $opt_sol against ${brute_force} on only one randomly generated input."
     cpr ../$opt_sol.cpp $compile_mode
-    if [[ $checker != "not" ]]; then cpr $checker.cpp --compile; fi
+    if [[ $checker != "none" ]]; then cpr $checker.cpp --compile; fi
     cpr $brute_force --compile
     cpr $generator.cpp --compile
     ./generator > input
@@ -202,7 +202,7 @@ if [[ "$case_mode" == true ]]; then
     cat out1
     echo "\ncorrect output:"
     cat out2
-    if [[ $checker != "not" ]]; then
+    if [[ $checker != "none" ]]; then
         cat input out1 > in1
         cat input out2 > in2
         ./$checker < in1 > out1
@@ -225,7 +225,7 @@ if [[ "$manual_mode" == true ]]; then
     input=$(sed '/^$/q')
     echo "$input" > input
     cpr ../$opt_sol.cpp $compile_mode
-    if [[ $checker != "not" ]]; then cpr $checker.cpp --compile; fi
+    if [[ $checker != "none" ]]; then cpr $checker.cpp --compile; fi
     cpr $brute_force --compile
     ./$opt_sol < input > out1
     ./$brute_force < input > out2
@@ -233,7 +233,7 @@ if [[ "$manual_mode" == true ]]; then
     cat out1
     echo "\ncorrect output:"
     cat out2
-    if [[ $checker != "not" ]]; then
+    if [[ $checker != "none" ]]; then
         cat input out1 > in1
         cat input out2 > in2
         ./$checker < in1 > out1
@@ -252,7 +252,7 @@ fi
 echo "Testing ${opt_sol}.cpp against ${brute_force}.cpp with ${generator}.cpp"
 
 cpr ../$opt_sol.cpp --compile
-if [[ $checker != "not" ]]; then cpr $checker.cpp --compile; fi
+if [[ $checker != "none" ]]; then cpr $checker.cpp --compile; fi
 cpr $brute_force.cpp --compile
 cpr $generator.cpp --compile
 
@@ -262,7 +262,7 @@ for((i=1;;++i));do
     ./$generator > input
     ./$opt_sol < input > out1
     ./$brute_force < input > out2
-    if [[ $checker != "not" ]]; then
+    if [[ $checker != "none" ]]; then
         cat input out1 > in1
         cat input out2 > in2
         ./$checker < in1 > out1

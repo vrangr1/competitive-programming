@@ -150,7 +150,6 @@ private:
     }
 
 public:
-
     segtree(const vector<int> &a){
         n = sz(a);
         n*=2;
@@ -180,7 +179,8 @@ public:
     }
 };
 
-void solve(){
+// Fenwick/Segment Tree solution = O(nq*log^2(n))
+void solve1(){
     int n, q; cin >> n >> q;
     vector<int> a(n);
     rep(i,n) cin >> a[i];
@@ -196,6 +196,44 @@ void solve(){
         else{
             int i, v; cin >> i >> v; --i;
             st.update(i,v);
+        }
+    }
+}
+
+// tourist's solution
+// OBSERVATION!!!!! Any sum smaller or equal to the sum of the entire array of the same parity as the original sum can 
+// always be obtained as a sum of a subarray!!!!!
+// Curiosly, as it turns out, this method takes way more memory than even a segment tree. Strange. Didn't know set was 
+// that memory consuming. Makes sense, considering a RB tree.
+void solve(){
+    int n, q; cin >> n >> q;
+    vector<int> a(n);
+    rep(i,n) cin >> a[i];
+    int total = accumulate(all(a),0);
+    set<int> ones;
+    rep(i,n) if (a[i] == 1) ones.insert(i);
+    auto query = [&](const int s) -> bool {
+        if (s > total) return false;
+        if (s%2 == total%2) return true;
+        if (sz(ones) == 0) return false;
+        int ct = min(*ones.begin(),n-1-*ones.rbegin());
+        if (total-ct*2 < s) return false;
+        return true;
+    };
+    while(q--){
+        int op; cin >> op;
+        if (op == 1){
+            int s; cin >> s;
+            if (query(s)) cout << yes;
+            else cout << no;
+        }
+        else{
+            int i, v; cin >> i >> v; --i;
+            if (a[i] == v) continue;
+            total += v-a[i];
+            if (a[i] == 1) ones.erase(i);
+            else ones.insert(i);
+            a[i] = v;
         }
     }
 }
