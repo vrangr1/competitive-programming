@@ -56,7 +56,8 @@ typedef __int128_t i128;
 #define no "NO\n"
 #define pass ((void)0)
 template<typename type>inline void print_vec(const vector<type> &v){rep(i,sz(v))cout<<v[i]<<" \n"[i==sz(v)-1];}
-void solve(int t);
+// void solve(int t);
+void solve();
 
 // IMPORT SNIPPETS HERE
 
@@ -64,113 +65,38 @@ void solve(int t);
 
 int main(){
 	fastIO;
-	int T;cin>>T;rep(t,T)solve(t);
+	// int T;cin>>T;rep(t,T)solve(t);
+    TEST;
     #ifdef LOCAL
         cout << "\nTime elapsed: " << 1.0 * clock() / CLOCKS_PER_SEC << " s.\n";
     #endif
 	return 0;
 }
 
-void solve(int test){
-    ll n; cin >> n;
-    vector<vector<ll>> edges(n);
-    vector<ll> p(n-1);
-    rep(i,1,n-1ll,1){
-        ll u = i, v;
-        cin >> v; --v;
-        p[i-1] = v+1;
-        edges[v].push_back(u);
+void solve(){
+    int n; cin >> n;
+    vector<vector<int>> edges(n);
+    rep(i,n-1){
+        int v; cin >> v; --v;
+        edges[v].push_back(i+1);
     }
-    if (test == 3943){
-        cout << n << ":";
-        rep(i,n-1) cout << p[i] << ";";
-        cout << endl;
-        return;
-    }
-    vector<ll> ss(n,0ll), d(n,0ll), m(n,0ll), used(n,0ll);
-    auto comp = [](const pair<ll,ll> &a, const pair<ll,ll> &b){
-        return a.first < b.first;
-    };
-    // auto process = [&](ll node, ){
-        
-        
-    // };
-    auto dfs = [&] (auto &&self, ll node, ll cur) -> void {
-        d[node] = cur;
-        // ll last = 0ll;
-        deque<pair<ll,ll>> dq;
-        priority_queue<pair<ll,ll>,vector<pair<ll,ll>>,decltype(comp)>pq(comp);
-        for (const ll &ngb : edges[node]){
-            self(self,ngb,cur+1ll);
+    vector<int> ss(n,0), cts(n,0);
+    auto dfs = [&] (auto &&self, int node) -> void {
+        if (sz(edges[node]) == 0) return void(++ss[node]);
+        int mx = 0, mxind = -1;
+        for (int ngb : edges[node]){
+            self(self,ngb);
             ss[node] += ss[ngb];
-            pq.push({ss[ngb],ngb});
-        }
-        sort(all(edges[node]),[&](const ll &a, const ll &b){
-            return ss[a] > ss[b];
-        });
-        for (const ll &ngb : edges[node]){
-            ll unmatched = ss[ngb];
-            assert(unmatched>0ll);
-            while(!dq.empty() && unmatched > 0ll){
-                ll match = min(dq.back().first, unmatched);
-                m[node] += match;
-                dq.back().first -= match;
-                unmatched -= match;
-                used[dq.back().second] += match;
-                if (dq.back().first == 0ll)
-                    dq.pop_back();
+            if (mx < ss[ngb]){
+                mx = ss[ngb];
+                mxind = ngb;
             }
-            assert(unmatched>=0ll);
-            if (unmatched){
-                assert(dq.empty());
-                dq.emplace_back(unmatched,ngb);
-            }
-            // match = min(unmatched/2ll,m[ngb]);
-            // m[node] += match;
-            // unmatched -= (2ll*match);
-            // assert(unmatched >= 0ll);
-            // last += unmatched;
         }
-        if (node == 0ll){
-            debug('i',m);
-        }
-        for (const ll &ngb : edges[node]){
-            assert(used[ngb] <= ss[ngb]);
-            if (used[ngb] == ss[ngb]) continue;
-            ll unmatched = ss[ngb] - used[ngb];
-            ll match = min(unmatched/2ll,m[ngb]);
-            m[node] += match;
-        }
-        ss[node]++;
+        int tot = ss[node]++;
+        if (mx <= tot/2) return void(cts[node] = tot/2);
+        cts[node] = tot - mx;
+        cts[node] += min((mx-cts[node])/2, cts[mxind]);
     };
-    dfs(dfs,0,0);
-    debug(ss,d,m);
-    cout << m[0] << endl;
+    dfs(dfs,0);
+    cout << cts[0] << endl;
 }
-
-/*
-
-6
-
-1
-4
-1 2 1
-
-2
-1
-5
-5 5 5 1
-7
-1 2 1 1 3 3
-
-1
-7
-1 1 3 2 2 4
-
-7
-1 2 1 1 1 3
-
-1
-7
-1 1 1 2 3 4
-*/
