@@ -1,7 +1,6 @@
 /***************************************************
-* Author  : Anav Prasad
-* Nick    : vrangr
-* Created : Fri Dec 22 21:09:22 IST 2023
+* AUTHOR : Anav Prasad
+* Nick   : vrangr
 ****************************************************/
 #include <iostream>
 #include <vector>
@@ -24,18 +23,15 @@
 #include <bitset>
 #include <array>
 #include <assert.h>
-#define debug(...) 42
+#define debug(...)
 #ifdef LOCAL
     #undef debug
     #include <algo/debug.hpp>
     const bool DEBUG = true;
-#else
-    [[maybe_unused]] const bool DEBUG = false;
 #endif
 
 using namespace std;
 
-typedef unsigned int uint;
 typedef long long int ll;
 typedef unsigned long long int ull;
 typedef long double ld;
@@ -54,13 +50,9 @@ typedef __int128_t i128;
 #define space " "
 #define yes "YES\n"
 #define no "NO\n"
-#define pass ((void)0)
+#define pass (void)0
 template<typename type>inline void print_vec(const vector<type> &v){rep(i,sz(v))cout<<v[i]<<" \n"[i==sz(v)-1];}
 void solve();
-
-// IMPORT SNIPPETS HERE
-
-// END OF SNIPPETS
 
 int main(){
 	fastIO;
@@ -71,35 +63,28 @@ int main(){
 	return 0;
 }
 
-const ll mod = (ll)1e9+7;
-ll maxfac = (ll)2e5+1ll;
-vector<ll> fact(maxfac), invs(maxfac);
-
-ll inv(ll n){
-    if (n <= 1ll) return 1ll;
-    return ((mod-mod/n)*inv(mod%n))%mod;
-}
-
-void init(){
-    static bool init = false;
-    if (init) return;
-    init = true;
-    fact[0] = fact[1] = 1ll;
-    rep(i,2ll,maxfac-1ll,1ll){
-        fact[i] = (fact[i-1ll]*i)%mod;
-        invs[i] = inv(fact[i]);
-    }
-}
-
-
-ll ncr(ll n, ll r){
-    if (n < r) return 0ll;
-    return ((fact[n]*invs[n-r])%mod * invs[r])%mod;
-}
-
 void solve(){
-    init();
-    ll n, k; cin >> n >> k;
+    ll n; cin >> n;
     vector<ll> a(n);
-    vector<vector<vector<vector<ll>>>> dp; // dp[r][p][q][turn]: rounds, 
+    rep(i,n) cin >> a[i];
+    auto get_mex_sum = [&]() -> ll {
+        ll sum = 0ll, mex = 0ll;
+        set<ll> st;
+        // vector<ll> mexs(n);
+        rep(i,n){
+            st.insert(a[i]);
+            while(st.find(mex) != st.end())
+                mex++;
+            // mexs[i] = mex;
+            sum += mex;
+        }
+        // debug(a,mexs);
+        return sum;
+    };
+    ll mxsum = LLONG_MIN;
+    rep(i,n){
+        mxsum = max(mxsum,get_mex_sum());
+        rotate(a.begin(),a.begin()+1,a.end());
+    }
+    cout << mxsum << endl;
 }

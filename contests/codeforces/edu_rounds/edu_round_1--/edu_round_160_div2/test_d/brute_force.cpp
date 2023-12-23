@@ -1,7 +1,6 @@
 /***************************************************
-* Author  : Anav Prasad
-* Nick    : vrangr
-* Created : Fri Dec 22 21:09:22 IST 2023
+* AUTHOR : Anav Prasad
+* Nick   : vrangr
 ****************************************************/
 #include <iostream>
 #include <vector>
@@ -24,7 +23,7 @@
 #include <bitset>
 #include <array>
 #include <assert.h>
-#define debug(...) 42
+#define debug(...)
 #ifdef LOCAL
     #undef debug
     #include <algo/debug.hpp>
@@ -35,7 +34,6 @@
 
 using namespace std;
 
-typedef unsigned int uint;
 typedef long long int ll;
 typedef unsigned long long int ull;
 typedef long double ld;
@@ -54,13 +52,9 @@ typedef __int128_t i128;
 #define space " "
 #define yes "YES\n"
 #define no "NO\n"
-#define pass ((void)0)
+#define pass (void)0
 template<typename type>inline void print_vec(const vector<type> &v){rep(i,sz(v))cout<<v[i]<<" \n"[i==sz(v)-1];}
 void solve();
-
-// IMPORT SNIPPETS HERE
-
-// END OF SNIPPETS
 
 int main(){
 	fastIO;
@@ -71,35 +65,47 @@ int main(){
 	return 0;
 }
 
-const ll mod = (ll)1e9+7;
-ll maxfac = (ll)2e5+1ll;
-vector<ll> fact(maxfac), invs(maxfac);
-
-ll inv(ll n){
-    if (n <= 1ll) return 1ll;
-    return ((mod-mod/n)*inv(mod%n))%mod;
-}
-
-void init(){
-    static bool init = false;
-    if (init) return;
-    init = true;
-    fact[0] = fact[1] = 1ll;
-    rep(i,2ll,maxfac-1ll,1ll){
-        fact[i] = (fact[i-1ll]*i)%mod;
-        invs[i] = inv(fact[i]);
-    }
-}
-
-
-ll ncr(ll n, ll r){
-    if (n < r) return 0ll;
-    return ((fact[n]*invs[n-r])%mod * invs[r])%mod;
-}
-
 void solve(){
-    init();
-    ll n, k; cin >> n >> k;
-    vector<ll> a(n);
-    vector<vector<vector<vector<ll>>>> dp; // dp[r][p][q][turn]: rounds, 
+    ll n; cin >> n;
+    vector<ll> p(n);
+    rep(i,n) cin >> p[i];
+    vector<ll> dp((1<<n),0ll);
+    auto process = [&] (auto &&self, ll vis) -> void {
+        if (dp[vis]) return;
+        dp[vis] = 1ll;
+        ll last = -1;
+        vector<ll> nxt(n,n);
+        rep(i,n-1ll,0ll,-1ll){
+            ll cur = 1ll<<i;
+            if (cur&vis) continue;
+            if (last == -1){
+                last = i;
+                continue;
+            }
+            nxt[i] = last;
+            last = i;
+        }
+        debug(vis);
+        debug(bitset<64>(vis).to_string().substr(64-n));
+        // debug(p,nxt);
+        if (DEBUG){
+            cout << "p: [";
+            rep(i,n){
+                if (vis&(1ll<<i)) continue;
+                cout << space << p[i];
+            }
+            cout << " ]\n";
+        }
+        debug(nxt);
+        last = -1ll;
+        rep(i,n){
+            ll cur = 1ll<<i;
+            if ((cur&vis)) continue;
+            if (last != -1 && p[last] < p[i]) self(self,vis|cur);
+            else if (nxt[i] != n && p[nxt[i]] < p[i]) self(self,vis|cur);
+            last = i;
+        }
+    };
+    process(process,0ll);
+    cout << accumulate(all(dp),0ll) << endl;
 }

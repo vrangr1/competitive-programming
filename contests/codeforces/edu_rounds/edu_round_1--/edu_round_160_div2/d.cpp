@@ -1,7 +1,7 @@
 /***************************************************
 * Author  : Anav Prasad
 * Nick    : vrangr
-* Created : Fri Dec 22 21:09:22 IST 2023
+* Created : Mon Dec 18 20:55:30 IST 2023
 ****************************************************/
 #include <iostream>
 #include <vector>
@@ -71,35 +71,66 @@ int main(){
 	return 0;
 }
 
-const ll mod = (ll)1e9+7;
-ll maxfac = (ll)2e5+1ll;
-vector<ll> fact(maxfac), invs(maxfac);
-
-ll inv(ll n){
-    if (n <= 1ll) return 1ll;
-    return ((mod-mod/n)*inv(mod%n))%mod;
-}
-
-void init(){
-    static bool init = false;
-    if (init) return;
-    init = true;
-    fact[0] = fact[1] = 1ll;
-    rep(i,2ll,maxfac-1ll,1ll){
-        fact[i] = (fact[i-1ll]*i)%mod;
-        invs[i] = inv(fact[i]);
-    }
-}
-
-
-ll ncr(ll n, ll r){
-    if (n < r) return 0ll;
-    return ((fact[n]*invs[n-r])%mod * invs[r])%mod;
-}
+const ll mod = 998244353ll;
 
 void solve(){
-    init();
-    ll n, k; cin >> n >> k;
-    vector<ll> a(n);
-    vector<vector<vector<vector<ll>>>> dp; // dp[r][p][q][turn]: rounds, 
+    ll n; cin >> n;
+    vector<ll> p(n);
+    rep(i,n) cin >> p[i];
+    if (n == 1ll) return void(cout << "1\n");
+    vector<ll> dp(n+1ll,0), nxt(n,-1);
+    nxt.back() = n;
+    rep(i,n-2,0ll,-1ll){
+        nxt[i] = i+1;
+        while(nxt[i] < n && p[nxt[i]] > p[i])
+            nxt[i] = nxt[nxt[i]];
+    }
+    ll sum = 0ll;
+    dp[0] = 1ll;
+    debug(nxt);
+    rep(i,n){
+        dp[i+1] += dp[i];
+        dp[nxt[i]] += dp[i];
+        if (nxt[i] == n){
+            sum += dp[i];
+            sum %= mod;
+        }
+    }
+    debug(dp);
+    cout << sum << endl;
 }
+
+/*
+
+_ _ _ _ _ _ _ _ x _ _ _ _ _ _ v
+
+_ _ _ _ _ _ _ _ 10 13 14 15 16 17 18 12
+
+
+
+ns ns sm _ _ _ _ sm _ _ _ sm _ _ _
+sm ns sm
+smallest    _ _ _ _ _ _ [smallest _ _ _ [smallest _ _ _]
+
+3
+
+1
+2
+2 1
+
+4
+2 4 1 3
+
+1
+5
+10 2 6 3 4
+
+10 2 6 3 4
+10 2 3 4
+2 6 3 4
+2 3 4
+10 2 4
+2 4
+
+
+*/

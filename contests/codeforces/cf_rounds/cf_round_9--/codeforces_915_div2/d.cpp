@@ -1,7 +1,7 @@
 /***************************************************
 * Author  : Anav Prasad
 * Nick    : vrangr
-* Created : Fri Dec 22 21:09:22 IST 2023
+* Created : Sat Dec 16 21:37:47 IST 2023
 ****************************************************/
 #include <iostream>
 #include <vector>
@@ -71,35 +71,71 @@ int main(){
 	return 0;
 }
 
-const ll mod = (ll)1e9+7;
-ll maxfac = (ll)2e5+1ll;
-vector<ll> fact(maxfac), invs(maxfac);
-
-ll inv(ll n){
-    if (n <= 1ll) return 1ll;
-    return ((mod-mod/n)*inv(mod%n))%mod;
-}
-
-void init(){
-    static bool init = false;
-    if (init) return;
-    init = true;
-    fact[0] = fact[1] = 1ll;
-    rep(i,2ll,maxfac-1ll,1ll){
-        fact[i] = (fact[i-1ll]*i)%mod;
-        invs[i] = inv(fact[i]);
+void solve() {
+    int n;
+    cin >> n;
+    
+    vector<int> p(n);
+    for (int i = 0; i < n; i++) {
+        cin >> p[i];
     }
+    
+    ll ans = 0;
+    ll res = n;
+    vector<int> s{-1};
+    debug(p,ans,res,endl);
+    for (int i = 0; i < 2 * n; i++) {
+        debug(i,p,s);
+        while (s.size() > 1 && p[i % n] < p[s.back() % n]) {
+            int x = s.back();
+            s.pop_back();
+            res -= 1LL * p[x % n] * (x - s.back());
+        }
+        res += 1LL * p[i % n] * (i - s.back());
+        s.push_back(i);
+        if (i >= n) {
+            ans = max(ans, res);
+        }
+        debug('p',res,s,ans,endl);
+    }
+    
+    cout << ans << "\n";
 }
 
-
-ll ncr(ll n, ll r){
-    if (n < r) return 0ll;
-    return ((fact[n]*invs[n-r])%mod * invs[r])%mod;
-}
-
-void solve(){
-    init();
-    ll n, k; cin >> n >> k;
-    vector<ll> a(n);
-    vector<vector<vector<vector<ll>>>> dp; // dp[r][p][q][turn]: rounds, 
+void solve1(){
+    int n; cin >> n;
+    vector<int> a(n);
+    rep(i,n) cin >> a[i];
+    deque<pair<ll,ll>> dq;
+    ll s = 0ll, mex = 0ll;
+    set<ll> st;
+    rep(i,n){
+        st.insert(a[i]);
+        while(st.find(mex) != st.end())
+            mex++;
+        if (dq.empty() || dq.back().first < mex)
+            dq.emplace_back(mex,1);
+        else dq.back().second++;
+        s += mex;
+    }
+    ll sol = s;
+    rep(i,n){
+        s -= dq.front().first;
+        dq.front().second--;
+        if (dq.front().second == 0) dq.pop_front();
+        ll cur = 0ll;
+        while(!dq.empty() && dq.back().first > a[i]){
+            cur += dq.back().second;
+            s -= dq.back().first * dq.back().second;
+            dq.pop_back();
+        }
+        if (dq.empty() || dq.back().first < a[i])
+            dq.emplace_back(a[i], cur);
+        else dq.back().second += cur;
+        s += dq.back().first * dq.back().second;
+        s += n;
+        dq.emplace_back(n,1);
+        sol = max(sol, s);
+    }
+    cout << sol << endl;
 }

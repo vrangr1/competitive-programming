@@ -1,7 +1,6 @@
 /***************************************************
-* Author  : Anav Prasad
-* Nick    : vrangr
-* Created : Fri Dec 22 21:09:22 IST 2023
+* AUTHOR : Anav Prasad
+* Nick   : vrangr
 ****************************************************/
 #include <iostream>
 #include <vector>
@@ -23,27 +22,25 @@
 #include <bit>
 #include <bitset>
 #include <array>
+#include <random>
 #include <assert.h>
-#define debug(...) 42
+#define debug(...)
 #ifdef LOCAL
     #undef debug
     #include <algo/debug.hpp>
     const bool DEBUG = true;
-#else
-    [[maybe_unused]] const bool DEBUG = false;
 #endif
 
 using namespace std;
 
-typedef unsigned int uint;
 typedef long long int ll;
 typedef unsigned long long int ull;
 typedef long double ld;
 typedef __int128_t i128;
 #define endl "\n"
 #define fastIO ios_base::sync_with_stdio(false),cin.tie(0)
-#define TEST int T;cin>>T;while(T--)solve();
-#define TEST1 solve();
+#define TEST cout << "1\n"
+#define TEST1
 #define all(x) (x).begin(), (x).end()
 #define rall(x) (x).rbegin(), (x).rend()
 #define sz(v) ((int)(v).size())
@@ -54,52 +51,35 @@ typedef __int128_t i128;
 #define space " "
 #define yes "YES\n"
 #define no "NO\n"
-#define pass ((void)0)
+#define pass (void)0
 template<typename type>inline void print_vec(const vector<type> &v){rep(i,sz(v))cout<<v[i]<<" \n"[i==sz(v)-1];}
-void solve();
-
-// IMPORT SNIPPETS HERE
-
-// END OF SNIPPETS
+mt19937 rng((uint)chrono::steady_clock::now().time_since_epoch().count());
+ull grng(const ull maxval){return rng()%maxval;}
+void generate_test();
 
 int main(){
 	fastIO;
-	TEST;
+    TEST;
+    generate_test();
     #ifdef LOCAL
         cout << "\nTime elapsed: " << 1.0 * clock() / CLOCKS_PER_SEC << " s.\n";
     #endif
 	return 0;
 }
 
-const ll mod = (ll)1e9+7;
-ll maxfac = (ll)2e5+1ll;
-vector<ll> fact(maxfac), invs(maxfac);
+const ll maxn = 5, maxp = 15;
 
-ll inv(ll n){
-    if (n <= 1ll) return 1ll;
-    return ((mod-mod/n)*inv(mod%n))%mod;
-}
-
-void init(){
-    static bool init = false;
-    if (init) return;
-    init = true;
-    fact[0] = fact[1] = 1ll;
-    rep(i,2ll,maxfac-1ll,1ll){
-        fact[i] = (fact[i-1ll]*i)%mod;
-        invs[i] = inv(fact[i]);
+// Generate just a singular test. The multitudinous nature of tests are implemented through a bash script
+void generate_test(){
+    ll n = grng(maxn)+1ll;
+    ll mxp = max(maxp,n+10ll);
+    cout << n << endl;
+    set<ll> st;
+    rep(i,n){
+        ll cur = grng(mxp)+1ll;
+        while(st.find(mxp) != st.end())
+            cur = grng(mxp)+1ll;
+        st.insert(cur);
+        cout << cur << " \n"[i==n-1ll];
     }
-}
-
-
-ll ncr(ll n, ll r){
-    if (n < r) return 0ll;
-    return ((fact[n]*invs[n-r])%mod * invs[r])%mod;
-}
-
-void solve(){
-    init();
-    ll n, k; cin >> n >> k;
-    vector<ll> a(n);
-    vector<vector<vector<vector<ll>>>> dp; // dp[r][p][q][turn]: rounds, 
 }

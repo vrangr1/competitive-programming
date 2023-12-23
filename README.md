@@ -1,2 +1,2 @@
-# competitive-coding
-Repository for my cp codes.
+# Competitive-Programming
+Repository for competitive-programming journey.
