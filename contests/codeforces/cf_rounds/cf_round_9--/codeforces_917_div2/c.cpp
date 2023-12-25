@@ -71,6 +71,25 @@ int main(){
 	return 0;
 }
 
+void solve(){
+    ll n, k, d; cin >> n >> k >> d;
+    vector<ll> a(n), v(k);
+    rep(i,n) cin >> a[i];
+    rep(i,k) cin >> v[i];
+    ll sol = 0;
+    rep(i,d){
+        if (n + (d-i-1ll)/2ll <= sol) break;
+        ll cur = 0ll;
+        rep(j,n) if (a[j] == j+1) cur++;
+        cur += (d-i-1ll)/2ll;
+        sol = max(sol,cur);
+        rep(j,v[i%k])
+            a[j]++;
+    }
+    cout << sol << endl;
+}
+
+// (Minorly incorrect) Solution to a different problem( :(, should read the question properly, the problem that I ended up writing a solution for is kind of nice problem too I guess)
 void solve1(){
     ll n, k, d; cin >> n >> k >> d;
     vector<ll> a(n), v(k);
