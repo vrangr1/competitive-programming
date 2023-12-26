@@ -76,72 +76,14 @@ void solve(){
     sort(all(order),[&](const int &i, const int &j){
         return a[i] < a[j];
     });
-    multiset<int> bs(all(b));
-    int mn = 0;
-    bool trip = false;
-    rep(i,n){
-        int ind = order[i];
-        if (trip){
-            assert(!bs.empty());
-            b[ind] = *bs.rbegin();
-            assert(a[ind] > b[ind]);
-            bs.erase(prev(bs.end()));
-            mn++;
-            continue;
-        }
-        auto iter = bs.lower_bound(a[ind]);
-        if (iter == bs.end()){
-            assert(!bs.empty());
-            trip = true;
-            b[ind] = *bs.rbegin();
-            assert(a[ind] > b[ind]);
-            bs.erase(prev(bs.end()));
-            mn++;
-            continue;
-        }
-        b[ind] = *iter;
-        bs.erase(iter);
-    }
-    if (mn > x) return void(cout << no);
-    if (mn == x){
-        cout << yes;
-        rep(i,n)
-            cout << b[order[i]] << " \n"[i==n-1];
-        return;
-    }
-    int j = n-1;
-    assert(bs.empty());
-    bs.insert(all(b));
-    rep(i,n){
-        int ind = order[i];
-        if (a[ind] > b[ind]) break;
-        assert(!bs.empty());
-        if (*bs.begin() >= a[ind]){
-            assert(b[ind] == *bs.begin());
-            bs.erase(bs.begin());
-            continue;
-        }
-        
-        while(j > i && a[order[j]] <= b[ind]){
-            j--;
-        }
-        if (j == i) break;
-        mn++;
-        // swap(b[ind], b[order[j]]);
-        if (mn == x) break;
-    }
-    if (mn < x) return void(cout << no);
-    assert(mn == x);
-    cout << yes;
+    sort(all(b));
+    vector<int> sol(n);
     rep(i,n)
-        cout << b[order[i]] << " \n"[i==n-1];
+        sol[order[i]] = b[(i+x)%n];
+    int ct = 0;
+    rep(i,n)
+        ct += (a[i] > sol[i]);
+    if (ct != x) return void(cout << no);
+    cout << yes;
+    print_vec(sol);
 }
-
-/*
-
-2 3 4 5 6
-1 2 3 4 5
-
-2 3 4 5 6
-2 3 4 5 1
-*/
