@@ -71,80 +71,57 @@ int main(){
 	return 0;
 }
 
+class fentree{
+private:
+    int n;
+    vector<int> tree;
+public:
+    fentree(int gn){
+        n = gn;
+        gn++;
+        tree.assign(gn,0);
+    }
+
+    void update(int ind){
+        for(ind++;ind<=n;ind+=(ind&(-ind)))
+            tree[ind]++;
+    }
+
+    int query(int ind){
+        int res = 0;
+        for(ind++; ind > 0; ind-=(ind&(-ind)))
+            res += tree[ind];
+        return res;
+    }
+};
+
 void solve(){
     int n; cin >> n;
-    vector<vector<int>> p;
+    vector<int> a(n), b(n);
+    vector<vector<int>> c;
     rep(i,n){
-        int a, b; cin >> a >> b;
-        p.push_back({a,i,0});
-        p.push_back({b,i,1});
+        int u, v; cin >> u >> v;
+        c.push_back({u,0,i});
+        c.push_back({v,1,i});
     }
-    sort(all(p),[](const vector<int> &a, const vector<int> &b){
-        return a[0] < b[0];
+    sort(all(c),[](const vector<int> &u, const vector<int> &v){
+        return u[0] < v[0];
     });
-    vector<ll> opens(n,-1ll),closes(n,-1ll);
-    ll o = 0ll, c = 0ll, sol = 0ll;
-    debug(p);
     rep(i,2*n){
-        debug(i,o,c,p[i]);
-        if (p[i][2] == 0){
-            opens[p[i][1]] = o;
-            closes[p[i][1]] = c;
-            o++;
-            debug(opens[p[i][1]]);
-            debug(closes[p[i][1]],endl);
-            continue;
-        }
-        assert(opens[p[i][1]] != -1ll);
-        assert(closes[p[i][1]] != -1ll);
-        debug(opens[p[i][1]]);
-        debug(closes[p[i][1]],sol,'c');
-        // sol += max((opens[p[i][1]] - (c-closes[p[i][1]])),0ll);
-        ll ind = p[i][1];
-        // sol += opens[ind] - closes[ind] - (c-closes[ind])
-        debug(sol,endl);
-        c++;
+        if (c[i][1]) b[c[i][2]] = i;
+        else a[c[i][2]] = i;
+    }
+    fentree ft(2*n);
+    vector<int> order(n);
+    iota(all(order),0);
+    sort(all(order),[&](const int &i, const int &j){
+        return b[i] < b[j];
+    });
+    ll sol = 0;
+    rep(i,n){
+        int ind = order[i];
+        sol += (ll)(i - ft.query(a[ind]));
+        ft.update(a[ind]);
     }
     cout << sol << endl;
 }
-
-/*
-
-5
-
-1
-2
-2 3
-1 4
-
-1
-6
-2 6
-3 9
-4 5
-1 8
-7 10
--2 100
-
-
-4
--10 10
--5 5
--12 12
--13 13
-5
--4 9
--2 5
-3 4
-6 7
-8 10
-4
-1 2
-3 4
-5 6
-7 8
-
-
-
-
-*/
