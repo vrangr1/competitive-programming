@@ -2,6 +2,13 @@
 
 # set -e
 
+<<COMMENT
+TODO:
+    -> Check if checker works
+    -> Make set -e work with everything? set -e is crap. Don't use it.
+    -> 
+COMMENT
+
 ## Modes:
 vs_brute_force=true # Assumed in general
 explore_mode=false
