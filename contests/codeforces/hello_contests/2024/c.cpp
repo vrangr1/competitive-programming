@@ -142,7 +142,7 @@ void solve2(){
         t.push_back(a[i]);
         sol++;
     }
-    // cout << compute(s) + compute(t) << endl;
+    cout << compute(s) + compute(t) << endl;
     cout << sol << endl;
     // debug(s,t);
 }
@@ -266,11 +266,20 @@ void solve3(){
     cout << last << endl;
 }
 
+// Observation is king.... 
 void solve(){
     int n; cin >> n;
     vector<int> a(n);
     rep(i,n) cin >> a[i];
-    
+    int x = INT_MAX, y = INT_MAX;
+    int sol = 0;
+    rep(i,n){
+        if (x > y) swap(x,y);
+        if (x >= a[i]) x = a[i];
+        else if (y >= a[i]) y = a[i];
+        else x = a[i], sol++;
+    }
+    cout << sol << endl;
 }
 
 
