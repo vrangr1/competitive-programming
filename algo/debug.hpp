@@ -61,6 +61,8 @@ template <typename type> void print(const forward_list<type> &flst);
 template <typename type> void print(const deque<type> &deq);
 template <typename type> void print(priority_queue<type> pq);
 template <typename t1, typename t2> void print(priority_queue<t1,vector<t1>,t2> pq);
+template <class type, size_t... I> void print(const type& tup, index_sequence<I...>);
+template <class... type> void print(const tuple<type...> &tup);
 template <typename Arg1> void debug_encapsulate(const char* names, Arg1&& arg1);
 template <typename Arg1, typename... Args> void debug_encapsulate(const char* names, Arg1&& arg1, Args&&... args);
 
@@ -288,6 +290,16 @@ template <typename t1, typename t2> void print(priority_queue<t1,vector<t1>,t2> 
         cout << " \0"[pq.empty()];
     }
     cout << " }";
+}
+
+template <class type, size_t... I> void print(const type& tup, index_sequence<I...>){
+    cout << "(";
+    (..., (cout << (I==0?"":", ") << get<I>(tup)));
+    cout << ")";
+}
+
+template <class... type> void print(const tuple<type...> &tup){
+    print(tup, make_index_sequence<sizeof...(type)>());
 }
 
 template <typename Arg1> void debug_encapsulate(const char* names, Arg1&& arg1){
