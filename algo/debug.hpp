@@ -67,6 +67,12 @@ template <typename Arg1> void debug_encapsulate(const char* names, Arg1&& arg1);
 template <typename Arg1, typename... Args> void debug_encapsulate(const char* names, Arg1&& arg1, Args&&... args);
 
 template <typename type> void print(const type &var){
+    if (is_integral<type>::value){
+        if (var == numeric_limits<type>::max())
+            return void(cout << "inf");
+        else if (is_signed_v<type> && var == numeric_limits<type>::min())
+            return void(cout << "-inf");
+    }
     cout << var;
 }
 
