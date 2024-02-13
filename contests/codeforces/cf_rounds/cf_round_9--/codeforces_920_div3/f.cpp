@@ -59,12 +59,20 @@ template<typename type>inline void print_vec(const vector<type> &v){rep(i,sz(v))
 void solve();
 
 // IMPORT SNIPPETS HERE
-#ifndef RANDOM_SNIPPET
-#define RANDOM_SNIPPET
-#include <random>
-#include <chrono>
-std::mt19937 rng((unsigned int)std::chrono::steady_clock::now().time_since_epoch().count());
-unsigned long long int grng(const unsigned long long int maxval){return rng()%maxval;}
+#ifndef SQRT_SNIPPET
+#define SQRT_SNIPPET
+#include <iostream>
+// Babylonian Method
+template <typename type, typename = typename std::enable_if<std::is_integral<type>::value>::type>
+type bsqrt(type x){
+    const type one = static_cast<type>(1), two = static_cast<type>(2);
+    type a = x, b = (x + one) / two;
+    while (a > b){
+        a = b;
+        b = (b + x / b) / two;
+    }
+    return a;
+}
 #endif
 // END OF SNIPPETS
 
@@ -77,85 +85,45 @@ int main(){
 	return 0;
 }
 
-class sum{
-private:
-    ll n, d;
-    vector<ll> psum, a;
-public:
-    sum(){}
-
-    sum(const vector<ll> &a){
-        n = sz(a);
-        this->a = a;
-        psum.resize(n);
-    }
-
-    void assign(const vector<ll> &a){
-        n = sz(a);
-        this->a = a;
-        psum.resize(n);
-    }
-
-    void build(const ll diff){
-        this->d = diff;
-        rep(i,n){
-            if (i < d) psum[i] = a[i];
-            else psum[i] = psum[i-d]+a[i];
-        }
-    }
-
-    ll query(ll l, ll r){
-        r = l + ((r-l)/d)*d;
-        return psum[r]-psum[l]+a[l];
-    }
-};
-
-class segtree{
-private:
-    ll n, d;
-    vector<ll> tree, a;
-    sum psum;
-
-    ll get_ind(ll ind){
-        return ind/d;
-    }
-public:
-    segtree(const vector<ll> &a){
-        this->a = a;
-        ll gn = sz(a);
-        n = gn;
-        gn*=2ll;
-        if (gn-(gn&(-gn)) != 0ll)
-            gn = 1ll<<(bit_width((ull)gn));
-        tree.resize(gn);
-        psum.assign(a);
-        d == LLONG_MAX;
-    }
-
-    void build(const ll diff){
-        this->d = diff;
-        n = sz(a)/d;
-        psum.build(d);
-        
-    }
-
-    ll query(ll l, ll k){
-        ll res = 0ll;
-        return res;
-    }
-};
-
 void solve(){
     ll n, q; cin >> n >> q;
     vector<ll> a(n);
     rep(i,n) cin >> a[i];
-    vector<vector<vector<ll>>> queries(n+1ll);
-    segtree st(a);
-    rep(i,q){
-        ll s, d, k; cin >> s >> d >> k;
-        queries[d].push_back({s,k});
+    const ll dmax = bsqrt(q)+1ll;
+    debug(dmax);
+    vector<vector<ll>> psum(dmax,vector<ll>(n)), msum(dmax,vector<ll>(n));
+    rep(d,1ll,dmax-1ll,1ll){
+        rep(i,n){
+            if (i < d){
+                psum[d][i] = a[i];
+                msum[d][i] = a[i];
+                continue;
+            }
+            psum[d][i] = psum[d][i-d] + a[i];
+            msum[d][i] = msum[d][i-d] + a[i]*(i/d + 1ll);
+        }
     }
-    rep(d,1ll,n,1ll){
-
+    auto gpsum = [&](ll l, ll r, ll d) -> ll {
+        assert(d < dmax);
+        if (l < d) return psum[d][r];
+        return psum[d][r]-psum[d][l-d];
+    };
+    auto gmsum = [&](ll l, ll r, ll d) -> ll {
+        assert(d < dmax);
+        debug(l,r,d,msum[d]);
+        if (l < d) return msum[d][r];
+        return msum[d][r] - msum[d][l-d] - gpsum(l,r,d)*(l/d);
+    };
+    while(q--){
+        ll s, d, k; cin >> s >> d >> k; --s;
+        ll r = min(n-1ll,s+(k-1ll)*d);
+        debug(q,s,d,k,r);
+        if (d < dmax) cout << gmsum(s,r,d) << " \n"[q==0];
+        else{
+            ll sol = 0ll;
+            rep(i,s,r,d)
+                sol += a[i]*((i-s)/d + 1ll);
+            cout << sol << " \n"[q==0];
+        }
     }
 }
