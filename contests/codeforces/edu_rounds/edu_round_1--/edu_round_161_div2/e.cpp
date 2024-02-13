@@ -1,7 +1,7 @@
 /***************************************************
 * Author  : Anav Prasad
 * Nick    : vrangr
-* Created : Thu Jan 18 20:16:34 IST 2024
+* Created : Tue Feb 13 09:04:13 IST 2024
 ****************************************************/
 #include <iostream>
 #include <vector>
@@ -73,29 +73,22 @@ int main(){
 }
 
 void solve(){
-    ll n; cin >> n;
-    vector<ll> a(n);
-    rep(i,n) cin >> a[i];
-    vector<ll> right(n), left(n);
-    right[0] = 0;
-    right[1] = 1;
-    rep(i,1ll,n-2ll,1ll){
-        if (llabs(a[i+1]-a[i]) < llabs(a[i]-a[i-1]))
-            right[i+1] = right[i]+1ll;
-        else
-            right[i+1] = right[i] + llabs(a[i+1]-a[i]);
+    ll x; cin >> x;
+    ll m = bit_width((ull)x) - 1ll, k = m;
+    vector<ll> sol;
+    rep(i,m) sol.push_back(i*2ll + 1ll);
+    reverse(all(sol));
+    debug(x);
+    debug(bitset<64>(x).to_string());
+    x -= (1ll<<m);
+    while(x){
+        assert(x>0ll);
+        m = bit_width((ull)x)-1ll;
+        ll rem = k-m;
+        sol.push_back(rem*2ll);
+        x -= (1ll<<m);
     }
-    left[n-1] = 0ll;
-    left[n-2ll] = 1ll;
-    rep(i,n-2ll,1ll,-1){
-        if (llabs(a[i-1]-a[i]) < llabs(a[i]-a[i+1]))
-            left[i-1] = left[i]+1ll;
-        else left[i-1] = left[i]+llabs(a[i-1]-a[i]);
-    }
-    ll m; cin >> m;
-    while(m--){
-        ll x, y; cin >> x >> y; --x; --y;
-        if (x <= y) cout << right[y]-right[x] << endl;
-        else cout << left[y] - left[x] << endl;
-    }
+    reverse(all(sol));
+    cout << sz(sol) << endl;
+    print_vec(sol);
 }

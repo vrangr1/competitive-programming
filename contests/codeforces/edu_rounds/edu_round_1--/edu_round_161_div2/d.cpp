@@ -1,7 +1,7 @@
 /***************************************************
 * Author  : Anav Prasad
 * Nick    : vrangr
-* Created : Thu Jan 18 20:16:34 IST 2024
+* Created : Tue Feb 13 09:31:38 IST 2024
 ****************************************************/
 #include <iostream>
 #include <vector>
@@ -73,29 +73,60 @@ int main(){
 }
 
 void solve(){
-    ll n; cin >> n;
-    vector<ll> a(n);
+    int n; cin >> n;
+    vector<int> a(n), d(n);
     rep(i,n) cin >> a[i];
-    vector<ll> right(n), left(n);
-    right[0] = 0;
-    right[1] = 1;
-    rep(i,1ll,n-2ll,1ll){
-        if (llabs(a[i+1]-a[i]) < llabs(a[i]-a[i-1]))
-            right[i+1] = right[i]+1ll;
-        else
-            right[i+1] = right[i] + llabs(a[i+1]-a[i]);
+    rep(i,n) cin >> d[i];
+    if (n == 1) return void(cout << "0\n");
+    vector<int> inds;
+    set<int> rem;
+    vector<int> nxt(n), prev(n);
+    rep(i,n){
+        prev[i] = i-1;
+        nxt[i] = i+1;
+        rem.insert(i);
+        if (i == 0 && d[i] < a[i+1]) inds.push_back(i);
+        else if (i == n-1 && d[i] < a[i-1]) inds.push_back(i);
+        else if (d[i] < a[i-1] + a[i+1]) inds.push_back(i);
     }
-    left[n-1] = 0ll;
-    left[n-2ll] = 1ll;
-    rep(i,n-2ll,1ll,-1){
-        if (llabs(a[i-1]-a[i]) < llabs(a[i]-a[i+1]))
-            left[i-1] = left[i]+1ll;
-        else left[i-1] = left[i]+llabs(a[i-1]-a[i]);
-    }
-    ll m; cin >> m;
-    while(m--){
-        ll x, y; cin >> x >> y; --x; --y;
-        if (x <= y) cout << right[y]-right[x] << endl;
-        else cout << left[y] - left[x] << endl;
+    auto upd = [&](int ind){
+        if (nxt[ind] != n) prev[nxt[ind]] = prev[ind];
+        if (prev[ind] != -1) nxt[prev[ind]] = nxt[ind];
+    };
+    auto valid_del = [&](int ind) -> bool {
+        assert(ind >= 0 && ind < n);
+        if (prev[ind] == -1 && nxt[ind] == n) return false;
+        if (prev[ind] == -1)
+            return d[ind] < a[nxt[ind]];
+        if (nxt[ind] == n)
+            return d[ind] < a[prev[ind]];
+        return d[ind] < a[nxt[ind]] + a[prev[ind]];
+    };
+    rep(r,n){
+        if (sz(rem) <= 1){
+            cout << 0 << " \n"[r==n-1];
+            continue;
+        }
+        int ct = 0;
+        vector<int> ins, upds;
+        while(!inds.empty()){
+            int ind = inds.back();
+            if (rem.find(ind) == rem.end()){
+                inds.pop_back();
+                continue;
+            }
+            if (valid_del(ind)){
+                ct++;
+                rem.erase(ind);
+                upds.push_back(ind);
+                if (prev[ind] != -1) ins.push_back(prev[ind]);
+                if (nxt[ind] != n) ins.push_back(nxt[ind]);
+            }
+            inds.pop_back();
+        }
+        for (int ind : upds)
+            upd(ind);
+        swap(ins,inds);
+        cout << ct << " \n"[r==n-1];
     }
 }
