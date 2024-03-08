@@ -1,15 +1,18 @@
 ## Too many scripts!! Need a script to list the scripts lol
 
-echo "List of all scripts:
-\033[4m\033[1;31mCOMMAND\033[0m              : \033[4m\033[1mDescription\033[0m
-\033[1;31mcpr \033[0m                 : Compiles and runs a cpp file
-\033[1;31msfile \033[0m               : Copies the template cpp file over to current location with given name
-\033[1;31mstest \033[0m               : Setups testing system for a particular file
-\033[1;31mrtest \033[0m               : Runs tests after setting up the testing system
-\033[1;31msedit \033[0m               : Edits the template cpp file
-\033[1;31mdebug_edit \033[0m          : Edits the debug header file
-\033[1;31mpublish_debug_header\033[0m : Copies over the debug header file so that the compiler can find it
-\033[1;31mlist_snippets \033[0m       : Lists all snippets
-\033[1;31mlist_scripts \033[0m        : Lists all scripts
+#Imports
+source helper.sh
 
-\033[1mFor further information on how to run any given script, run the script with -h or --help option\033[0m"
+echo "List of all scripts:
+${UNDERLINE}${RED_BOLD}COMMAND${CLEAR}              : ${UNDERLINE}${BOLD}Description${CLEAR}
+${RED_BOLD}cpr ${CLEAR}                 : Compiles and runs a cpp file
+${RED_BOLD}sfile ${CLEAR}               : Copies the template cpp file over to current location with given name
+${RED_BOLD}stest ${CLEAR}               : Setups testing system for a particular file
+${RED_BOLD}rtest ${CLEAR}               : Runs tests after setting up the testing system
+${RED_BOLD}sedit ${CLEAR}               : Edits the template cpp file
+${RED_BOLD}debug_edit ${CLEAR}          : Edits the debug header file
+${RED_BOLD}publish_debug_header${CLEAR} : Copies over the debug header file so that the compiler can find it
+${RED_BOLD}list_snippets ${CLEAR}       : Lists all snippets
+${RED_BOLD}list_scripts ${CLEAR}        : Lists all scripts
+
+${BOLD}For further information on how to run any given script, run the script with -h or --help option${CLEAR}"

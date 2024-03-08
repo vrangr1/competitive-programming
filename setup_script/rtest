@@ -6,8 +6,11 @@
 TODO:
     -> Check if checker works
     -> Make set -e work with everything? set -e is crap. Don't use it.
-    -> 
+    -> tletest
 COMMENT
+
+## Imports:
+source helper.sh
 
 ## Modes:
 vs_brute_force=true # Assumed in general
@@ -18,6 +21,8 @@ case_mode=false
 manual_mode=false
 save_mode=false
 help=false
+checker_mode=false
+tle_mode=false
 
 POSITIONAL_ARGS=()
 
@@ -56,6 +61,10 @@ while [[ $# -gt 0 ]]; do
         debug_mode=true
         shift # past argument
         ;;
+    -k|--checker)
+        checker_mode=true
+        shift # past argument
+        ;;
     -h|--help)
         help=true
         explore_mode=false
@@ -77,17 +86,17 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [[ "$help" == true ]]; then
-    echo "\033[1mUsage:\033[1;31m rtest [options] <file_name> [checker] [brute_forcer] [generator]\033[0m"
-    echo "\033[1mfile_name\033[0m assumes the extension .cpp if not given."
-    echo "Normal execution without options runs \033[1m[file]\033[0m vs brute_forcer with the given generator"
-    echo "\033[1mOptions:"
-    echo " \033[1;31m -e, --explore\033[0m  Runs \033[1m[file]\033[0m on a randomly generated input"
-    echo " \033[1;31m -t, --test\033[0m     Runs \033[1m[brute_forcer]\033[0m on a randomly generated input"
-    echo " \033[1;31m -c, --case\033[0m     Generates one test case, runs both \033[1m[file]\033[0m and \033[1m[brute_forcer]\033[0m on it"
-    echo " \033[1;31m -m, --manual\033[0m   Runs both \033[1m[file]\033[0m and \033[1m[brute_forcer]\033[0m on given manual input"
-    echo " \033[1;31m -s, --save\033[0m     Save the input/output while running a particular case. Only works with \033[1m-m\033[0m or \033[1m-c\033[0m options"
-    echo " \033[1;31m -d, --debug\033[0m    Enables debug mode while compilation. Can only be enabled with \033[1m-e\033[0m or \033[1m-t\033[0m options"
-    echo " \033[1;31m -h, --help\033[0m     Display this help message\033[0m"
+    echo "${BOLD}Usage:${RED_BOLD} rtest [options] <file_name> [checker] [brute_forcer] [generator]${CLEAR}"
+    echo "${BOLD}file_name${CLEAR} assumes the extension .cpp if not given."
+    echo "Normal execution without options runs ${BOLD}[file]${CLEAR} vs ${BOLD}brute_forcer${CLEAR} with the given generator"
+    echo "${BOLD}Options:"
+    echo " ${RED_BOLD} -e, --explore${CLEAR}  Runs ${BOLD}[file]${CLEAR} on a randomly generated input"
+    echo " ${RED_BOLD} -t, --test${CLEAR}     Runs ${BOLD}[brute_forcer]${CLEAR} on a randomly generated input"
+    echo " ${RED_BOLD} -c, --case${CLEAR}     Generates one test case, runs both ${BOLD}[file]${CLEAR} and ${BOLD}[brute_forcer]${CLEAR} on it"
+    echo " ${RED_BOLD} -m, --manual${CLEAR}   Runs both ${BOLD}[file]${CLEAR} and ${BOLD}[brute_forcer]${CLEAR} on given manual input"
+    echo " ${RED_BOLD} -s, --save${CLEAR}     Save the input/output while running a particular case. Only works with ${BOLD}-m${CLEAR} or ${BOLD}-c${CLEAR} options"
+    echo " ${RED_BOLD} -d, --debug${CLEAR}    Enables debug mode while compilation. Can only be enabled with ${BOLD}-e${CLEAR} or ${BOLD}-t${CLEAR} options"
+    echo " ${RED_BOLD} -h, --help${CLEAR}     Display this help message${CLEAR}"
     exit
 fi
 
@@ -136,19 +145,20 @@ trap handle_ctrlc SIGINT
 compile_mode="--compile"
 if [[ "$debug_mode" == true ]]; then compile_mode="--debug"; fi
 if [[ "$save_mode" == true && "$manual_mode" == false && "$case_mode" == false ]]; then
-    echo "\033[1;31mSave\033[0m option is only availabe with either \033[1;31mmanual\033[0m or \033[1;31mcase\033[0m options"
+    echo "${RED_BOLD}Save${CLEAR} option is only availabe with either ${RED_BOLD}manual${CLEAR} or ${RED_BOLD}case${CLEAR} options"
     exit
 fi
 
 # Explore Mode:
 if [[ "$explore_mode" == true ]]; then
-    echo "Exploring behavior of $opt_sol against randomly generated inputs"
+    echo "${BOLD}Exploring behavior of ${RED}${opt_sol}.cpp${CLEAR}${BOLD} against a randomly generated input by ${RED_BOLD}${generator}.cpp${CLEAR}"
     cpr ../$opt_sol.cpp $compile_mode
     cpr $generator.cpp --compile
     ./generator > input
     ./$opt_sol < input > out1
+    echo "${BOLD}Input:${CLEAR}"
     cat input
-    echo "\noutput begins now:"
+    echo "${BOLD}\noutput begins now:${CLEAR}"
     cat out1
     handle_ctrlc
     exit
@@ -157,16 +167,17 @@ fi
 # Test Mode:
 if [[ "$test_mode" == true ]]; then
     if [[ "$manual_mode" == true ]]; then
-        echo "Cannot have\033[1;31m debug/manual\033[0m option enabled with\033[1;31m test\033[0m mode"
+        echo "Cannot have${RED_BOLD} debug/manual${CLEAR} option enabled with${RED_BOLD} test${CLEAR} mode"
         exit
     fi
-    echo "Testing $brute_force on randomly generated inputs"
+    echo "${BOLD}Testing ${RED_BOLD}${brute_force}.cpp${CLEAR}${BOLD} on a randomly generated input by ${RED_BOLD}${generator}.cpp${CLEAR}"
     cpr $brute_force.cpp $compile_mode
     cpr $generator.cpp --compile
     ./generator > input
     ./$brute_force < input > out2
+    echo "${BOLD}Input:${CLEAR}"
     cat input
-    echo "\noutput begins now:"
+    echo "${BOLD}\noutput begins now:${CLEAR}"
     cat out2
     handle_ctrlc
     exit
@@ -193,10 +204,10 @@ function copy_input {
 # Case Mode:
 if [[ "$case_mode" == true ]]; then
     if [[ "$manual_mode" == true ]]; then
-        echo "Cannot have\033[1;31m manual\033[0m option enabled with\033[1;31m case\033[0m mode"
+        echo "Cannot have${RED_BOLD} manual${CLEAR} option enabled with${RED_BOLD} case${CLEAR} mode"
         exit
     fi
-    echo "Testing $opt_sol against ${brute_force} on only one randomly generated input."
+    echo "${BOLD}Testing ${RED_BOLD}$opt_sol.cpp${CLEAR}${BOLD} against ${RED_BOLD}${brute_force}.cpp${CLEAR}${BOLD} on a randomly generated input by ${RED_BOLD}${generator}.cpp${CLEAR}"
     cpr ../$opt_sol.cpp $compile_mode
     if [[ $checker != "none" ]]; then cpr $checker.cpp --compile; fi
     cpr $brute_force --compile
@@ -204,10 +215,11 @@ if [[ "$case_mode" == true ]]; then
     ./generator > input
     ./$opt_sol < input > out1
     ./$brute_force < input > out2
+    echo "${BOLD}Input:${CLEAR}"
     cat input
-    echo "\noutput begins now:"
+    echo "${BOLD}\noutput begins now:${CLEAR}"
     cat out1
-    echo "\ncorrect output:"
+    echo "${BOLD}\ncorrect output:${CLEAR}"
     cat out2
     if [[ $checker != "none" ]]; then
         cat input out1 > in1
@@ -227,8 +239,8 @@ fi
 
 # Manual Mode:
 if [[ "$manual_mode" == true ]]; then
-    echo "Testing $opt_sol against ${brute_force} on given manual input."
-    echo "Enter input:"
+    echo "${BOLD}Testing ${RED}${opt_sol}.cpp${CLEAR}${BOLD} against ${RED}${brute_force}.cpp${CLEAR}${BOLD} on given manual input.${CLEAR}"
+    echo "${BOLD}Enter input:${CLEAR}"
     input=$(sed '/^$/q')
     echo "$input" > input
     cpr ../$opt_sol.cpp $compile_mode
@@ -236,9 +248,9 @@ if [[ "$manual_mode" == true ]]; then
     cpr $brute_force --compile
     ./$opt_sol < input > out1
     ./$brute_force < input > out2
-    echo "\noutput begins now:"
+    echo "${BOLD}\noutput begins now:${CLEAR}"
     cat out1
-    echo "\ncorrect output:"
+    echo "${BOLD}\ncorrect output:${CLEAR}"
     cat out2
     if [[ $checker != "none" ]]; then
         cat input out1 > in1
@@ -256,7 +268,7 @@ if [[ "$manual_mode" == true ]]; then
     exit
 fi
 
-echo "Testing ${opt_sol}.cpp against ${brute_force}.cpp with ${generator}.cpp"
+echo "Testing ${RED_BOLD}${opt_sol}.cpp${CLEAR} against ${RED_BOLD}${brute_force}.cpp${CLEAR} with ${RED_BOLD}${generator}.cpp${CLEAR}"
 
 cpr ../$opt_sol.cpp --compile
 if [[ $checker != "none" ]]; then cpr $checker.cpp --compile; fi
@@ -278,11 +290,11 @@ for((i=1;;++i));do
     fi
     diff -w out1 out2 || break
 done
-echo "\nFailing input:"
+echo "${UNDERLINE}${RED_BOLD}\nFailing input:${CLEAR}"
 cat input
-echo "\noutput begins now:"
+echo "${UNDERLINE}${RED_BOLD}\noutput begins now:${CLEAR}"
 cat out1
-echo "\ncorrect output:"
+echo "${UNDERLINE}${RED_BOLD}\ncorrect output:${CLEAR}"
 cat out2
 copy_input $opt_sol ..
 cd test_$opt_sol
