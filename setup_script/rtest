@@ -4,9 +4,9 @@
 
 <<COMMENT
 TODO:
-    -> Check if checker works
-    -> Make set -e work with everything? set -e is crap. Don't use it.
+    -> Checker
     -> tletest
+    -> Delete test cases
 COMMENT
 
 ## Imports:

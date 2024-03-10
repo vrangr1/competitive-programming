@@ -21,6 +21,7 @@ final_mode=false
 test_mode=false
 gather_mode=false
 input_test_mode=false
+clear_test_case=false
 help=false
 
 POSITIONAL_ARGS=()
@@ -62,6 +63,11 @@ while [[ $# -gt 0 ]]; do
         debug=""
         shift # past argument
         ;;
+    -k|--clear)
+        clear_test_case=true
+        debug=""
+        shift # past argument
+        ;;
     -h|--help)
         help=true
         shift # past argument
@@ -89,6 +95,7 @@ if [[ "$help" == true ]]; then
     echo " \033[1;31m -t, --test\033[0m     Compile the file and run it against the saved test cases"
     echo " \033[1;31m -r, --run\033[0m      Compile the file and run it against a particular saved test case"
     echo " \033[1;31m -g, --gather\033[0m   Compile the file and run it. Save the input file for future testing. Ask for the output and save it too."
+    echo " \033[1;31m -k, --clear\033[0m    Deletes the given test case"
     echo " \033[1;31m -h, --help\033[0m     Display this help message\033[0m"
     exit
 fi
@@ -124,7 +131,43 @@ if [[ "$input_test_mode" == true && ( "$gather_mode" == true )]]; then
     exit
 fi
 
-## Run on a particular test case:
+if [[ "$clear_test_case" == true && ( "$compile_mode" == true || "$debug_mode" == true || "$final_mode" == true || "$test_mode" == true || "$input_test_mode" == true || "$gather_mode" == true )]]; then
+    echo "Can't pass the\033[1;31m clear test case\033[0m option with any of the\033[1;31m compile/debug/run/gather/test\033[0m options at the same time."
+    exit
+fi
+
+## Delete a given test case:
+if [[ "$clear_test_case" == true ]]; then
+    if ( (! test -d input_$file) ); then
+        echo "Input directory doesn't exist"
+        exit
+    fi
+    ct=$(ls input_$file/ | wc -l)
+    ct="$(sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//'<<<"$ct")"
+    if [[ $ct == "0" ]]; then
+        echo "Input directory is empty."
+        exit
+    fi
+    read -r -p "Enter the test case index: " test_case
+    if [[ "$test_case" == "l" || "$test_case" == "last" ]]; then
+        input=$(ls input_$file/ | sort -V | tail -n 1)
+        input="input_$file/$input"
+        outfile="output_$file/`basename $input .in`.ans"
+    else
+        input=input_$file/${file}${test_case}.in
+        outfile=output_$file/${file}${test_case}.ans
+    fi
+    if ! test -f "$input"; then
+        echo "$input not found"
+        rm -f $file $file.out
+        exit
+    fi
+    
+    rm -vf $input $outfile
+    exit
+fi
+
+## Run on a particular test case (1/2):
 if [[ "$input_test_mode" == true ]]; then
     if ( (! test -d input_$file) ); then
         echo "Input directory doesn't exist"
@@ -184,7 +227,7 @@ if [[ "$test_mode" == true ]]; then
     exit
 fi
 
-## Run on a particular test case:
+## Run on a particular test case (2/2):
 if [[ "$input_test_mode" == true ]]; then
     echo $input
     cat $input

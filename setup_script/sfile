@@ -1,4 +1,39 @@
 ## Script to copy over the template file into the current directory with the given name
+
+#Imports
+source helper.sh
+
+POSITIONAL_ARGS=()
+help=false
+
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    -h|--help)
+      help=true
+      shift # past argument
+      ;;
+    -*|--*)
+      echo "${RED_BOLD}ERROR:${CLEAR} Unknown option ${RED_BOLD}$1${CLEAR}"
+      sfile -h
+      exit 1
+      ;;
+    *)
+      POSITIONAL_ARGS+=("$1") # save positional arg
+      shift # past argument
+      ;;
+  esac
+done
+
+set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
+
+if [[ "$help" == true ]]; then
+    echo "${RED_BOLD}sfile${CLEAR} is a script for creation of a cpp file in the current directory, optionally with the given name (default: ${BOLD}file.cpp${CLEAR}), using the custom cpp competitive programming template."
+    echo "${BOLD}Usage:${RED_BOLD} sfile [options] [file_name]${CLEAR}"
+    echo "${BOLD}Options:"
+    echo " ${RED_BOLD} -h, --help${CLEAR}     Display this help message${CLEAR}"
+    exit
+fi
+
 file_name=${1:-"file.cpp"}
 if [[ $file_name != *.cpp ]]
 then
@@ -13,7 +48,7 @@ fi
 echo "Setup file: $file_name"
 created=$(date)
 echo $created
-cp /Users/anavp/home/coding/competitive-programming/algo/template.cpp $file_name
+cp /Users/anavp/home/programming/competitive-programming/algo/template.cpp $file_name
 sed -i '' '4i\
 * Created : '"${created}"'\
 ' $file_name

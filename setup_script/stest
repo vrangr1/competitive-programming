@@ -14,14 +14,11 @@ if [[ $folder_name == *.cpp ]]
 then
     folder_name=${folder_name%".cpp"}
 fi
-if [[ $folder_name != *test ]]
-then
-    folder_name="test_${folder_name}"
-fi
+folder_name="test_${folder_name}"
 echo "Setting up testing folder for ${opt_sol} as ${folder_name}"
 mkdir -p $folder_name
 cd $folder_name
-cp -n /Users/anavp/home/coding/competitive-programming/algo/test/generator.cpp ./
-cp -n /Users/anavp/home/coding/competitive-programming/algo/test/brute_force.cpp ./
+cp -n /Users/anavp/home/programming/competitive-programming/algo/test/generator.cpp ./
+cp -n /Users/anavp/home/programming/competitive-programming/algo/test/brute_force.cpp ./
 code brute_force.cpp
 code generator.cpp
