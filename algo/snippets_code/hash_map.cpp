@@ -1,11 +1,16 @@
-#ifndef IMPORT_HASH_SET_SNIPPET
-#define IMPORT_HASH_SET_SNIPPET
+/*
+Details for snippet generator program:
+title       : Hash Map Snippet
+prefix      : import_hash_map
+description : Hash Map Snippet
+*/
+#ifndef HASH_MAP_SNIPPET
+#define HASH_MAP_SNIPPET
 #include <type_traits>
 #include <unordered_set>
 #include <unordered_map>
 #include <chrono>
 typedef long long int ll;
-using namespace std;
 
 // Source: Neal Wu (codeforces handle: neal)
 struct custom_hash {
@@ -18,7 +23,7 @@ struct custom_hash {
     }
 
     size_t operator()(uint64_t x) const {
-        static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+        static const uint64_t FIXED_RANDOM = std::chrono::steady_clock::now().time_since_epoch().count();
         return splitmix64(x + FIXED_RANDOM);
     }
 };

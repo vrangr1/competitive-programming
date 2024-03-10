@@ -1,3 +1,9 @@
+/*
+Details for snippet generator program:
+title       : Babylonian Square Root Snippet
+prefix      : import_bsqrt
+description : Babylonian Square Root Snippet
+*/
 #ifndef SQRT_SNIPPET
 #define SQRT_SNIPPET
 #include <iostream>

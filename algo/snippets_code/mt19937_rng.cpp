@@ -1,3 +1,9 @@
+/*
+Details for snippet generator program:
+title       : RNG Snippet
+prefix      : import_rng
+description : RNG Snippet
+*/
 #ifndef RANDOM_SNIPPET
 #define RANDOM_SNIPPET
 #include <random>
