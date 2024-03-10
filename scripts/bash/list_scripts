@@ -1,9 +1,9 @@
 ## Too many scripts!! Need a script to list the scripts lol
 
-#Imports
+## Imports
 source helper.sh
 
-echo "List of all scripts:
+echo "${BOLD}List of all scripts:${CLEAR}
 ${UNDERLINE}${RED_BOLD}COMMAND${CLEAR}              : ${UNDERLINE}${BOLD}Description${CLEAR}
 ${RED_BOLD}cpr ${CLEAR}                 : Compiles and runs a cpp file
 ${RED_BOLD}sfile ${CLEAR}               : Copies the template cpp file over to current location with given name

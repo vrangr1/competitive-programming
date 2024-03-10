@@ -1,5 +1,8 @@
 # Bash Script for compiling and/or running cpp files
 
+## Imports
+source helper.sh
+
 ## Cleanup when forcefully exiting execution
 function handle_ctrlc () {
     rm -f $file $file.out
@@ -85,18 +88,18 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [[ "$help" == true ]]; then
-    echo "\033[1mUsage:\033[1;31m cpr [options] <file_name>\033[0m"
-    echo "\033[1mfile_name\033[0m assumes the extension .cpp if not given."
-    echo "\033[1mOptions:"
-    echo " \033[1;31m -c, --compile\033[0m  Compile the file"
-    echo " \033[1;31m -d, --debug\033[0m    Compile the file with debug flag"
-    echo " \033[1;31m -s, --silent\033[0m   Silences compilation warnings"
-    echo " \033[1;31m -f, --final\033[0m    Compile and run the file without the debug flag"
-    echo " \033[1;31m -t, --test\033[0m     Compile the file and run it against the saved test cases"
-    echo " \033[1;31m -r, --run\033[0m      Compile the file and run it against a particular saved test case"
-    echo " \033[1;31m -g, --gather\033[0m   Compile the file and run it. Save the input file for future testing. Ask for the output and save it too."
-    echo " \033[1;31m -k, --clear\033[0m    Deletes the given test case"
-    echo " \033[1;31m -h, --help\033[0m     Display this help message\033[0m"
+    echo "${BOLD}Usage:${RED_BOLD} cpr [options] <file_name>${CLEAR}"
+    echo "${BOLD}file_name${CLEAR} assumes the extension .cpp if not given."
+    echo "${BOLD}Options:"
+    echo " ${RED_BOLD} -c, --compile${CLEAR}  Compile the file"
+    echo " ${RED_BOLD} -d, --debug${CLEAR}    Compile the file with debug flag"
+    echo " ${RED_BOLD} -s, --silent${CLEAR}   Silences compilation warnings"
+    echo " ${RED_BOLD} -f, --final${CLEAR}    Compile and run the file without the debug flag"
+    echo " ${RED_BOLD} -t, --test${CLEAR}     Compile the file and run it against the saved test cases"
+    echo " ${RED_BOLD} -r, --run${CLEAR}      Compile the file and run it against a particular saved test case"
+    echo " ${RED_BOLD} -g, --gather${CLEAR}   Compile the file and run it. Save the input file for future testing. Ask for the output and save it too."
+    echo " ${RED_BOLD} -k, --clear${CLEAR}    Deletes the given test case"
+    echo " ${RED_BOLD} -h, --help${CLEAR}     Display this help message${CLEAR}"
     exit
 fi
 
@@ -112,27 +115,27 @@ if [[ $file_loc != *.cpp ]]; then file_loc=${file_loc}.cpp; fi
 if ! test -f $file_loc; then echo "${file_loc} does not exist"; exit; fi
 
 if [[ "$compile_mode" == true && ( "$debug_mode" == true || "$final_mode" == true || "$test_mode" == true || "$gather_mode" == true || "$input_test_mode" == true ) ]]; then
-    echo "Can't pass the\033[1;31m compile\033[0m option with any of\033[1;31m debug/final/test/run/gather\033[0m options at the same time."
+    echo "Can't pass the${RED_BOLD} compile${CLEAR} option with any of${RED_BOLD} debug/final/test/run/gather${CLEAR} options at the same time."
     exit
 fi
 
 if [[ "$final_mode" == true && ( "$test_mode" == true || "$gather_mode" == true || "$debug" != "" ) ]]; then
-    echo "Can't pass the\033[1;31m final\033[0m option with any of\033[1;31m compile/test/gather/debug\033[0m options at the same time."
+    echo "Can't pass the${RED_BOLD} final${CLEAR} option with any of${RED_BOLD} compile/test/gather/debug${CLEAR} options at the same time."
     exit
 fi
 
 if [[ "$test_mode" == true && ( "$input_test_mode" == true || "$gather_mode" == true || "$debug" != "" )]]; then
-    echo "Can't pass the\033[1;31m test\033[0m option with any of\033[1;31m compile/debug/run/final/gather\033[0m options at the same time."
+    echo "Can't pass the${RED_BOLD} test${CLEAR} option with any of${RED_BOLD} compile/debug/run/final/gather${CLEAR} options at the same time."
     exit
 fi
 
 if [[ "$input_test_mode" == true && ( "$gather_mode" == true )]]; then
-    echo "Can't pass the\033[1;31m run\033[0m option with\033[1;31m gather\033[0m option at the same time."
+    echo "Can't pass the${RED_BOLD} run${CLEAR} option with${RED_BOLD} gather${CLEAR} option at the same time."
     exit
 fi
 
 if [[ "$clear_test_case" == true && ( "$compile_mode" == true || "$debug_mode" == true || "$final_mode" == true || "$test_mode" == true || "$input_test_mode" == true || "$gather_mode" == true )]]; then
-    echo "Can't pass the\033[1;31m clear test case\033[0m option with any of the\033[1;31m compile/debug/run/gather/test\033[0m options at the same time."
+    echo "Can't pass the${RED_BOLD} clear test case${CLEAR} option with any of the${RED_BOLD} compile/debug/run/gather/test${CLEAR} options at the same time."
     exit
 fi
 
