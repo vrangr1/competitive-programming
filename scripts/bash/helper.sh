@@ -1,3 +1,15 @@
+# Various Constants and helper functions
+
+## File paths
+CPR="/Users/anavp/home/programming/competitive-programming/scripts/bash/cpr"
+TEMPLATE="/Users/anavp/home/programming/competitive-programming/algo/template.cpp"
+DEBUG_HEADER="/Users/anavp/home/programming/competitive-programming/algo/debug.hpp"
+ALGO_DIRECTORY="/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/algo"
+LIST_SNIPPETS_PYTHON_SCRIPT="/Users/anavp/home/programming/competitive-programming/scripts/python/list_snippets.py"
+SNIPPET_GENERATOR="/Users/anavp/home/programming/snippet_generator/src/snippet_generator.py"
+TEST_CASE_GENERATOR="/Users/anavp/home/programming/competitive-programming/algo/test/generator.cpp"
+BRUTE_FORCE="/Users/anavp/home/programming/competitive-programming/algo/test/brute_force.cpp"
+
 ### Text formatting ###
 
 CLEAR="\033[0m"

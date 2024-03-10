@@ -1,2 +1,6 @@
 ## Script to open the debug header for editing
-code /Users/anavp/home/programming/competitive-programming/algo/debug.hpp
+
+## Imports
+source helper.sh
+
+code $DEBUG_HEADER

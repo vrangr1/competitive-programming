@@ -1,2 +1,16 @@
 ## Publishes the updated debug header file
-sudo cp /Users/anavp/home/programming/competitive-programming/algo/debug.hpp /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/algo/debug.hpp
+
+## Imports
+source helper.sh
+
+if ! test -f $DEBUG_HEADER
+then
+    echo "${RED_BOLD}${DEBUG_HEADER}${CLEAR} does not exist."
+    exit
+fi
+if ! test -d $ALGO_DIRECTORY
+then
+    echo "${RED_BOLD}${ALGO_DIRECTORY}${CLEAR} does not exist."
+    exit
+fi
+sudo cp $DEBUG_HEADER ${ALGO_DIRECTORY}/debug.hpp

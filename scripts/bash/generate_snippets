@@ -1,1 +1,10 @@
-python /Users/anavp/home/programming/snippet_generator/src/snippet_generator.py
+
+## Imports
+source helper.sh
+
+if ! test -f $SNIPPET_GENERATOR
+then
+    echo "${RED_BOLD}${SNIPPET_GENERATOR}${CLEAR} does not exist."
+    exit
+fi
+python $SNIPPET_GENERATOR

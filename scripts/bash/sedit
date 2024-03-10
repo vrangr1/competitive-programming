@@ -1,2 +1,11 @@
 ## Script to open the cpp template for editing
-code /Users/anavp/home/programming/competitive-programming/algo/template.cpp
+
+## Imports
+source helper.sh
+
+if ! test -f $TEMPLATE
+then
+    echo "${RED_BOLD}${TEMPLATE}${CLEAR} does not exist."
+    exit
+fi
+code $TEMPLATE

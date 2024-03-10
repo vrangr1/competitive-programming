@@ -45,10 +45,15 @@ then
     code $file_name
     exit 1
 fi
+if ! test -f $TEMPLATE
+then
+    echo "${RED_BOLD}${TEMPLATE}${CLEAR} does not exist."
+    exit
+fi
 echo "Setup file: $file_name"
 created=$(date)
 echo $created
-cp /Users/anavp/home/programming/competitive-programming/algo/template.cpp $file_name
+cp $TEMPLATE $file_name
 sed -i '' '4i\
 * Created : '"${created}"'\
 ' $file_name

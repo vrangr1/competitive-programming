@@ -1,1 +1,10 @@
-python /Users/anavp/home/programming/competitive-programming/scripts/python/list_snippets.py
+
+## Imports:
+source helper.sh
+
+if ! test -f $LIST_SNIPPETS_PYTHON_SCRIPT
+then
+    echo "${RED_BOLD}${LIST_SNIPPETS_PYTHON_SCRIPT}${CLEAR} does not exist."
+    exit
+fi
+python $LIST_SNIPPETS_PYTHON_SCRIPT

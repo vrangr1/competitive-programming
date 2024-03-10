@@ -1,2 +1,6 @@
 ## Command to open cpr for editing
-code /Users/anavp/home/programming/competitive-programming/scripts/bash/cpr
+
+## Imports
+source helper.sh
+
+code $CPR

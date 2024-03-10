@@ -1,4 +1,8 @@
 ## Script for setting up a testing folder for the given problem
+
+## Imports
+source helper.sh
+
 folder_name=${1:-"test"}
 opt_sol=${1:-"test.cpp"}
 if [[ $opt_sol != *.cpp ]]
@@ -14,11 +18,21 @@ if [[ $folder_name == *.cpp ]]
 then
     folder_name=${folder_name%".cpp"}
 fi
+if ! test -f $TEST_CASE_GENERATOR
+then
+    echo "${RED_BOLD}${TEST_CASE_GENERATOR}${CLEAR} does not exist."
+    exit
+fi
+if ! test -f $BRUTE_FORCE
+then
+    echo "${RED_BOLD}${BRUTE_FORCE}${CLEAR} does not exist."
+    exit
+fi
 folder_name="test_${folder_name}"
 echo "Setting up testing folder for ${opt_sol} as ${folder_name}"
 mkdir -p $folder_name
 cd $folder_name
-cp -n /Users/anavp/home/programming/competitive-programming/algo/test/generator.cpp ./
-cp -n /Users/anavp/home/programming/competitive-programming/algo/test/brute_force.cpp ./
+cp -n $TEST_CASE_GENERATOR ./
+cp -n $BRUTE_FORCE ./
 code brute_force.cpp
 code generator.cpp
