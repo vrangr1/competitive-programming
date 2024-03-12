@@ -2,8 +2,13 @@
 #!/bin/bash
 
 file=$1
-if [[ $file == *.cpp ]]; then file=${file%".cpp"}; fi
-if ! test -f $file.cpp;then echo "${file}.cpp does not exist"; exit;fi
+if [[ $file == *.cpp ]]; then
+    file=${file%".cpp"}
+fi
+if ! test -f $file.cpp; then
+    echo "${file}.cpp does not exist"
+    exit
+fi
 
 mkdir -p input_$file
 mkdir -p output_$file

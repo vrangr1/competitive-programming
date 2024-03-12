@@ -3,4 +3,8 @@
 ## Imports
 source helper.sh
 
+if ! test -f $DEBUG_HEADER; then
+    echo "${RED_BOLD}${DEBUG_HEADER}${CLEAR} does not exist."
+    exit
+fi
 code $DEBUG_HEADER

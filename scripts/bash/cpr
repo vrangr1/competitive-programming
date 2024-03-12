@@ -1,12 +1,21 @@
 # Bash Script for compiling and/or running cpp files
 
+<<COMMENT
+TODO:
+    -> view test case mode
+    -> checker handling done
+COMMENT
+
 ## Imports
 source helper.sh
 
 ## Cleanup when forcefully exiting execution
 function handle_ctrlc () {
     rm -f $file $file.out
-    rm -f in.ans
+    rm -f in.ans checker_input checker_output expected_output
+    if [[ $checker != *.cpp ]]; then
+        rm -f $checker
+    fi
     exit
 }
 trap handle_ctrlc SIGINT
@@ -27,6 +36,10 @@ input_test_mode=false
 clear_test_case=false
 help=false
 
+## Variables:
+folder=""
+checker=""
+
 POSITIONAL_ARGS=()
 
 while [[ $# -gt 0 ]]; do
@@ -35,7 +48,6 @@ while [[ $# -gt 0 ]]; do
         compile_mode=true
         debug=""
         shift # past argument
-        # shift # past value
         ;;
     -d|--debug)
         debug_mode=true
@@ -71,6 +83,16 @@ while [[ $# -gt 0 ]]; do
         debug=""
         shift # past argument
         ;;
+    -sf|--set-folder)
+        folder=$2
+        shift # past argument
+        shift # past value
+        ;;
+    -sc|--set-checker)
+        checker=$2
+        shift # past argument
+        shift # past value
+        ;;
     -h|--help)
         help=true
         shift # past argument
@@ -91,15 +113,17 @@ if [[ "$help" == true ]]; then
     echo "${BOLD}Usage:${RED_BOLD} cpr [options] <file_name>${CLEAR}"
     echo "${BOLD}file_name${CLEAR} assumes the extension .cpp if not given."
     echo "${BOLD}Options:"
-    echo " ${RED_BOLD} -c, --compile${CLEAR}  Compile the file"
-    echo " ${RED_BOLD} -d, --debug${CLEAR}    Compile the file with debug flag"
-    echo " ${RED_BOLD} -s, --silent${CLEAR}   Silences compilation warnings"
-    echo " ${RED_BOLD} -f, --final${CLEAR}    Compile and run the file without the debug flag"
-    echo " ${RED_BOLD} -t, --test${CLEAR}     Compile the file and run it against the saved test cases"
-    echo " ${RED_BOLD} -r, --run${CLEAR}      Compile the file and run it against a particular saved test case"
-    echo " ${RED_BOLD} -g, --gather${CLEAR}   Compile the file and run it. Save the input file for future testing. Ask for the output and save it too."
-    echo " ${RED_BOLD} -k, --clear${CLEAR}    Deletes the given test case"
-    echo " ${RED_BOLD} -h, --help${CLEAR}     Display this help message${CLEAR}"
+    echo " ${RED_BOLD} -c, --compile${CLEAR}       Compile the file"
+    echo " ${RED_BOLD} -d, --debug${CLEAR}         Compile the file with debug flag"
+    echo " ${RED_BOLD} -s, --silent${CLEAR}        Silences compilation warnings"
+    echo " ${RED_BOLD} -f, --final${CLEAR}         Compile and run the file without the debug flag"
+    echo " ${RED_BOLD} -t, --test${CLEAR}          Compile the file and run it against the saved test cases"
+    echo " ${RED_BOLD} -r, --run${CLEAR}           Compile the file and run it against a particular saved test case"
+    echo " ${RED_BOLD} -g, --gather${CLEAR}        Compile the file and run it. Save the input file for future testing. Ask for the output and save it too."
+    echo " ${RED_BOLD} -k, --clear${CLEAR}         Deletes the given test case"
+    echo " ${RED_BOLD} -sf, --set-folder${CLEAR}   Set test folder name"
+    echo " ${RED_BOLD} -sc, --set-checker${CLEAR}  Set checker path"
+    echo " ${RED_BOLD} -h, --help${CLEAR}          Display this help message${CLEAR}"
     exit
 fi
 
@@ -109,6 +133,30 @@ set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
 if [[ $# -eq 0 ]]; then file="file"; file_loc="file.cpp";
 else file=`basename $1 .cpp`; file_loc=$1; fi
 rm -f $file $file.out
+
+if [[ $folder == "" ]]; then
+    folder="test_${file}"
+else
+    if [[ $folder != test_* ]]; then
+        echo "${RED_BOLD}ERROR:${CLEAR} Incorrect test folder name ${folder}."
+        exit
+    fi
+fi
+
+if [[ $checker == "" ]]; then
+    checker="./test_${file}/checker.cpp"
+    if ! test -f $checker; then
+        checker=""
+    fi
+else
+    if ! test -f $checker; then
+        echo "${RED_BOLD}ERROR:${CLEAR} Given checker file ${checker} does not exist."
+        exit
+    elif [[ $checker != *.cpp ]]; then
+        echo "${RED_BOLD}ERROR: ${checker}${CLEAR} is not a cpp file."
+        exit
+    fi
+fi
 
 # If file does not exist then exit
 if [[ $file_loc != *.cpp ]]; then file_loc=${file_loc}.cpp; fi
@@ -198,11 +246,21 @@ if [[ "$input_test_mode" == true ]]; then
     fi
 fi
 
+## Gathering Mode (0/1):
+if [[ "$gather_mode" == true ]]; then
+    echo "${BOLD}Enter input:${CLEAR}"
+fi
+
 # Compiling
 g++ -std=c++20 $file_loc -o $file $debug $warnings $flags
 
 ## If only need to compile, then exit
 if [[ "$compile_mode" == true || "$debug_mode" == true ]]; then exit; fi
+
+if [[ $checker != "" ]]; then
+    cpr $checker --compile
+    checker=`basename $checker .cpp`
+fi
 
 ## Testing Mode:
 if [[ "$test_mode" == true ]]; then
@@ -215,7 +273,7 @@ if [[ "$test_mode" == true ]]; then
             rm -rvf output_$file
             break
         fi
-        echo $input
+        printf '%s' "${input}: "
         outfile=`basename $input`
         outfile=${outfile%".in"}.ans
         if ! test -f output_$file/$outfile; then
@@ -223,10 +281,29 @@ if [[ "$test_mode" == true ]]; then
             continue
         fi
         ./$file < $input > in.ans
-        diff -w in.ans output_$file/$outfile || break
+        if [[ $checker != "" ]]; then
+            (echo "${OUTPUT_START}" && echo $input && echo "${OUTPUT_END}" && echo "${OUTPUT_START}" && cat in.ans && echo "${OUTPUT_END}" && echo "${OUTPUT_START}" && cat output_$file/$outfile && echo "${OUTPUT_END}") > checker_input
+            ./$checker < checker_input > checker_output
+            echo "Yes" > expected_output
+            diff -w checker_output expected_output &>/dev/null
+        else
+            diff -w in.ans output_$file/$outfile &>/dev/null
+        fi
+        if [ $? -eq 0 ]; then
+            echo "${GREEN_BOLD}AC${CLEAR}"
+        else
+            echo "${RED_BOLD}WA${CLEAR}"
+            echo "${BOLD}\nFailing Input:${CLEAR}"
+            echo $input
+            echo "${BOLD}\noutput begins now:${CLEAR}"
+            cat in.ans
+            echo "${GREEN_BOLD}\ncorrect output:${CLEAR}"
+            cat output_$file/$outfile
+            break
+        fi
         rm -f in.ans
     done
-    rm -f $file $file.out
+    handle_ctrlc
     exit
 fi
 
@@ -235,11 +312,12 @@ if [[ "$input_test_mode" == true ]]; then
     echo $input
     cat $input
     ./$file < $input > $file.out
-    echo "\noutput begins now:"
+    echo "${BOLD}\noutput begins now:${CLEAR}"
     cat $file.out
     rm -f $file $file.out
-    echo "\ncorrect output:"
+    echo "${GREEN_BOLD}\ncorrect output:${CLEAR}"
     cat $outfile
+    handle_ctrlc
     exit
 fi
 
@@ -261,21 +339,33 @@ then
     ct="$(sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//'<<<"$ct")"
     echo "$input" > $file$ct.in
     ./$file < $file$ct.in > $file.out
-    echo "my output begins now:"
+    echo "${BOLD}output begins now:${CLEAR}"
     cat $file.out
-    echo "\nInput the correct output:"
+    echo "${BOLD}\nInput the correct output:${CLEAR}"
     output=$(sed '/^$/q')
     echo "$output" > $file$ct.ans
-    diff -w $file.out $file$ct.ans || echo "Output does not match."
+    if [[ $checker != "" ]]; then
+        (echo "${OUTPUT_START}" && cat $file$ct.in && echo "${OUTPUT_END}" && echo "${OUTPUT_START}" && cat $file.out && echo "${OUTPUT_END}" && echo "${OUTPUT_START}" && cat $file$ct.ans && echo "${OUTPUT_END}") > checker_input
+        ./$checker < checker_input > checker_output
+        echo "Yes" > expected_output
+        diff -w checker_output expected_output &>/dev/null
+    else
+        diff -w $file.out $file$ct.ans &>/dev/null
+    fi
+    if [ $? -eq 0 ]; then
+        echo "${GREEN_BOLD}AC${CLEAR}"
+    else
+        echo "${RED_BOLD}WA${CLEAR}"
+    fi
     sdir $file
-    rm -f $file $file.out
+    handle_ctrlc
     exit
 fi
 
 ## Finally run the program
 if test -f $file; then
     ./$file > $file.out
-    echo "\noutput begins now:"
+    echo "${BOLD}\noutput begins now:${CLEAR}"
     cat $file.out
     rm $file $file.out
 fi

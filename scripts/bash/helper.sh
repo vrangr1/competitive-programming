@@ -8,7 +8,12 @@ ALGO_DIRECTORY="/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.plat
 LIST_SNIPPETS_PYTHON_SCRIPT="/Users/anavp/home/programming/competitive-programming/scripts/python/list_snippets.py"
 SNIPPET_GENERATOR="/Users/anavp/home/programming/snippet_generator/src/snippet_generator.py"
 TEST_CASE_GENERATOR="/Users/anavp/home/programming/competitive-programming/algo/test/generator.cpp"
-BRUTE_FORCE="/Users/anavp/home/programming/competitive-programming/algo/test/brute_force.cpp"
+BRUTE_FORCE=$TEMPLATE
+CHECKER="/Users/anavp/home/programming/competitive-programming/algo/test/checker.cpp"
+
+## Constants:
+OUTPUT_START="OUTPUT_BEGINS"
+OUTPUT_END="OUTPUT_ENDS"
 
 ### Text formatting ###
 

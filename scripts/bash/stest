@@ -1,38 +1,114 @@
 ## Script for setting up a testing folder for the given problem
 
-## Imports
+## Imports:
 source helper.sh
 
-folder_name=${1:-"test"}
+POSITIONAL_ARGS=()
+help=false
+folder_name="test"
+generator="generator.cpp"
+brute_force="brute_force.cpp"
+checker="checker.cpp"
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -h|--help)
+            help=true
+            shift # past argument
+            ;;
+        -f|--folder)
+            folder_name=$2
+            shift # past argument
+            shift # past value
+            ;;
+        -g|--generator)
+            generator=$2
+            shift # past argument
+            shift # past value
+            ;;
+        -b|--brute_force)
+            brute_force=$2
+            shift # past argument
+            shift # past value
+            ;;
+        -c|--checker)
+            checker=$2
+            shift # past argument
+            shift # past value
+            ;;
+        -*|--*)
+            echo "${RED_BOLD}ERROR:${CLEAR} Unknown option ${RED_BOLD}$1${CLEAR}"
+            stest -h
+            exit
+            ;;
+        *)
+            POSITIONAL_ARGS+=("$1") # save positional arg
+            shift # past argument
+            ;;
+    esac
+done
+
+set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
+
 opt_sol=${1:-"test.cpp"}
-if [[ $opt_sol != *.cpp ]]
-then
+
+if [[ "$help" == true ]]; then
+    echo "${RED_BOLD}stest${CLEAR} is a script to set up the testing system for a given cpp file ${RED_BOLD}cpp_file.cpp${CLEAR}. By default, creates a ${RED_BOLD}test_<cpp_file>${CLEAR} sub-directory and creates ${RED_BOLD}[generator].cpp${CLEAR}, ${RED_BOLD}[brute_force].cpp${CLEAR} and ${RED_BOLD}[checker].cpp${CLEAR} inside it."
+    echo "${BOLD}Usage:${RED_BOLD} stest cpp_file [options]${CLEAR}"
+    echo "${BOLD}Options:"
+    echo " ${RED_BOLD} -f, --folder       folder_name${CLEAR}   Set the suffix of the test folder name"
+    echo " ${RED_BOLD} -g, --generator    generator${CLEAR}     Set the generator file name"
+    echo " ${RED_BOLD} -g, --brute_force  brute_force${CLEAR}   Set the brute_force file name"
+    echo " ${RED_BOLD} -c, --checker      checker${CLEAR}       Set the brute_force file name"
+    echo " ${RED_BOLD} -h, --help${CLEAR}                       Display this help message"
+    exit
+fi
+
+if [[ $opt_sol != *.cpp ]]; then
     opt_sol="$opt_sol.cpp"
 fi
-if ! test -f $opt_sol
-then
+if ! test -f $opt_sol; then
   echo "${opt_sol} does not exist."
   exit 1
 fi
-if [[ $folder_name == *.cpp ]]
-then
+if [[ $folder_name == *.cpp ]]; then
     folder_name=${folder_name%".cpp"}
 fi
-if ! test -f $TEST_CASE_GENERATOR
-then
+if ! test -f $TEST_CASE_GENERATOR; then
     echo "${RED_BOLD}${TEST_CASE_GENERATOR}${CLEAR} does not exist."
     exit
 fi
-if ! test -f $BRUTE_FORCE
-then
+if ! test -f $BRUTE_FORCE; then
     echo "${RED_BOLD}${BRUTE_FORCE}${CLEAR} does not exist."
     exit
 fi
+if ! test -f $CHECKER; then
+    echo "${RED_BOLD}${CHECKER}${CLEAR} does not exist."
+    exit
+fi
 folder_name="test_${folder_name}"
-echo "Setting up testing folder for ${opt_sol} as ${folder_name}"
 mkdir -p $folder_name
+if [ -f $folder_name/$generator ] && [ -f $folder_name/$brute_force ] && [ -f $folder_name/$checker ]; then
+    echo "Testing system already exists for ${RED_BOLD}${opt_sol}${CLEAR}."
+    exit
+fi
+echo "Setting up testing system for ${opt_sol} as ${folder_name}"
+created=$(date)
+echo $created
 cd $folder_name
-cp -n $TEST_CASE_GENERATOR ./
-cp -n $BRUTE_FORCE ./
-code brute_force.cpp
-code generator.cpp
+cp -n $TEST_CASE_GENERATOR ./$generator
+cp -n $BRUTE_FORCE ./$brute_force
+cp -n $CHECKER ./$checker
+sed -i '' '4i\
+* Created : '"${created}"'\
+' $generator
+sed -i '' '4i\
+* Created : '"${created}"'\
+' $brute_force
+sed -i '' '4i\
+* Created : '"${created}"'\
+' $checker
+
+code $checker
+code $brute_force
+code $generator

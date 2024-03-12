@@ -3,4 +3,8 @@
 ## Imports
 source helper.sh
 
+if ! test -f $CPR; then
+    echo "${RED_BOLD}${CPR}${CLEAR} does not exist."
+    exit
+fi
 code $CPR
