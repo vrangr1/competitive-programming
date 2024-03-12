@@ -1,11 +1,5 @@
 # Bash Script for compiling and/or running cpp files
 
-<<COMMENT
-TODO:
-    -> view test case mode
-    -> checker handling done
-COMMENT
-
 ## Imports
 source helper.sh
 
@@ -34,6 +28,7 @@ test_mode=false
 gather_mode=false
 input_test_mode=false
 clear_test_case=false
+view_test_case=false
 help=false
 
 ## Variables:
@@ -83,6 +78,10 @@ while [[ $# -gt 0 ]]; do
         debug=""
         shift # past argument
         ;;
+    -v|--view)
+        view_test_case=true
+        shift # past argument
+        ;;
     -sf|--set-folder)
         folder=$2
         shift # past argument
@@ -110,7 +109,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [[ "$help" == true ]]; then
-    echo "${BOLD}Usage:${RED_BOLD} cpr [options] <file_name>${CLEAR}"
+    echo "${BOLD}Usage:${RED_BOLD} cpr [options] file_name${CLEAR}"
     echo "${BOLD}file_name${CLEAR} assumes the extension .cpp if not given."
     echo "${BOLD}Options:"
     echo " ${RED_BOLD} -c, --compile${CLEAR}       Compile the file"
@@ -119,8 +118,9 @@ if [[ "$help" == true ]]; then
     echo " ${RED_BOLD} -f, --final${CLEAR}         Compile and run the file without the debug flag"
     echo " ${RED_BOLD} -t, --test${CLEAR}          Compile the file and run it against the saved test cases"
     echo " ${RED_BOLD} -r, --run${CLEAR}           Compile the file and run it against a particular saved test case"
-    echo " ${RED_BOLD} -g, --gather${CLEAR}        Compile the file and run it. Save the input file for future testing. Ask for the output and save it too."
+    echo " ${RED_BOLD} -g, --gather${CLEAR}        Compile the file and run it. Save the input file for future testing. Ask for the output and save it too"
     echo " ${RED_BOLD} -k, --clear${CLEAR}         Deletes the given test case"
+    echo " ${RED_BOLD} -v, --view${CLEAR}          View list of test cases / a particular test case"
     echo " ${RED_BOLD} -sf, --set-folder${CLEAR}   Set test folder name"
     echo " ${RED_BOLD} -sc, --set-checker${CLEAR}  Set checker path"
     echo " ${RED_BOLD} -h, --help${CLEAR}          Display this help message${CLEAR}"
@@ -132,7 +132,46 @@ set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
 ## File name and location
 if [[ $# -eq 0 ]]; then file="file"; file_loc="file.cpp";
 else file=`basename $1 .cpp`; file_loc=$1; fi
-rm -f $file $file.out
+
+# If file does not exist then exit
+if [[ $file_loc != *.cpp ]]; then file_loc=${file_loc}.cpp; fi
+if ! test -f $file_loc; then echo "${RED_BOLD}ERROR: ${file_loc}${CLEAR} does not exist"; exit; fi
+
+## Test Case Viewing Mode:
+if [[ "$view_test_case" == true ]]; then
+    if ( (! test -d input_$file) ); then
+        echo "${RED_BOLD}ERROR:${CLEAR} Input directory doesn't exist."
+        exit
+    fi
+    ct=$(ls input_$file/ | wc -l)
+    ct="$(sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//'<<<"$ct")"
+    if [[ $ct == "0" ]]; then
+        echo "${RED_BOLD}ERROR:${CLEAR} Input directory is empty."
+        exit
+    fi
+    read -r -p "Enter the test case index: " test_case
+    if [[ "$test_case" == "l" || "$test_case" == "last" ]]; then
+        input=$(ls input_$file/ | sort -V | tail -n 1)
+        input="input_$file/$input"
+        outfile="output_$file/`basename $input .in`.ans"
+    elif [[ "$test_case" == "all" || "$test_case" == "a" ]]; then
+        ls input_$file
+        exit
+    else
+        input=input_$file/${file}${test_case}.in
+        outfile=output_$file/${file}${test_case}.ans
+    fi
+    if ! test -f "$input"; then
+        echo "$input not found"
+        handle_ctrlc
+        exit
+    fi
+    echo "\n${BOLD}Input:${CLEAR}"
+    cat $input
+    echo "\n${BOLD}Output:${CLEAR}"
+    cat $outfile
+    exit
+fi
 
 if [[ $folder == "" ]]; then
     folder="test_${file}"
@@ -158,9 +197,6 @@ else
     fi
 fi
 
-# If file does not exist then exit
-if [[ $file_loc != *.cpp ]]; then file_loc=${file_loc}.cpp; fi
-if ! test -f $file_loc; then echo "${file_loc} does not exist"; exit; fi
 
 if [[ "$compile_mode" == true && ( "$debug_mode" == true || "$final_mode" == true || "$test_mode" == true || "$gather_mode" == true || "$input_test_mode" == true ) ]]; then
     echo "Can't pass the${RED_BOLD} compile${CLEAR} option with any of${RED_BOLD} debug/final/test/run/gather${CLEAR} options at the same time."
