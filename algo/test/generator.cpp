@@ -1,6 +1,6 @@
 /***************************************************
-* AUTHOR : Anav Prasad
-* Nick   : vrangr
+* Author  : Anav Prasad
+* Nick    : vrangr
 ****************************************************/
 #include <iostream>
 #include <vector>
@@ -57,6 +57,11 @@ typedef __int128_t i128;
 template<typename type>inline void print_vec(const vector<type> &v){rep(i,sz(v))cout<<v[i]<<" \n"[i==sz(v)-1];}
 mt19937 rng((uint)chrono::steady_clock::now().time_since_epoch().count());
 ull grng(const ull maxval){return rng()%maxval;}
+
+// IMPORT SNIPPETS HERE
+
+// END OF SNIPPETS
+
 void generate_test();
 
 int main(){
