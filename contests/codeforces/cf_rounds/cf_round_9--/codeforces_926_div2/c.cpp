@@ -20,7 +20,7 @@
 #include <stack>
 #include <list>
 #include <forward_list>
-#include <bit>
+// #include <bit>
 #include <bitset>
 #include <array>
 #include <assert.h>
@@ -39,7 +39,7 @@ typedef unsigned int uint;
 typedef long long int ll;
 typedef unsigned long long int ull;
 typedef long double ld;
-typedef __int128_t i128;
+// typedef __int128_t i128;
 #define endl "\n"
 #define fastIO ios_base::sync_with_stdio(false),cin.tie(0)
 #define TEST int T;cin>>T;while(T--)solve();
@@ -72,11 +72,26 @@ int main(){
 	return 0;
 }
 
-void solve(){
+void solve1(){
     ll k, x, a; cin >> k >> x >> a;
     debug(k,x,a);
     if (x >= a) return void(cout << no);
     ll d = a-x;
     if (d*k > a) return void(cout << yes);
     cout << no;
+}
+
+void solve(){
+    ll k, x, a; cin >> k >> x >> a;
+    ll cur = 0ll;
+    debug(k,x,a);
+    rep(i,x){
+        ll mn = (cur+k-1ll)/(k-1ll);
+        debug(i,cur,mn);
+        debug(endl);
+        if (a-cur < mn) return void(cout << no);
+        cur += mn;
+    }
+    if ((a-cur)*k > a) return void(cout << yes);
+    else cout << no;
 }
