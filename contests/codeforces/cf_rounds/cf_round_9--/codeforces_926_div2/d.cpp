@@ -20,7 +20,7 @@
 #include <stack>
 #include <list>
 #include <forward_list>
-#include <bit>
+// #include <bit>
 #include <bitset>
 #include <array>
 #include <assert.h>
@@ -39,7 +39,7 @@ typedef unsigned int uint;
 typedef long long int ll;
 typedef unsigned long long int ull;
 typedef long double ld;
-typedef __int128_t i128;
+// typedef __int128_t i128;
 #define endl "\n"
 #define fastIO ios_base::sync_with_stdio(false),cin.tie(0)
 #define TEST int T;cin>>T;while(T--)solve();
@@ -74,7 +74,7 @@ int main(){
 
 const ll mod = 998244353ll;
 
-void solve(){
+void solve1(){
     ll n; cin >> n;
     vector<vector<ll>> edges(n);
     rep(i,n-1ll){
@@ -118,5 +118,39 @@ void solve(){
         }
     };
     dfs(dfs,0ll,-1ll,1ll);
+    cout << sol << endl;
+}
+
+void solve(){
+    ll n; cin >> n;
+    vector<vector<ll>> g(n);
+    rep(i,n-1ll){
+        ll u, v; cin >> u >> v;
+        --u;--v;
+        g[u].push_back(v);
+        g[v].push_back(u);
+    }
+    vector<ll> dp(n,-1);
+    ll sol = 0ll;
+    auto dfs = [&](auto &&self, ll node, ll parent) -> void {
+        if (sz(g[node]) == 1 && g[node][0] == parent){
+            dp[node] = 2ll;
+            return;
+        }
+        ll prod = 1ll;
+        for (ll v : g[node]){
+            if (v == parent) continue;
+            self(self,v,node);
+            prod *= dp[v];
+            prod%=mod;
+            sol += (dp[v]-1ll);
+            sol%=mod;
+        }
+        dp[node] = (prod+1ll)%mod;
+    };
+    dfs(dfs,0,-1ll);
+    debug(sol,dp);
+    sol += dp[0];
+    sol%=mod;
     cout << sol << endl;
 }
