@@ -350,9 +350,25 @@ if [[ "$input_test_mode" == true ]]; then
     ./$file < $input > $file.out
     echo "${BOLD}\noutput begins now:${CLEAR}"
     cat $file.out
-    rm -f $file $file.out
     echo "${GREEN_BOLD}\ncorrect output:${CLEAR}"
     cat $outfile
+    if [[ "$final_mode" == false ]]; then
+        handle_ctrlc
+        exit
+    fi
+    if [[ $checker != "" ]]; then
+        (echo "${OUTPUT_START}" && cat $input && echo "${OUTPUT_END}" && echo "${OUTPUT_START}" && cat $file.out && echo "${OUTPUT_END}" && echo "${OUTPUT_START}" && cat $outfile && echo "${OUTPUT_END}") > checker_input
+        ./$checker < checker_input > checker_output
+        echo "Yes" > expected_output
+        diff -w checker_output expected_output &>/dev/null
+    else
+        diff -w $file.out $outfile &>/dev/null
+    fi
+    if [ $? -eq 0 ]; then
+        echo "\n${GREEN_BOLD}AC${CLEAR}"
+    else
+        echo "\n${RED_BOLD}WA${CLEAR}"
+    fi
     handle_ctrlc
     exit
 fi
