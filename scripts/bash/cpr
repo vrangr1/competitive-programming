@@ -330,7 +330,7 @@ if [[ "$test_mode" == true ]]; then
         else
             echo "${RED_BOLD}WA${CLEAR}"
             echo "${BOLD}\nFailing Input:${CLEAR}"
-            echo $input
+            cat $input
             echo "${BOLD}\noutput begins now:${CLEAR}"
             cat in.ans
             echo "${GREEN_BOLD}\ncorrect output:${CLEAR}"

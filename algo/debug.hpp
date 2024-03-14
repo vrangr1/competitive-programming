@@ -362,7 +362,7 @@ template <typename Arg1> void debug_encapsulate(const char* names, Arg1&& arg1){
     if (comp != "endl")
         cout << name << ": ";
     print(arg1);
-    if (comp != "endl");
+    if (comp != "endl")
         cout << endl;
 }
 
