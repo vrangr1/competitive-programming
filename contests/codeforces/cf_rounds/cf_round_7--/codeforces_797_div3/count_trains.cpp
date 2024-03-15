@@ -14,7 +14,6 @@
 #include <algorithm>
 #include <climits>
 #include <assert.h>
-// TODO: Check if all the header files are included
 
 using namespace std;
 
