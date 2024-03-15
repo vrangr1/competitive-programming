@@ -143,11 +143,11 @@ void init(){
     }
 }
 
-void solve(){
+void solve2(){
     init();
     string s; cin >> s;
     ll n = sz(s);
-    auto inv = [](ll a, ll ind) -> ll {
+    [[maybe_unused]] auto inv = [](ll a, ll ind) -> ll {
         ll n = mods[ind]-2ll;
         assert(n>0ll);
         ll sol = 1ll;
@@ -196,6 +196,22 @@ void solve(){
         }
     }
     cout << sol << endl;
+}
+
+// Source: tourist
+void solve(){
+    string s; cin >> s;
+    int n = sz(s);
+    rep(len,n/2,1,-1){
+        int t = 0;
+        rep(i,n-len){
+            if (s[i] == s[i+len] || s[i] == '?' || s[i+len] == '?')
+                t++;
+            else t = 0;
+            if (t == len) return void(cout << 2*len << endl);
+        }
+    }
+    cout << "0\n";
 }
 
 /*
