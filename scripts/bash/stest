@@ -5,7 +5,7 @@ source helper.sh
 
 POSITIONAL_ARGS=()
 help=false
-folder_name="test"
+folder_name="NA"
 generator="generator.cpp"
 brute_force="brute_force.cpp"
 checker="checker.cpp"
@@ -70,6 +70,9 @@ fi
 if ! test -f $opt_sol; then
   echo "${opt_sol} does not exist."
   exit 1
+fi
+if [[ $folder_name == "NA" ]]; then
+    folder_name=$opt_sol
 fi
 if [[ $folder_name == *.cpp ]]; then
     folder_name=${folder_name%".cpp"}
