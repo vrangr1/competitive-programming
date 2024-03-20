@@ -65,9 +65,9 @@ void solve();
 int main(){
 	fastIO;
 	TEST;
-    #ifdef LOCAL
-        cout << "\nTime elapsed: " << 1.0 * clock() / CLOCKS_PER_SEC << " s.\n";
-    #endif
+#ifdef LOCAL
+    cout << "\nTime elapsed: " << 1.0 * clock() / CLOCKS_PER_SEC << " s.\n";
+#endif
 	return 0;
 }
 

@@ -8,7 +8,7 @@
             "// Babylonian Method",
             "template <typename type, typename = typename std::enable_if<std::is_integral<type>::value>::type>",
             "type bsqrt(type x){",
-            "    const type one = static_cast<type>(1), two = static_cast<type>(2);",
+            "    const type one = 1, two = 2;",
             "    type a = x, b = (x + one) / two;",
             "    while (a > b){",
             "        a = b;",

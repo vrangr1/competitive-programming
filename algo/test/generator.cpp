@@ -55,10 +55,16 @@ typedef __int128_t i128;
 #define no "NO\n"
 #define pass (void)0
 template<typename type>inline void print_vec(const vector<type> &v){rep(i,sz(v))cout<<v[i]<<" \n"[i==sz(v)-1];}
-mt19937 rng((uint)chrono::steady_clock::now().time_since_epoch().count());
-ull grng(const ull maxval){return rng()%maxval;}
 
 // IMPORT SNIPPETS HERE
+#ifndef RANDOM_SNIPPET
+#define RANDOM_SNIPPET
+#include <random>
+#include <chrono>
+std::mt19937 rng((unsigned int)std::chrono::steady_clock::now().time_since_epoch().count());
+unsigned long long int grng(const unsigned long long int maxval){return rng()%maxval;}
+#endif
+
 
 // END OF SNIPPETS
 
