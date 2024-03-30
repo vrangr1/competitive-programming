@@ -78,11 +78,14 @@ ll lcm(ll a, ll b){
 void solve(){
     ll n, m; cin >> n >> m;
     vector<vector<ll>> edges(n+1);
+    vector<int> deg(n+1,0);
     rep(i,m){
         ll u, v; cin >> u >> v;
         edges[u].push_back(v);
+        deg[v]++;
     }
     vector<bool> vis(n+1,false);
+    vector<bool> viscur(n+1,false);
     vector<bool> stat(n+1,false);
     vector<ll> rt;
     auto getct = [&] (auto &&self, ll node) -> void {
@@ -91,23 +94,63 @@ void solve(){
         }
         rt.push_back(node);
         vis[node] = true;
+        viscur[node] = true;
         for (auto ngb : edges[node]){
-            if (vis[ngb]) continue;
+            if (viscur[ngb]) continue;
             self(self,ngb);
         }
     };
-    ll mx = (n+4ll)/5ll;
+    ll mx = (n)/5ll;
     rep(i,1,n,1){
-        if (vis[i]) continue;
+        if (deg[i] > 0) continue;
         rt.clear();
         fill(all(stat),false);
+        // fill(all(viscur),false);
         getct(getct,i);
         ll cur = count(all(stat),true);
+        debug(i,cur);
+        for (auto ind : rt)
+            viscur[ind] = false;
         if (cur > 0 && cur <= mx){
             cout << sz(rt) << endl;
             print_vec(rt);
             return;
         }
     }
+    rep(i,1,n,1) assert(vis[i]);
     cout << "-1\n";
+    debug(endl);
 }
+
+/*
+
+4
+
+1
+4 0
+
+1
+5 2
+4 1
+5 1
+
+15 9
+7 8
+8 9
+9 10
+10 9
+11 1
+12 2
+13 3
+14 4
+15 5
+
+5 4
+1 2
+2 3
+3 4
+4 5
+
+
+
+*/
