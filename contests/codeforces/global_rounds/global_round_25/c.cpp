@@ -81,5 +81,18 @@ void solve(){
     sort(all(order),[&](const ll &i, const ll &j){
         return a[i] < a[j];
     });
-    
+    ll sol = 0ll, cur = 0ll, ind = 0;
+    while(cur < k){
+        if (m >= k-cur){
+            sol += (a[order[ind]]*(k-cur));
+            sol += (cur*(k-cur));
+            cur = k;
+            break;
+        }
+        sol += (a[order[ind]]*m);
+        sol += cur*m;
+        cur += m;
+        ind++;
+    }
+    cout << sol << endl;
 }
