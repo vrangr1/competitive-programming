@@ -18,6 +18,7 @@ trap handle_ctrlc SIGINT
 warnings="-Wall -Wextra -Wshadow -Wfloat-equal -Wconversion -pedantic"
 ### stack size 0x20000000 is 512 MB (the max allowed by M1 Mac Air)
 flags="-O2 -D_GLIBCXX_ASSERTIONS -Wno-sign-conversion -Wl,-stack_size -Wl,0x20000000"
+cpp_version="-std=c++20"
 debug="-DLOCAL"
 
 ## Modes:
@@ -288,7 +289,7 @@ if [[ "$gather_mode" == true ]]; then
 fi
 
 # Compiling
-g++ -std=c++20 $file_loc -o $file $debug $warnings $flags
+g++ $cpp_version $file_loc -o $file $debug $warnings $flags
 
 ## If only need to compile, then exit
 if [[ "$compile_mode" == true || "$debug_mode" == true ]]; then exit; fi
@@ -421,3 +422,4 @@ if test -f $file; then
     cat $file.out
     rm $file $file.out
 fi
+handle_ctrlc

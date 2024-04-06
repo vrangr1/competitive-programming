@@ -1,10 +1,32 @@
-# TODO:
+# To Do List:
 
 ## Snippets:
+* Write Modular Int class.
 * Rolling Hash (allowing for handling of multiple bases and primes simultaneously).
 * Either use AtCoder's lib or write your own generic Segtree implementation.
 
 ## Scripts:
-* Incorporate tletest into rtest
+### rtest:
+* Incorporate tletest
 * Allow rtest to copy over test cases or at least run bruteforce on test cases stored for the stress tester source.
+### sfile:
+* Allow for option of TEST1
+* Allow for creation of topcoder style template
+### helper.sh:
 * Actually add helper functions to helper.sh
+### list_scripts
+* Fix list_scripts
+### cpr:
+* Create the option to overwrite the correct answer of a test case.
+* Create the option to split after the test cases and save them
+### Overall:
+* Write a script for setting up the script system
+* Write a script for testing the entire system
+
+## Topics:
+* Manacher's Algo (problem : ??)
+* Tarjan's Algo for articulation / cut points and bridges (cut edges).
+
+## Refer Solution:
+* Get count of smaller nodes in the subtree for every node (problem: [Insomnia 2k24 finals problem I](https://codeforces.com/gym/510369/problem/I))
+* 
