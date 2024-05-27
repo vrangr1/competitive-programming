@@ -42,7 +42,7 @@
     #include <algo/debug.hpp>
     const bool DEBUG = true;
 #else
-    [[maybe_unused]]const bool DEBUG = false;
+    const bool DEBUG = false;
 #endif
 
 using namespace std;
@@ -61,7 +61,7 @@ using namespace std;
 typedef long long int ll;
 typedef unsigned long long int ull;
 
-ll mod = (ll)1e9+7ll;
+const ll mod = (ll)1e9+7ll;
 
 void solve(){
     int n;

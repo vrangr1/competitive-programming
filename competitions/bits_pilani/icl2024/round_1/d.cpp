@@ -153,7 +153,7 @@ void solve(){
     ct.pop_back();
     while(!ct.empty()){
         ll k = 0ll;
-        while(k <= 2ll && !ct.empty()){
+        while(k < 2ll && !ct.empty()){
             sol += (t*ct.back());
             sol%=mod;
             ct.pop_back();

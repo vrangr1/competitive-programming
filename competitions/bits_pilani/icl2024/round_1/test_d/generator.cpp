@@ -139,6 +139,10 @@ const ll maxn = 6, maxp = 10;
 void generate_test(){
     auto adj = generate_tree(maxn);
     ll n = sz(adj)-1ll;
+    while(n<=2){
+        adj = generate_tree(maxn);
+        n = sz(adj)-1ll;
+    }
     cout << n << endl;
     rep(i,n) cout << grng(maxp)+1ll << " \n"[i==n-1];
     rep(i,1,n,1){
