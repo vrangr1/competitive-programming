@@ -93,6 +93,9 @@ folder_name="test_${folder_name}"
 mkdir -p $folder_name
 if [ -f $folder_name/$generator ] && [ -f $folder_name/$brute_force ] && [ -f $folder_name/$checker ]; then
     echo "Testing system already exists for ${RED_BOLD}${opt_sol}${CLEAR}."
+    code $folder_name/$checker
+    code $folder_name/$brute_force
+    code $folder_name/$generator
     exit
 fi
 echo "Setting up testing system for ${opt_sol} as ${folder_name}"

@@ -50,7 +50,7 @@ while [[ $# -gt 0 ]]; do
         debug="-DLOCAL"
         shift # past argument
         ;;
-    -s|--silent)
+    -w|--silent)
         ## Silencing warnings
         warnings="-w"
         shift # past argument
@@ -115,7 +115,7 @@ if [[ "$help" == true ]]; then
     echo "${BOLD}Options:"
     echo " ${RED_BOLD} -c, --compile${CLEAR}       Compile the file"
     echo " ${RED_BOLD} -d, --debug${CLEAR}         Compile the file with debug flag"
-    echo " ${RED_BOLD} -s, --silent${CLEAR}        Silences compilation warnings"
+    echo " ${RED_BOLD} -w, --silent${CLEAR}        Silences compilation warnings"
     echo " ${RED_BOLD} -f, --final${CLEAR}         Compile and run the file without the debug flag"
     echo " ${RED_BOLD} -t, --test${CLEAR}          Compile the file and run it against the saved test cases"
     echo " ${RED_BOLD} -r, --run${CLEAR}           Compile the file and run it against a particular saved test case"
@@ -377,7 +377,10 @@ fi
 ## Gathering Mode:
 if [[ "$gather_mode" == true ]]
 then
+    ### Take input:
     input=$(sed '/^$/q')
+
+    ### Determine correct input suffix
     if ! test -f ${file}0.in
     then 
         if ! test -d input_${file}; then ct="0";
@@ -390,6 +393,7 @@ then
         ct=`ls ${file}*.in | wc -l`
     fi
     ct="$(sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//'<<<"$ct")"
+
     echo "$input" > $file$ct.in
     ./$file < $file$ct.in > $file.out
     echo "${BOLD}output begins now:${CLEAR}"

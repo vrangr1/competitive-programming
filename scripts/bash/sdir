@@ -1,5 +1,4 @@
 ## Script to setup input and output directories in the current folder
-#!/bin/bash
 
 file=$1
 if [[ $file == *.cpp ]]; then
