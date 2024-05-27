@@ -1,7 +1,7 @@
 /***************************************************
 * Author  : Anav Prasad
 * Nick    : vrangr
-* Created : Wed Apr  3 20:15:09 IST 2024
+* Created : Sun Apr 21 20:22:33 IST 2024
 ****************************************************/
 #include <iostream>
 #include <vector>
@@ -20,7 +20,7 @@
 #include <stack>
 #include <list>
 #include <forward_list>
-// #include <bit>
+#include <bit>
 #include <bitset>
 #include <array>
 #include <assert.h>
@@ -72,63 +72,59 @@ int main(){
 	return 0;
 }
 
-const ll mod = (ll)1e9+7ll, maxn = (ll)2e5 + 1ll;
-vector<ll> fac(maxn), faci(maxn), invs(maxn,-1ll);
+const ll mod = (ll)1e9 + 7ll, maxn=(ll)3e5+10ll;
+
+vector<ll> fac(maxn), invfac(maxn);
+
+ll inv(ll n){
+    if (n <= 1ll) return 1ll;
+    return ((mod-mod/n)*inv(mod%n))%mod;
+}
 
 void init(){
     static bool init = false;
     if (init) return;
     init = true;
-    fac[0] = fac[1] = faci[0] = faci[1] = invs[0] = invs[1] = 1;
+    fac[0] = fac[1] = invfac[0] = invfac[1] = 1ll;
     rep(n,2,maxn-1ll,1ll){
         fac[n] = (fac[n-1]*n)%mod;
-        assert(invs[mod%n] != -1);
-        ll inv = ((mod-mod/n)*invs[mod%n])%mod;
-        faci[n] = (faci[n-1]*inv)%mod;
-        invs[n] = inv;
+        invfac[n] = (invfac[n-1]*inv(n))%mod;
     }
 }
 
-ll ncr(ll n, ll r) {
-    assert(n >= r);
-    ll sol = (fac[n]*faci[r])%mod;
-    sol *= faci[n-r];
+ll ncr(ll n, ll r){
+    assert(n>=r);
+    ll sol = (fac[n]*invfac[r])%mod;
+    sol*=invfac[n-r];
     return sol%mod;
 }
 
 void solve(){
     init();
-    ll n, m, k; cin >> n >> m >> k;
-    auto pwr = [](ll a, ll n, bool add = true) -> ll {
-        if (add){
-            if (a == 0ll) return 0ll;
-            if (n == 0ll) return 1ll;
+    ll n, k; cin >> n >> k;
+    ll r = n, c = n;
+    rep(i,k){
+        ll ri, ci; cin >> ri >> ci;
+        --r;--c;
+        if (ri != ci){
+            --r;
+            --c;
         }
-        else {
-            if (n == 0ll) return 1ll;
-            if (a == 0ll) return 0ll;
-        }
-        ll sol = 1ll;
-        while(n>1ll){
-            if (n%2ll) sol *=a;
-            a = (a*a)%mod;
-            n>>=1ll;
-        }
-        return (sol*a)%mod;
-    };
+    }
+    assert(r==c);
+    if (r == 0){
+        cout << "1\n";
+        return;
+    }
+    assert(r>0);
     ll sol = 0ll;
-    rep(x,1ll,n,1ll){
-        ll val = ncr(n,x)*pwr(k-1ll,n-x,false);
-        val%=mod;
-        debug(n,m,k,x,val);
-        if (x <= k)
-            val *= (pwr(m-k+1ll,x)-pwr(m-k,x)+mod)%mod;
-        else val *= (pwr(m-k+1ll,x) - (pwr(m-k,k,false)*pwr(m-k+1ll,x-k))%mod + mod)%mod;
-        val%=mod;
-        debug(val,sol,pwr(m-k+1ll,x), pwr(m-k,x));
-        sol += val;
+    rep(s,r+1ll){
+        if ((r-s)%2ll) continue;
+        ll cur = ncr(r,s), m = r-s;
+        cur *= (ncr(m,m/2ll)*fac[m/2ll])%mod;
+        cur%=mod;
+        sol+=cur;
         sol%=mod;
-        debug(endl);
     }
     cout << sol << endl;
 }

@@ -1,7 +1,7 @@
 /***************************************************
 * Author  : Anav Prasad
 * Nick    : vrangr
-* Created : Wed Apr  3 20:15:09 IST 2024
+* Created : Wed May 22 20:00:17 IST 2024
 ****************************************************/
 #include <iostream>
 #include <vector>
@@ -20,7 +20,7 @@
 #include <stack>
 #include <list>
 #include <forward_list>
-// #include <bit>
+#include <bit>
 #include <bitset>
 #include <array>
 #include <assert.h>
@@ -72,63 +72,51 @@ int main(){
 	return 0;
 }
 
-const ll mod = (ll)1e9+7ll, maxn = (ll)2e5 + 1ll;
-vector<ll> fac(maxn), faci(maxn), invs(maxn,-1ll);
-
-void init(){
-    static bool init = false;
-    if (init) return;
-    init = true;
-    fac[0] = fac[1] = faci[0] = faci[1] = invs[0] = invs[1] = 1;
-    rep(n,2,maxn-1ll,1ll){
-        fac[n] = (fac[n-1]*n)%mod;
-        assert(invs[mod%n] != -1);
-        ll inv = ((mod-mod/n)*invs[mod%n])%mod;
-        faci[n] = (faci[n-1]*inv)%mod;
-        invs[n] = inv;
-    }
-}
-
-ll ncr(ll n, ll r) {
-    assert(n >= r);
-    ll sol = (fac[n]*faci[r])%mod;
-    sol *= faci[n-r];
-    return sol%mod;
-}
-
 void solve(){
-    init();
-    ll n, m, k; cin >> n >> m >> k;
-    auto pwr = [](ll a, ll n, bool add = true) -> ll {
-        if (add){
-            if (a == 0ll) return 0ll;
-            if (n == 0ll) return 1ll;
-        }
-        else {
-            if (n == 0ll) return 1ll;
-            if (a == 0ll) return 0ll;
-        }
-        ll sol = 1ll;
-        while(n>1ll){
-            if (n%2ll) sol *=a;
-            a = (a*a)%mod;
-            n>>=1ll;
-        }
-        return (sol*a)%mod;
+    ll a, b, k; cin >> a >> b >> k;
+    auto pwr = [](auto &&self, i128 a, i128 n) -> i128 {
+        if (n == 0ll) return 1;
+        if (n%2ll) return a*self(self,a*a,n/2ll);
+        return self(self,a*a,n/2ll);
     };
-    ll sol = 0ll;
-    rep(x,1ll,n,1ll){
-        ll val = ncr(n,x)*pwr(k-1ll,n-x,false);
-        val%=mod;
-        debug(n,m,k,x,val);
-        if (x <= k)
-            val *= (pwr(m-k+1ll,x)-pwr(m-k,x)+mod)%mod;
-        else val *= (pwr(m-k+1ll,x) - (pwr(m-k,k,false)*pwr(m-k+1ll,x-k))%mod + mod)%mod;
-        val%=mod;
-        debug(val,sol,pwr(m-k+1ll,x), pwr(m-k,x));
-        sol += val;
-        sol%=mod;
-        debug(endl);
+    auto bsch = [&pwr](auto &&self, i128 low, i128 high, i128 a, i128 b, i128 k) -> i128 {
+        if (low == high) {
+            assert((pwr(pwr,k,low))*a <= b);
+            return low;
+        }
+        i128 mid = (low+high+1ll)/2ll, val = a*(pwr(pwr,k,mid));
+        if (val == b) return mid;
+        if (val < b) return self(self,mid,high,a,b,k);
+        return self(self,low,mid-1ll,a,b,k);
+    };
+    auto find_p = [&bsch](i128 a, i128 b, i128 k) -> i128 {
+        i128 high = (i128)(logl(b/a)/logl(k)) + (i128)2;
+        return bsch(bsch,0,high,a,b,k);
+    };
+    auto get = [&find_p,&pwr](i128 a, i128 b, i128 k) -> i128 {
+        i128 p = find_p(a,b,k);
+        i128 v = a*pwr(pwr,k,p);
+        assert(v <= b);
+        return p + b-v;
+    };
+    ll sol = (ll)get(a,b,k);
+    i128 na = a, nb = b, nk = k;
+    // ll ct = 0;
+    while(na <= b) {
+        // ct++;
+        i128 p = find_p(na,nb,nk);
+        debug(endl,(ll)p);
+        i128 tmp = b/(pwr(pwr,k,p));
+        if (tmp <= na){
+            na++;
+            continue;
+        }
+        na = tmp;
+        ll cur = (ll)(na-a) + (ll)get(na,nb,nk);
+        debug((ll)na,cur);
+        sol = min(sol,cur);
+        na++;
+        if (p==0) break;
     }
     cout << sol << endl;
 }

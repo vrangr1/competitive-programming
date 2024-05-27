@@ -72,10 +72,94 @@ int main(){
 	return 0;
 }
 
-const ll mod = 998244353ll;
+const ll mod = 998244353ll, mx = (ll)(2e6)+5ll;
+vector<ll> fac(mx),invs(mx,-1ll);
+
+ll inv(ll n){
+    if (n <= 1ll) return 1ll;
+    return (((mod-mod/n)*inv(mod%n))%mod);
+}
+
+ll invfac(ll n){
+    assert(n < mx);
+    if (invs[n] != -1) return invs[n];
+    return invs[n] = inv(fac[n]);
+}
+
+void init(){
+    static bool init = false;
+    if (init) return;
+    init = true;
+    fac[0] = fac[1] = 1ll;
+    rep(f,2ll,mx-1ll,1ll)
+        fac[f] = (fac[f-1ll]*f)%mod;
+}
 
 void solve(){
+    init();
     vector<ll> c(4);
     rep(i,4) cin >> c[i];
-    
+    auto ncr = [](ll n, ll r) -> ll {
+        assert(r <= n);
+        ll sol = (fac[n]*invfac(r))%mod;
+        sol *= invfac(n-r);
+        return sol%mod;
+    };
+    if (llabs(c[0]-c[1]) > 1ll) return void(cout << "0\n");
+    if (c[0] == c[1] && c[0] == 0){
+        if (c[2] && c[3]) return void(cout << "0\n");
+        cout << "1\n";
+        return;
+    }
+    if (c[2] == 0 && c[3] == 0){
+        if (c[0] == c[1]) return void(cout << "2\n");
+        cout << "1\n";
+        return;
+    }
+    if (c[2] == 0){
+        ll sol;
+        if (c[0] == c[1]){
+            sol = ncr(c[3]+c[0]+1-1,c[0]) + ncr(c[3]+c[0]-1,c[0]-1);
+            sol%=mod;
+        }
+        else if (c[0] > c[1]){
+            sol = ncr(c[3]+c[0]-1,c[0]-1);
+        }
+        else{
+            sol = ncr(c[3]+c[1]-1,c[1]-1);
+        }
+        cout << sol << endl;
+        return;
+    }
+    else if (c[3] == 0){
+        ll sol;
+        if (c[0] == c[1]){
+            sol = ncr(c[2]+c[0]-1,c[0]-1) + ncr(c[2]+c[0],c[0]);
+            sol %= mod;
+        }
+        else if (c[0] > c[1])
+            sol = ncr(c[2]+c[0]-1,c[0]-1);
+        else sol = ncr(c[2]+c[1]-1,c[1]-1);
+        cout << sol << endl;
+        return;
+    }
+    else{
+        ll sol;
+        if (c[0] == c[1]){
+            sol = (ncr(c[3]+c[0]-1,c[0]-1)*ncr(c[2]+c[0],c[0]))%mod;
+            sol += (ncr(c[3]+c[0]+1-1,c[0])*ncr(c[2]+c[0]-1,c[0]-1))%mod;
+            sol%=mod;
+        }
+        else if (c[0] > c[1]){
+            sol = ncr(c[3]+c[0]-1,c[0]-1);
+            sol *= ncr(c[2]+c[0]-1,c[0]-1);
+            sol%=mod;
+        }
+        else{
+            sol = ncr(c[3]+c[1]-1,c[1]-1);
+            sol *= ncr(c[2]+c[1]-1,c[1]-1);
+            sol%=mod;
+        }
+        cout << sol << endl;
+    }
 }

@@ -72,7 +72,7 @@ int main(){
 	return 0;
 }
 
-void solve(){
+void solve1(){
     ll n, k; cin >> n >> k;
     set<ll> st;
     vector<vector<ll>> a(n,vector<ll>(n,0)), dp(n,vector<ll>(n,LLONG_MIN));
@@ -96,4 +96,8 @@ void solve(){
             
         }
     }
+}
+
+void solve(){
+    
 }

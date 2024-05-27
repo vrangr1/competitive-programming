@@ -88,13 +88,7 @@ int main(){
 
 const ll mod = (ll)1e9+7ll;
 
-class trie{
-public:
-    vector<trie*> children;
-    trie():children(2,nullptr){}
-};
-
-void solve(){
+void solve1(){
     ll n, k; cin >> n >> k;
     auto get = [k](ll n) -> vector<ll> {
         if (n%k) return {};
@@ -145,4 +139,11 @@ void solve(){
     ll sol = 0ll;
     // ll sol = pr(pr,2ll,ct)-1ll;
     cout << sol << endl;
+}
+
+void solve(){
+    ll n, k; cin >> n >> k;
+    vector<ll> a(n);
+    rep(i,n) cin >> a[i];
+    
 }

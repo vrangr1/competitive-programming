@@ -170,11 +170,8 @@ void solve(){
         g[u].push_back(v);
         g[v].push_back(u);
     }
-    vector<int> stat(n,0);
-    vector<int> queries;
+    vector<int> stat(n,0), queries, depth(n,0);
     vector<pair<int,int>> updates;
-    vector<int> depth(n,-1);
-    depth[0] = 0;
     auto procdepth = [&](auto &&self, int node, int parent, int d) -> void {
         depth[node] = d;
         for (int v : g[node]){
@@ -184,34 +181,20 @@ void solve(){
     };
     procdepth(procdepth,0,-1,0);
     auto subtask1 = [&]() -> void {
-        debug("sb1");
         vector<int> ct(n,0);
         int oct = 0;
         fill(all(stat),0);
-        for (auto &qr : updates){
-            int t, u;
-            t = qr.first;
-            u = qr.second;
+        for (auto [t,u] : updates){
             if (t == 1){
-                // assert(u==0);
-                if(u==0)
+                assert(u==0);
                 cout << oct << endl;
             }
             else{
-                assert(u>=0);
-                assert(u < sz(stat));
                 stat[u] = 1-stat[u];
                 if (u == 0) continue;
-                assert(u < sz(depth));
-                assert(depth[u] < sz(ct));
-                assert(depth[u] >= 0);
-                assert(ct[depth[u]] >= 0);
                 if (ct[depth[u]] == 1) oct--;
-                if (stat[u])
-                    ct[depth[u]]++;
-                else
-                    ct[depth[u]]--;
-                assert(ct[depth[u]] >= 0);
+                if (stat[u]) ct[depth[u]]++;
+                else ct[depth[u]]--;
                 if (ct[depth[u]] == 1) oct++;
             }
         }
@@ -222,14 +205,13 @@ void solve(){
         --u;
         if (t == 1){
             queries.push_back(u);
-            updates.push_back({1,u});
+            updates.emplace_back(1,u);
         }
         else{
             stat[u] = 1-stat[u];
-            updates.push_back({2,u});
+            updates.emplace_back(2,u);
         }
     }
-    debug(stat,queries,updates);
     if (*max_element(all(queries)) == 0){
         subtask1();
         return;
@@ -250,68 +232,22 @@ void solve(){
         assert(st.find(depth[node]) == st.end());
         if (stat[node])
         st.insert(depth[node]);
-        debug(node,st);
         return st;
     };
-    debug(sol);
     dfs(dfs,0,-1);
     for (int qr : queries)
         cout << sol[qr] << endl;
 }
 
-/*
+// All subtasks
+void solve3(){
+    int n, q; cin >> n >> q;
+    vector<vector<int>> g(n);
+    rep(i,n-1){
+        int u, v; cin >> u >> v;
+        --u;--v;
+        g[u].push_back(v);
+        g[v].push_back(u);
+    }
 
-2
-
-1
-5 10
-1 2
-2 3
-2 4
-4 5
-
-2 1
-2 3
-2 5
-2 4
-2 3
-
-1 2
-1 3
-1 2
-1 2
-1 2
-
-10 21
-1 2
-1 3
-2 4
-2 5
-4 7
-4 8
-5 9
-3 6
-6 10
-
-2 1
-2 7
-2 10
-2 4
-1 1
-1 2
-2 9
-2 5
-1 2
-2 9
-1 2
-2 8
-1 4
-1 7
-2 9
-1 5
-2 5
-2 6
-1 2
-2 4
-1 2
-*/
+}

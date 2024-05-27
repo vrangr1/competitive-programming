@@ -71,6 +71,7 @@ int main(){
 	return 0;
 }
 
+// Attempt 1, incorrect
 void solve1(){
     int n; cin >> n;
     vector<int> a(n);
@@ -113,6 +114,7 @@ void solve1(){
     cout << ct << endl;
 }
 
+// Attempt 2, incorrect
 void solve2(){
     int n; cin >> n;
     vector<int> a(n);
@@ -146,13 +148,6 @@ void solve2(){
     cout << sol << endl;
     // debug(s,t);
 }
-
-
-
-
-
-
-
 
 
 class segtree{
@@ -231,6 +226,7 @@ public:
     }
 };
 
+// Attempt 3, incorrect, though can be fixed
 void solve3(){
     int n; cin >> n;
     vector<int> a(n);
@@ -266,8 +262,9 @@ void solve3(){
     cout << last << endl;
 }
 
+// Attempt 4, AC: Greedy Approach
 // Observation is king.... 
-void solve(){
+void solve4(){
     int n; cin >> n;
     vector<int> a(n);
     rep(i,n) cin >> a[i];
@@ -280,6 +277,14 @@ void solve(){
         else x = a[i], sol++;
     }
     cout << sol << endl;
+}
+
+// Attempt 5: DP, Segment Tree
+void solve(){
+    int n; cin >> n;
+    vector<int> a(n);
+    rep(i,n) cin >> a[i];
+    
 }
 
 

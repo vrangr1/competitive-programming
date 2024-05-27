@@ -1,7 +1,7 @@
 /***************************************************
 * Author  : Anav Prasad
 * Nick    : vrangr
-* Created : Wed Mar  6 20:21:30 IST 2024
+* Created : Wed May 22 20:28:11 IST 2024
 ****************************************************/
 #include <iostream>
 #include <vector>
@@ -23,6 +23,7 @@
 #include <bit>
 #include <bitset>
 #include <array>
+#include <sstream>
 #include <assert.h>
 #define debug(...) 42
 #ifdef LOCAL
@@ -42,8 +43,7 @@ typedef long double ld;
 typedef __int128_t i128;
 #define endl "\n"
 #define fastIO ios_base::sync_with_stdio(false),cin.tie(0)
-#define TEST int T;cin>>T;while(T--)solve();
-#define TEST1 solve();
+#define CHECK check()
 #define all(x) (x).begin(), (x).end()
 #define rall(x) (x).rbegin(), (x).rend()
 #define sz(v) ((int)(v).size())
@@ -53,83 +53,78 @@ typedef __int128_t i128;
 #define forsn(i, st, end, d) for(__typeof(end) i = st; (d>0?i<=end:i>=end); i+=((__typeof(end))d))
 #define mt make_tuple
 #define space " "
-#define yes "YES\n"
-#define no "NO\n"
+#define yes "Yes\n"
+#define no "No\n"
 #define pass ((void)0)
 template<typename type>inline void print_vec(const vector<type> &v){rep(i,sz(v))cout<<v[i]<<" \n"[i==sz(v)-1];}
-void solve();
+void check();
 
 // IMPORT SNIPPETS HERE
-#ifndef SQRT_SNIPPET
-#define SQRT_SNIPPET
-#include <iostream>
-// Babylonian Method
-template <typename type, typename = typename std::enable_if<std::is_integral<type>::value>::type>
-type bsqrt(type x){
-    const type one = static_cast<type>(1), two = static_cast<type>(2);
-    type a = x, b = (x + one) / two;
-    while (a > b){
-        a = b;
-        b = (b + x / b) / two;
-    }
-    return a;
-}
-#endif
+
 // END OF SNIPPETS
 
 int main(){
 	fastIO;
-	TEST;
+	CHECK;
     #ifdef LOCAL
         cout << "\nTime elapsed: " << 1.0 * clock() / CLOCKS_PER_SEC << " s.\n";
     #endif
 	return 0;
 }
 
-const ll mod = 998244353ll;
-
-void solve(){
-    ll n, x; cin >> n >> x;
-    vector<ll> prs;
-    auto gen_pf = [&prs](ll x) -> void {
-        ll f = 2ll, ct = 0ll;
-        while(x%f == 0ll){
-            x/=f;
-            ct++;
-        }
-        if (ct) prs.push_back(ct);
-        ll sq = bsqrt(x);
-        for(f = 3ll;f<=sq; f+=2ll){
-            if(x%f) continue;
-            ct=0ll;
-            while(x%f == 0ll){
-                x/=f;
-                ct++;
-            }
-            prs.push_back(ct);
-        }
-        if (x>1ll)
-            prs.push_back(1);
-    };
-    gen_pf(x);
-    auto pr = [](auto &&self, ll a, ll n) -> ll {
-        if (n == 0ll) return 1ll;
-        ll a2 = (a*a)%mod;
-        if (n%2ll) return (a*self(self,a2,n/2ll))%mod;
-        return self(self,a2,n/2ll)%mod;
-    };
-    auto get = [&pr](ll ct, ll n) -> ll {
-        return (pr(pr,ct+1ll,n) - pr(pr,ct,n)+mod)%mod;
-    };
-    ll sol = 0ll;
-    rep(cn,1ll,n,1ll){
-        ll cur = 1ll;
-        for(ll ct : prs){
-            cur = cur*get(ct,cn);
-            cur%=mod;
-        }
-        sol += cur;
-        sol%=mod;
+vector<string> get_output(){
+    string s;
+    cin >> s;
+    assert(s=="OUTPUT_BEGINS");
+    vector<string> out;
+    cin >> s;
+    while(s!="OUTPUT_ENDS"){
+        out.push_back(s);
+        cin >> s;
     }
-    cout << sol << endl;
+    return out;
+}
+
+bool check_if_equal(vector<string> &test_output, vector<string> &correct_output){
+    if (sz(test_output) != sz(correct_output)) return false;
+    rep(i,sz(test_output))
+        if (test_output[i] != correct_output[i]) return false;
+    return true;
+}
+
+const string output_start = "OUTPUT_BEGINS", output_end = "OUTPUT_ENDS";
+
+void check(){
+    stringstream ss;
+    string s;
+    auto transfer = [&]() -> bool {
+        cin >> s;
+        if (s == output_start || s == output_end) return false;
+        ss << s << endl;
+        return true;
+    };
+    auto trash_input = [&s,&ss]() -> void {
+        ss >> s;
+    };
+    auto process_input = [&]() -> void {
+        assert(!transfer());
+        while(transfer())
+            trash_input();
+    };
+    process_input();
+    auto process_output = [&](vector<string> &output) -> void {
+        assert(!transfer());
+        while(transfer()){
+            ss >> s;
+            output.push_back(s);
+        }
+    };
+    vector<string> test_output, correct_output;
+    process_output(test_output);
+    process_output(correct_output);
+    auto match_outputs = [&]() -> bool {
+        return check_if_equal(test_output, correct_output);
+    };
+    if (match_outputs()) cout << yes;
+    else cout << no;
 }

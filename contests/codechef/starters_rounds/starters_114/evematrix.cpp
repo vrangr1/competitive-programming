@@ -71,59 +71,120 @@ int main(){
 	return 0;
 }
 
-void solve(){
-    int n; cin >> n;
-    if (n%2 == 0) return void(cout << "-1\n");
-    int n2 = n*n;
-    int e = 2, o = 1;
+bool doassert(int n, const vector<vector<int>> &grid){
+    rep(d,1,n-1,1){
+        int sum = 0;
+        rep(i,d)
+            sum += grid[i][0];
+        rep(j,d)
+            sum += grid[d][j];
+        rep(i,d,1,-1)
+            sum += grid[i][d];
+        rep(j,d,1,-1)
+            sum += grid[0][j];
+        if (sum%2 == 0) return false;
+        // assert(sum%2 == 1);
+    }
+    return true;
+}
+
+void process(int n){
     vector<vector<int>> grid(n,vector<int>(n));
-    grid[0][0] = 1;
+    int o = 1, e = 2, n2 = n*n;
+    grid[0][0] = o;
     o+=2;
-    auto orem = [&](){
-        return (n2-o+1)/2;
-    };
-    auto erem = [&]()->int {
-        return (n2-e+1)/2;
-    };
-    int lex=-1,ley=-1,lox=-1,loy=-1, ex,ey,ox,oy;
-    int oc = 0;
-    auto get_val = [&](){
-        if (e <= n2){
+    int rem, ensp;
+    auto get_val = [&](bool set = false, int par = 0) -> int {
+        rem--;
+        if (set){
+            if (par){
+                assert(o <= n2);
+                o += 2;
+                return o-2;
+            }
+            assert(e <= n2);
             e += 2;
             return e-2;
         }
+        if (ensp){
+            if (rem == 0 || e > n2){
+                assert(o<=n2);
+                o+=2;
+                return o-2;
+            }
+            assert(e<=n2);
+            e+=2;
+            return e-2;
+        }
+        if (rem == 0 || o > n2){
+            assert(e <= n2);
+            e+=2;
+            return e-2;
+        }
+        assert(o<=n2);
         o+=2;
-        oc++;
         return o-2;
     };
-    auto update = [&](int x, int y){
-        if (grid[x][y]%2){
-            ox = x;
-            oy = y;
+    // debug(n2);
+    rep(d,1,n-1,1){
+        rem = 2*d+1;
+        if (d%2){
+            grid[0][d] = get_val(true,1);
+            grid[d][0] = get_val(true,0);
+            ensp = 1;
         }
         else{
-            ex = x;
-            ey = y;
+            grid[0][d] = get_val(true,0);
+            grid[d][0] = get_val(true,1);
+            ensp = 0;
         }
-    };
-    bool first = false;
-    rep(d,1,n-1,1){
-        oc = 0;
-        rep(j,d){
+        // debug(d,rem,o,e,ensp);
+        rep(j,1,d,1)
             grid[d][j] = get_val();
-            update(d,j);
-        }
-        grid[d][d] = get_val();
-        update(d,d);
-        rep(i,d-1,0,-1){
+        rep(i,1,d-1,1)
             grid[i][d] = get_val();
-            update(i,d);
-        }
-        if (oc%2){
-            first = !first;
-            if (first)
-                swap(grid[ox][oy],grid[lex][ley]);
-        }
-        
+        // debug(grid[d][d],endl);
     }
+    if (!doassert(n,grid)) return void(cout << "-1\n");
+    rep(i,n) print_vec(grid[i]);
+}
+
+void solve(){
+    int n; cin >> n;
+    if (n == 2) return void(cout << "-1\n");
+    else if (n%2 == 0) return void(process(n));
+    if (n == 1) return void(cout << "1\n");
+    int n2 = n*n;
+    int e = 2, o = 1;
+    vector<vector<int>> grid(n,vector<int>(n,-1));
+    grid[0][0] = o;
+    o+=2;
+    int rem;
+    auto get_val = [&]() -> int {
+        debug(rem);
+        if (rem > 1 && o <= n2){
+            o += 2;
+            rem--;
+            return o-2;
+        }
+        e += 2;
+        rem--;
+        return e-2;
+    };
+
+    rep(d,1,n-1,1){
+        rem = (2*(d+1))-1;
+        debug(d,o,e);
+        grid[d][0] = get_val();
+        grid[0][d] = get_val();
+        rep(j,1,d-1,1)
+            grid[d][j] = get_val();
+        rep(i,1,d-1,1)
+            grid[i][d] = get_val();
+        grid[d][d] = get_val();
+        debug(grid);
+    }
+    doassert(n,grid);
+    rep(i,n)
+        print_vec(grid[i]);
 }

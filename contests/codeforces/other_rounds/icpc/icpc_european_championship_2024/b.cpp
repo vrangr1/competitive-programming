@@ -1,7 +1,7 @@
 /***************************************************
 * Author  : Anav Prasad
 * Nick    : vrangr
-* Created : Wed Apr  3 20:15:09 IST 2024
+* Created : Sun Mar 24 16:24:43 IST 2024
 ****************************************************/
 #include <iostream>
 #include <vector>
@@ -39,7 +39,7 @@ typedef unsigned int uint;
 typedef long long int ll;
 typedef unsigned long long int ull;
 typedef long double ld;
-typedef __int128_t i128;
+// typedef __int128_t i128;
 #define endl "\n"
 #define fastIO ios_base::sync_with_stdio(false),cin.tie(0)
 #define TEST int T;cin>>T;while(T--)solve();
@@ -72,63 +72,61 @@ int main(){
 	return 0;
 }
 
-const ll mod = (ll)1e9+7ll, maxn = (ll)2e5 + 1ll;
-vector<ll> fac(maxn), faci(maxn), invs(maxn,-1ll);
-
-void init(){
-    static bool init = false;
-    if (init) return;
-    init = true;
-    fac[0] = fac[1] = faci[0] = faci[1] = invs[0] = invs[1] = 1;
-    rep(n,2,maxn-1ll,1ll){
-        fac[n] = (fac[n-1]*n)%mod;
-        assert(invs[mod%n] != -1);
-        ll inv = ((mod-mod/n)*invs[mod%n])%mod;
-        faci[n] = (faci[n-1]*inv)%mod;
-        invs[n] = inv;
-    }
-}
-
-ll ncr(ll n, ll r) {
-    assert(n >= r);
-    ll sol = (fac[n]*faci[r])%mod;
-    sol *= faci[n-r];
-    return sol%mod;
-}
-
 void solve(){
-    init();
-    ll n, m, k; cin >> n >> m >> k;
-    auto pwr = [](ll a, ll n, bool add = true) -> ll {
-        if (add){
-            if (a == 0ll) return 0ll;
-            if (n == 0ll) return 1ll;
+    ll n; cin >> n;
+    vector<ll> a(n), b(n);
+    rep(i,n) cin >> a[i];
+    rep(i,n) cin >> b[i];
+    sort(all(a));
+    multiset<ll> bms, other;
+    debug(a);
+    auto pos = [&](ll k) -> bool {
+        debug(endl,k);
+        bms.clear();
+        other.clear();
+        bms = multiset<ll>(all(b));
+        rep(i,n) other.insert(-b[i]);
+        for (ll v : a){
+            auto it = bms.lower_bound(v+k);
+            if (it == bms.end()){
+                it = other.lower_bound(k-v);
+                if (it == other.end()) return false;
+                ll val = *it;
+                other.erase(it);
+                val = -val;
+                assert(bms.find(val) != bms.end());
+                bms.erase(bms.find(val));
+                continue;
+            }
+            ll val = -*it;
+            bms.erase(it);
+            assert(other.find(val) != other.end());
+            other.erase(other.find(val));
         }
-        else {
-            if (n == 0ll) return 1ll;
-            if (a == 0ll) return 0ll;
-        }
-        ll sol = 1ll;
-        while(n>1ll){
-            if (n%2ll) sol *=a;
-            a = (a*a)%mod;
-            n>>=1ll;
-        }
-        return (sol*a)%mod;
+        return true;
     };
-    ll sol = 0ll;
-    rep(x,1ll,n,1ll){
-        ll val = ncr(n,x)*pwr(k-1ll,n-x,false);
-        val%=mod;
-        debug(n,m,k,x,val);
-        if (x <= k)
-            val *= (pwr(m-k+1ll,x)-pwr(m-k,x)+mod)%mod;
-        else val *= (pwr(m-k+1ll,x) - (pwr(m-k,k,false)*pwr(m-k+1ll,x-k))%mod + mod)%mod;
-        val%=mod;
-        debug(val,sol,pwr(m-k+1ll,x), pwr(m-k,x));
-        sol += val;
-        sol%=mod;
-        debug(endl);
-    }
-    cout << sol << endl;
+    auto bsch = [&](auto &&self, ll low, ll high) -> ll {
+        assert(low <= high);
+        if (low == high) return low;
+        ll mid = (low+high+1ll)/2ll;
+        assert(mid > low);
+        if (pos(mid)) return self(self,mid,high);
+        else return self(self,low,mid-1ll);
+    };
+    bms.clear();
+    bms = multiset<ll>(all(b));
+    debug(bms);
+    ll mx = max(llabs(*bms.rbegin()-a.front()), llabs(a.back()-*bms.begin()));
+    debug(mx);
+    cout << bsch(bsch,0,mx) << endl;
 }
+
+/*
+
+a: [ 12 14 25 62 74 86 95 ]
+bms: { 20 51 62 71 72 84 92 }
+
+a: [ 12 14 25 62 74   ]
+bms: { 20 51  71  84 92 }
+
+*/
