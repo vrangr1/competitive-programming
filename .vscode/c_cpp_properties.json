@@ -15,7 +15,7 @@
                 "${workspaceFolder}/**",
                 "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/"
             ],
-            "compilerPath": "/usr/bin/g++"
+            "compilerPath": "/opt/homebrew/Cellar/gcc/14.1.0/bin/g++-14"
         }
     ],
     "version": 4

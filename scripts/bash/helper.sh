@@ -4,13 +4,13 @@
 CPR="/Users/anavp/home/programming/competitive-programming/scripts/bash/cpr"
 TEMPLATE="/Users/anavp/home/programming/competitive-programming/algo/template.cpp"
 DEBUG_HEADER="/Users/anavp/home/programming/competitive-programming/algo/debug.hpp"
-# ALGO_DIRECTORY="/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/algo"
-ALGO_DIRECTORY="/Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk/usr/include/c++/v1/algo"
+ALGO_DIRECTORY="/opt/homebrew/Cellar/gcc/14.1.0/include/c++/14/algo"
 LIST_SNIPPETS_PYTHON_SCRIPT="/Users/anavp/home/programming/competitive-programming/scripts/python/list_snippets.py"
 SNIPPET_GENERATOR="/Users/anavp/home/programming/snippet_generator/src/snippet_generator.py"
 TEST_CASE_GENERATOR="/Users/anavp/home/programming/competitive-programming/algo/test/generator.cpp"
 BRUTE_FORCE=$TEMPLATE
 CHECKER="/Users/anavp/home/programming/competitive-programming/algo/test/checker.cpp"
+COMPILER="g++-14"
 
 ## Constants:
 OUTPUT_START="OUTPUT_BEGINS"

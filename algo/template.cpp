@@ -2,28 +2,9 @@
 * Author  : Anav Prasad
 * Nick    : vrangr
 ****************************************************/
-#include <iostream>
-#include <vector>
-#include <string.h>
-#include <ctype.h>
-#include <set>
-#include <stdlib.h>
-#include <map>
-#include <iterator>
-#include <iomanip>
-#include <algorithm>
-#include <climits>
-#include <numeric>
-#include <cmath>
-#include <queue>
-#include <stack>
-#include <list>
-#include <forward_list>
-#include <bit>
-#include <bitset>
-#include <array>
-#include <assert.h>
-#define debug(...) 42
+#include <bits/stdc++.h>
+
+#define debug(...) (void)42
 #ifdef LOCAL
     #undef debug
     #include <algo/debug.hpp>
@@ -66,7 +47,7 @@ int main(){
 	fastIO;
 	TEST;
 #ifdef LOCAL
-    cout << "\nTime elapsed: " << 1.0 * clock() / CLOCKS_PER_SEC << " s.\n";
+    cout << "\nTime elapsed: " << (double)clock() / CLOCKS_PER_SEC << " s.\n";
 #endif
 	return 0;
 }

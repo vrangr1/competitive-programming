@@ -289,7 +289,7 @@ if [[ "$gather_mode" == true ]]; then
 fi
 
 # Compiling
-g++ $cpp_version $file_loc -o $file $debug $warnings $flags
+$COMPILER $cpp_version $file_loc -o $file $debug $warnings $flags
 
 ## If only need to compile, then exit
 if [[ "$compile_mode" == true || "$debug_mode" == true ]]; then exit; fi
