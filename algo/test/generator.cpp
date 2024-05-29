@@ -35,6 +35,7 @@
 
 using namespace std;
 
+typedef unsigned int uint;
 typedef long long int ll;
 typedef unsigned long long int ull;
 typedef long double ld;
@@ -50,10 +51,8 @@ typedef __int128_t i128;
 #define rep(...) GET_MACRO(__VA_ARGS__, forsn, debug, forn)(__VA_ARGS__)
 #define forn(i, n) for (__typeof(n) i = 0; i < n; i++)
 #define forsn(i, st, end, d) for(__typeof(end) i = st; (d>0?i<=end:i>=end); i+=((__typeof(end))d))
-#define space " "
 #define yes "YES\n"
 #define no "NO\n"
-#define pass (void)0
 template<typename type>inline void print_vec(const vector<type> &v){rep(i,sz(v))cout<<v[i]<<" \n"[i==sz(v)-1];}
 
 // IMPORT SNIPPETS HERE
@@ -75,7 +74,7 @@ int main(){
     TEST;
     generate_test();
     #ifdef LOCAL
-        cout << "\nTime elapsed: " << 1.0 * clock() / CLOCKS_PER_SEC << " s.\n";
+        cout << "\nTime elapsed: " << (double)clock() / CLOCKS_PER_SEC << " s.\n";
     #endif
 	return 0;
 }

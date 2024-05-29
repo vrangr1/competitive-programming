@@ -4,30 +4,7 @@
 * AUTHOR : Anav Prasad
 * Nick : vrangr
 ****************************************************/
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <string.h>
-#include <ctype.h>
-#include <unordered_set>
-#include <set>
-#include <stdlib.h>
-#include <map>
-#include <iterator>
-#include <iomanip>
-#include <algorithm>
-#include <climits>
-#include <numeric>
-#include <cmath>
-#include <queue>
-#include <stack>
-#include <list>
-#include <forward_list>
-#include <unordered_map>
-#include <bit>
-#include <bitset>
-#include <random>
-#include <assert.h>
+#include <bits/stdc++.h>
 extern const bool DEBUG;
 
 using namespace std;
@@ -67,6 +44,7 @@ template <typename type> void print(priority_queue<type> pq);
 template <typename t1, typename t2> void print(priority_queue<t1,vector<t1>,t2> pq);
 template <class type, size_t... I> void print(const type& tup, index_sequence<I...>);
 template <class... type> void print(const tuple<type...> &tup);
+template <typename type, size_t N> void print(const array<type,N> &arr);
 template <typename Arg1> void debug_encapsulate(const char* names, Arg1&& arg1);
 template <typename Arg1, typename... Args> void debug_encapsulate(const char* names, Arg1&& arg1, Args&&... args);
 
@@ -354,6 +332,15 @@ template <class type, size_t... I> void print(const type& tup, index_sequence<I.
 
 template <class... type> void print(const tuple<type...> &tup){
     print(tup, make_index_sequence<sizeof...(type)>());
+}
+
+template <typename type, size_t N> void print(const array<type,N> &arr) {
+    cout << "{";
+    for (int i = 0; i < N; ++i) {
+        print(arr[i]);
+        cout << ",\0"[i==N-1];
+    }
+    cout << "}";
 }
 
 template <typename Arg1> void debug_encapsulate(const char* names, Arg1&& arg1){
