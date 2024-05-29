@@ -67,56 +67,19 @@ int main(){
 	fastIO;
 	TEST;
 #ifdef LOCAL
-    cout << "\nTime elapsed: " << 1.0 * clock() / CLOCKS_PER_SEC << " s.\n";
+    cout << "\nTime elapsed: " << (double)clock() / CLOCKS_PER_SEC << " s.\n";
 #endif
 	return 0;
 }
 
-void solve(){
+void solve() {
     ll a, b, k; cin >> a >> b >> k;
-    auto pwr = [](auto &&self, i128 a, i128 n) -> i128 {
-        if (n == 0ll) return 1;
-        if (n%2ll) return a*self(self,a*a,n/2ll);
-        return self(self,a*a,n/2ll);
+    ll sol = 0ll;
+    auto get = [](auto &&self, ll a, ll b, ll k) -> ll {
+        if (a > b) return INT_MAX;
+        if (a == b) return 0ll;
+        if (b%k) return min(b-a,b%k + self(self,a,b-(b%k),k));
+        return min(b-a,1+self(self,a,b/k,k));
     };
-    auto bsch = [&pwr](auto &&self, i128 low, i128 high, i128 a, i128 b, i128 k) -> i128 {
-        if (low == high) {
-            assert((pwr(pwr,k,low))*a <= b);
-            return low;
-        }
-        i128 mid = (low+high+1ll)/2ll, val = a*(pwr(pwr,k,mid));
-        if (val == b) return mid;
-        if (val < b) return self(self,mid,high,a,b,k);
-        return self(self,low,mid-1ll,a,b,k);
-    };
-    auto find_p = [&bsch](i128 a, i128 b, i128 k) -> i128 {
-        i128 high = (i128)(logl(b/a)/logl(k)) + (i128)2;
-        return bsch(bsch,0,high,a,b,k);
-    };
-    auto get = [&find_p,&pwr](i128 a, i128 b, i128 k) -> i128 {
-        i128 p = find_p(a,b,k);
-        i128 v = a*pwr(pwr,k,p);
-        assert(v <= b);
-        return p + b-v;
-    };
-    ll sol = (ll)get(a,b,k);
-    i128 na = a, nb = b, nk = k;
-    // ll ct = 0;
-    while(na <= b) {
-        // ct++;
-        i128 p = find_p(na,nb,nk);
-        debug(endl,(ll)p);
-        i128 tmp = b/(pwr(pwr,k,p));
-        if (tmp <= na){
-            na++;
-            continue;
-        }
-        na = tmp;
-        ll cur = (ll)(na-a) + (ll)get(na,nb,nk);
-        debug((ll)na,cur);
-        sol = min(sol,cur);
-        na++;
-        if (p==0) break;
-    }
-    cout << sol << endl;
+    cout << get(get,a,b,k) << endl;
 }
