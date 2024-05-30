@@ -53,15 +53,6 @@ int main() {
 void solve() {
     int n; cin >> n;
     string s; cin >> s;
-    bool d = false, l = false;
-    if (!is_sorted(all(s))) return void(cout << no);
-    rep(i,n) {
-        if (isdigit(s[i]) && l) return void(cout << no);
-        else if (isdigit(s[i])) {
-            d = true;
-            continue;
-        }
-        l = true;
-    }
-    cout << yes;
+    if (is_sorted(all(s))) cout << yes;
+    else cout << no;
 }

@@ -3,28 +3,7 @@
 * Nick    : vrangr
 * Created : Thu May 30 21:33:07 IST 2024
 ****************************************************/
-#include <iostream>
-#include <vector>
-#include <string.h>
-#include <ctype.h>
-#include <set>
-#include <stdlib.h>
-#include <map>
-#include <iterator>
-#include <iomanip>
-#include <algorithm>
-#include <climits>
-#include <numeric>
-#include <cmath>
-#include <queue>
-#include <stack>
-#include <list>
-#include <forward_list>
-#include <bit>
-#include <bitset>
-#include <array>
-#include <sstream>
-#include <assert.h>
+#include <bits/stdc++.h>
 
 #define debug(...) 42
 #ifdef LOCAL
