@@ -57,16 +57,28 @@ class segtree{
 public:
     int n;
     vector<int> tree;
-    segtree(vector<int> &a) {
-        n = sz(a)+1;
+    segtree(int an) {
+        n = an;
         int gn = (n)<<1;
         if (__builtin_popcount(gn) != 1)
             gn = 1<<(32-__builtin_clz(gn));
-        tree.assign(gn,0);
+        tree.assign(gn,n);
     }
 
     void update(int ind, int x) {
-        
+        for(tree[ind+=n]=x;ind>1;ind>>=1)
+            tree[ind>>1] = max(tree[ind],tree[ind^1]);
+    }
+
+    int query(int l, int r) {
+        if (l >= n) return n;
+        r = min(n,r);
+        int res = n;
+        for(l+=n,r+=n; l<r; l>>=1,r>>=1) {
+            if (l&1) res = min(res,tree[l++]);
+            if (r&1) res = min(res,tree[--r]);
+        }
+        return res;
     }
 };
 
@@ -85,14 +97,13 @@ void solve() {
         auto &vec = inds[v];
         return (ll)(upper_bound(all(vec),r) - lower_bound(all(vec),l));
     };
-    
     ll sol = 0ll;
-    debug(f);
-    rep(i,1,n-1,1) {
+    segtree st(n);
+    rep(i,n-1,1,-1) {
         if (f[i-1] == 0) continue;
-        int ind = (int)(upper_bound(f.begin()+i,f.end(),2*f[i-1])-f.begin());
-        debug(i,ind,f[i-1],get(i,ind-1,f[i-1]));
-        sol += get(i,ind-1,f[i-1]); 
+        int ind = st.query(2*f[i-1]+1,n);
+        sol += get(i,ind-1,f[i-1]);
+        st.update(f[i],i);
     }
     cout << sol << endl;
 }
