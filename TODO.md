@@ -28,6 +28,7 @@
 
 ## Topics:
 * Manacher's Algo (problem : ??)
+* Z Algo
 * Tarjan's Algo for articulation / cut points and bridges (cut edges).
 
 ## Refer Solution:

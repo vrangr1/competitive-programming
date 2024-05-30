@@ -321,7 +321,7 @@ if [[ "$test_mode" == true ]]; then
         if [[ $checker != "" ]]; then
             (echo "${OUTPUT_START}" && echo $input && echo "${OUTPUT_END}" && echo "${OUTPUT_START}" && cat in.ans && echo "${OUTPUT_END}" && echo "${OUTPUT_START}" && cat output_$file/$outfile && echo "${OUTPUT_END}") > checker_input
             ./$checker < checker_input > checker_output
-            echo "Yes" > expected_output
+            echo "YES" > expected_output
             diff -w checker_output expected_output &>/dev/null
         else
             diff -w in.ans output_$file/$outfile &>/dev/null
@@ -360,7 +360,7 @@ if [[ "$input_test_mode" == true ]]; then
     if [[ $checker != "" ]]; then
         (echo "${OUTPUT_START}" && cat $input && echo "${OUTPUT_END}" && echo "${OUTPUT_START}" && cat $file.out && echo "${OUTPUT_END}" && echo "${OUTPUT_START}" && cat $outfile && echo "${OUTPUT_END}") > checker_input
         ./$checker < checker_input > checker_output
-        echo "Yes" > expected_output
+        echo "YES" > expected_output
         diff -w checker_output expected_output &>/dev/null
     else
         diff -w $file.out $outfile &>/dev/null
@@ -404,7 +404,7 @@ then
     if [[ $checker != "" ]]; then
         (echo "${OUTPUT_START}" && cat $file$ct.in && echo "${OUTPUT_END}" && echo "${OUTPUT_START}" && cat $file.out && echo "${OUTPUT_END}" && echo "${OUTPUT_START}" && cat $file$ct.ans && echo "${OUTPUT_END}") > checker_input
         ./$checker < checker_input > checker_output
-        echo "Yes" > expected_output
+        echo "YES" > expected_output
         diff -w checker_output expected_output &>/dev/null
     else
         diff -w $file.out $file$ct.ans &>/dev/null
