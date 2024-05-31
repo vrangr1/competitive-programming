@@ -280,8 +280,8 @@ if [[ "$manual_mode" == true ]]; then
     (echo "${OUTPUT_START}" && cat input && echo "${OUTPUT_END}" && echo "${OUTPUT_START}" && cat out1 && echo "${OUTPUT_END}" && echo "${OUTPUT_START}" && cat out2 && echo "${OUTPUT_END}") > checker_input
     ./$checker < checker_input > out3
     echo "YES" > out4
-    diff -w out3 out4 &>/dev/null
     if [[ "$debug_mode" == false ]]; then
+        diff -w out3 out4 &>/dev/null
         if [ $? -eq 0 ]; then
             echo "\n${GREEN_BOLD}AC${CLEAR}"
         else
