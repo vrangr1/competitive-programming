@@ -61,76 +61,21 @@ void solve() {
         if (a.second != b.second) return a.second < b.second;
         return a.first > b.first;
     });
-    ll cx = 0, cy = 0;
+    ll cx = 0;
     vector<ll> a(k,0ll);
-    debug(fs,order);
     auto get = [&](ll x, ll y) -> ll {
-        assert(cy < y);
-        assert(cx <= x);
-        ll sol = (min(x+1ll,n)-max(1ll,cx)+1ll)*(y-1ll);
-        assert(sol >= 0ll);
-        if (cx && cy) sol--;
-        return sol;
+        return (x-max(1ll,cx)+1ll)*(y-1ll);
     };
     ll sol = 0ll;
     for (ll ind : order) {
         auto [x,y] = fs[ind];
-        assert(cy < y);
         if (x < cx) continue;
         a[ind] = true;
-        debug(endl,sol);
         sol += get(x,y);
         cx = x+1;
-        cy = y-1;
-        debug(sol,cx,cy);
     }
-    // assert(sol > 0ll);
-    if (cx <= n) {
+    if (cx <= n)
         sol += (n-max(1ll,cx)+1ll)*(m);
-        if (cx && cy) sol--;
-    }
-    assert(sol > 0ll);
     cout << sol << endl;
     print_vec(a);
 }
-
-/*
-5
-
-1
-2 2 3
-1 1
-1 2
-2 2
-
-
-5 5 4
-1 2
-2 2
-3 4
-4 3
-2 5 9
-1 2
-1 5
-1 1
-2 2
-2 4
-2 5
-1 4
-2 3
-1 3
-6 4 4
-6 2
-1 3
-1 4
-1 2
-3 4 5
-2 1
-3 2
-1 4
-1 3
-2 4
-
-
-
-*/
