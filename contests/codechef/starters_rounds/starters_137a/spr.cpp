@@ -110,7 +110,7 @@ public:
     }
 };
 
-void solve() {
+void solve2() {
     ll n, k; cin >> n >> k;
     vector<ll> a(n), h(n);
     rep(i,n) cin >> a[i];
@@ -138,6 +138,38 @@ void solve() {
             debug(l,i);
             return void(cout << yes);
         }
+    }
+    cout << no;
+}
+
+void solve() {
+    ll n, k; cin >> n >> k;
+    vector<ll> a(n), h(n);
+    rep(i,n) cin >> a[i];
+    rep(i,n) cin >> h[i];
+    vector<ll> left(n), right(n);
+    vector<ll> psum(n);
+    partial_sum(all(h),psum.begin());
+    left[0] = LLONG_MIN;
+    rep(i,1,n-1,1)
+        left[i] = max(left[i-1],psum[i-1]-a[i-1]);
+    right.back() = LLONG_MIN;
+    rep(i,n-2ll,0ll,-1ll)
+        right[i] = max(right[i+1],psum[i+1]-a[i+1]);
+    ll l = 0ll, sum = 0ll, dist = 2ll*k+1ll;
+    debug(left,right);
+    rep(i,n) {
+        sum += h[i];
+        while(a[i]-a[l]+1ll > dist) {
+            assert(l < i);
+            sum -= h[l++];
+        }
+        assert(l <= i);
+        debug(i,l,sum);
+        if (left[l] > 0ll) break;
+        if (right[i]-sum > 0) continue;
+        cout << yes;
+        return;
     }
     cout << no;
 }
