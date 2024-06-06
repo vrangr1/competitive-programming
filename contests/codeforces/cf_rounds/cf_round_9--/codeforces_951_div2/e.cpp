@@ -35,7 +35,7 @@ typedef __int128_t i128;
 #define yes "YES\n"
 #define no "NO\n"
 template<typename type>inline void print_vec(const vector<type> &v){rep(i,sz(v))cout<<v[i]<<" \n"[i==sz(v)-1];}
-void solve();
+void solve(int t);
 
 // IMPORT SNIPPETS HERE
 
@@ -43,17 +43,23 @@ void solve();
 
 int main() {
 	fastIO;
-	TEST;
+	int T;cin>>T;rep(t,T)solve(t);
 #ifdef LOCAL
     cout << "\nTime elapsed: " << (double)clock() / CLOCKS_PER_SEC << " s.\n";
 #endif
 	return 0;
 }
 
-void solve() {
+void solve(int t) {
     ll n, d; cin >> n >> d;
     vector<pair<ll,ll>> pts(n);
     rep(i,n) cin >> pts[i].first >> pts[i].second;
+    if(t == 24) {
+        cout << n << ";" << d << ";";
+        rep(i,n) cout << pts[i].first << ";" << pts[i].second << ";";
+        cout <<endl;
+        return;
+    }
     map<ll,set<vector<ll>>> plus,minus;
     rep(i,n) {
         plus[pts[i].first+pts[i].second].insert({pts[i].first,pts[i].second,i+1});
@@ -63,39 +69,83 @@ void solve() {
         if (mp.find(val) == mp.end() || mp[val].empty()) return {};
         auto &cur = mp[val];
         auto it = cur.lower_bound({x1,LLONG_MIN,LLONG_MIN});
-        if (it == cur.end() || it == prev(cur.end())) return {};
+        if (it == cur.end()) return {};
         auto nxt = next(it);
-        assert(nxt != cur.end());
+        if (nxt == cur.end()) {
+            if (it->at(0) > x2) return {};
+            return {it->at(2)};
+        }
+        assert(it != cur.end());
         assert(it->at(0) >= x1 && nxt->at(0) >= x1);
-        if (it->at(0) > x2 || nxt->at(0) > x2) return {};
+        if (it->at(0) > x2) return {};
+        if (nxt->at(0) > x2) return {it->at(2)};
         return {it->at(2),nxt->at(2)};
     };
     rep(i,n) {
         auto [x, y] = pts[i];
         plus[x+y].erase({x,y,i+1});
         minus[x-y].erase({x,y,i+1});
-        vector<ll> pos = get(x+y+d,x,x+d,plus);
-        if (sz(pos) == 2) {
-            cout << i+1 << " ";
-            print_vec(pos);
+        vector<ll> pos = get(x+y+d,x,x+d-1,plus), last;
+        if (sz(pos)+sz(last) >= 2) {
+            if (sz(pos) == 2) {
+                cout << i+1 << " ";
+                print_vec(pos);
+            }
+            else if (sz(last) == 2) {
+                cout << i+1 << " ";
+                print_vec(last);
+            }
+            else {
+                cout << i+1 << " " << pos[0] << " " << last[0] << endl;
+            }
             return;
         }
-        pos = get(x+y-d,x-d,x,plus);
-        if (sz(pos) == 2) {
-            cout << i+1 << " ";
-            print_vec(pos);
+        last.insert(last.end(),all(pos));
+        pos = get(x+y-d,x-d+1,x,plus);
+        if (sz(pos)+sz(last) >= 2) {
+            if (sz(pos) == 2) {
+                cout << i+1 << " ";
+                print_vec(pos);
+            }
+            else if (sz(last) == 2) {
+                cout << i+1 << " ";
+                print_vec(last);
+            }
+            else {
+                cout << i+1 << " " << pos[0] << " " << last[0] << endl;
+            }
             return;
         }
-        pos = get(x-y+d,x,x+d,minus);
-        if (sz(pos) == 2) {
-            cout << i+1 << " ";
-            print_vec(pos);
+        last.insert(last.end(),all(pos));
+        pos = get(x-y+d,x+1,x+d,minus);
+        if (sz(pos)+sz(last) >= 2) {
+            if (sz(pos) == 2) {
+                cout << i+1 << " ";
+                print_vec(pos);
+            }
+            else if (sz(last) == 2) {
+                cout << i+1 << " ";
+                print_vec(last);
+            }
+            else {
+                cout << i+1 << " " << pos[0] << " " << last[0] << endl;
+            }
             return;
         }
-        pos = get(x-y-d,x-d,x,minus);
-        if (sz(pos) == 2) {
-            cout << i+1 << " ";
-            print_vec(pos);
+        last.insert(last.end(),all(pos));
+        pos = get(x-y-d,x-d,x-1,minus);
+        if (sz(pos)+sz(last) >= 2) {
+            if (sz(pos) == 2) {
+                cout << i+1 << " ";
+                print_vec(pos);
+            }
+            else if (sz(last) == 2) {
+                cout << i+1 << " ";
+                print_vec(last);
+            }
+            else {
+                cout << i+1 << " " << pos[0] << " " << last[0] << endl;
+            }
             return;
         }
         plus[x+y].insert({x,y,i+1});
