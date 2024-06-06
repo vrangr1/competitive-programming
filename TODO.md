@@ -9,7 +9,7 @@
 ### rtest:
 * Incorporate tletest
 * Allow rtest to copy over test cases or at least run bruteforce on test cases stored for the stress tester source.
-* Simplify rtest -e against checker
+* Add option to delete test cases
 ### sfile:
 * Allow for option of TEST1
 * Allow for creation of topcoder style template
@@ -30,6 +30,14 @@
 * Manacher's Algo (problem : ??)
 * Z Algo
 * Tarjan's Algo for articulation / cut points and bridges (cut edges).
+* Montmort Numbers
+* Factorial Number System
+
+## Theory
+* Cook-Levin's Theorem
+* Church Turing Thesis
+* Polynomial Hierarchies
+
 
 ## Refer Solution:
 * Get count of smaller nodes in the subtree for every node (problem: [Insomnia 2k24 finals problem I](https://codeforces.com/gym/510369/problem/I))

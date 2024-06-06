@@ -319,7 +319,7 @@ if [[ "$test_mode" == true ]]; then
         fi
         ./$file < $input > in.ans
         if [[ $checker != "" ]]; then
-            (echo "${OUTPUT_START}" && echo $input && echo "${OUTPUT_END}" && echo "${OUTPUT_START}" && cat in.ans && echo "${OUTPUT_END}" && echo "${OUTPUT_START}" && cat output_$file/$outfile && echo "${OUTPUT_END}") > checker_input
+            (echo "${OUTPUT_START}" && cat $input && echo "${OUTPUT_END}" && echo "${OUTPUT_START}" && cat in.ans && echo "${OUTPUT_END}" && echo "${OUTPUT_START}" && cat output_$file/$outfile && echo "${OUTPUT_END}") > checker_input
             ./$checker < checker_input > checker_output
             echo "YES" > expected_output
             diff -w checker_output expected_output &>/dev/null

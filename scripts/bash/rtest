@@ -1,11 +1,5 @@
 ## Script to test the solution against brute force solution with generator cpp providing the inputs
 
-<<COMMENT
-TODO:
-    -> tletest
-    -> Delete test cases
-COMMENT
-
 ## Imports:
 source helper.sh
 
@@ -25,11 +19,7 @@ case_mode=false
 manual_mode=false
 save_mode=false
 help=false
-
-# Unimplemented
-checker_mode=false
-tle_mode=false
-
+checker_print=false
 
 POSITIONAL_ARGS=()
 
@@ -69,28 +59,8 @@ while [[ $# -gt 0 ]]; do
         shift # past argument
         ;;
     -k|--checker)
-        checker_mode=true
+        checker_print=true
         shift # past argument
-        ;;
-    -ss|--set_solution)
-        opt_sol=$2
-        shift # past argument
-        shift # past value
-        ;;
-    -sg|--set_generator)
-        generator=$2
-        shift # past argument
-        shift # past value
-        ;;
-    -sb|--set_brute_force)
-        brute_force=$2
-        shift # past argument
-        shift # past value
-        ;;
-    -sc|--set_checker)
-        checker=$2
-        shift # past argument
-        shift # past value
         ;;
     -h|--help)
         help=true
@@ -123,6 +93,7 @@ if [[ "$help" == true ]]; then
     echo " ${RED_BOLD} -m, --manual${CLEAR}   Runs both ${BOLD}[file]${CLEAR} and ${BOLD}[brute_forcer]${CLEAR} on given manual input"
     echo " ${RED_BOLD} -s, --save${CLEAR}     Save the input/output while running a particular case. Only works with ${BOLD}-m${CLEAR} or ${BOLD}-c${CLEAR} options"
     echo " ${RED_BOLD} -d, --debug${CLEAR}    Enables debug mode while compilation. Can only be enabled with ${BOLD}-e${CLEAR} or ${BOLD}-t${CLEAR} options"
+    echo " ${RED_BOLD} -k, --checker${CLEAR}  Enables checker debug print"
     echo " ${RED_BOLD} -h, --help${CLEAR}     Display this help message${CLEAR}"
     exit
 fi
@@ -168,7 +139,17 @@ trap handle_ctrlc SIGINT
 compile_mode="--compile"
 if [[ "$debug_mode" == true ]]; then compile_mode="--debug"; fi
 if [[ "$save_mode" == true && "$manual_mode" == false && "$case_mode" == false ]]; then
-    echo "${RED_BOLD}Save${CLEAR} option is only availabe with either ${RED_BOLD}manual${CLEAR} or ${RED_BOLD}case${CLEAR} options"
+    echo "${RED_BOLD}ERROR: Save${CLEAR} option is only availabe with either ${RED_BOLD}manual${CLEAR} or ${RED_BOLD}case${CLEAR} options"
+    exit
+fi
+
+if [[ "$checker_print" == true && "$manual_mode" == false && "$case_mode" == false ]]; then
+    echo "${RED_BOLD}ERROR: Checker debug${CLEAR} option is only availabe with either ${RED_BOLD}manual${CLEAR} or ${RED_BOLD}case${CLEAR} options"
+    exit
+fi
+
+if [[ "$save_mode" == true && "$checker_print" == true ]]; then
+    echo "${RED_BOLD}ERROR:${CLEAR} Cannot have ${RED_BOLD}save${CLEAR} and ${RED_BOLD}checker debug${CLEAR} options enabled at the smae time."
     exit
 fi
 
@@ -232,7 +213,11 @@ if [[ "$case_mode" == true ]]; then
     fi
     echo "${BOLD}Testing ${RED_BOLD}$opt_sol.cpp${CLEAR}${BOLD} against ${RED_BOLD}${brute_force}.cpp${CLEAR}${BOLD} on a randomly generated input by ${RED_BOLD}${generator}.cpp${CLEAR} using ${RED_BOLD}${checker}.cpp${CLEAR}."
     cpr ../$opt_sol.cpp $compile_mode
-    cpr $checker.cpp --compile
+    if [[ "$checker_print" == true ]]; then
+        cpr $checker.cpp --debug
+    else
+        cpr $checker.cpp --compile
+    fi
     cpr $brute_force.cpp --compile
     cpr $generator.cpp --compile
     ./generator > input
@@ -253,6 +238,12 @@ if [[ "$case_mode" == true ]]; then
     else
         echo "\n${RED_BOLD}WA${CLEAR}"
     fi
+    if [[ "$checker_print" == true ]]; then
+        echo "\n${MAGENTA_BOLD}Checker input:${CLEAR}"
+        cat checker_input
+        echo "\n${MAGENTA_BOLD}Checker output:${CLEAR}"
+        cat out3
+    fi
     if [[ "$save_mode" == false ]]; then handle_ctrlc; exit; fi
     copy_input $opt_sol ..
     cd test_$opt_sol
@@ -270,7 +261,11 @@ if [[ "$manual_mode" == true ]]; then
     cpr ../$opt_sol.cpp $compile_mode
     if [[ $checker != "none" ]]; then cpr $checker.cpp --compile; fi
     cpr $brute_force --compile
-    cpr $checker --compile
+    if [[ "$checker_print" == true ]]; then
+        cpr $checker.cpp --debug
+    else
+        cpr $checker.cpp --compile
+    fi
     ./$opt_sol < input > out1
     ./$brute_force < input > out2
     echo "${BOLD}\noutput begins now:${CLEAR}"
@@ -287,6 +282,12 @@ if [[ "$manual_mode" == true ]]; then
         else
             echo "\n${RED_BOLD}WA${CLEAR}"
         fi
+    fi
+    if [[ "$checker_print" == true ]]; then
+        echo "\n${MAGENTA_BOLD}Checker input:${CLEAR}"
+        cat checker_input
+        echo "\n${MAGENTA_BOLD}Checker output:${CLEAR}"
+        cat out3
     fi
     if [[ "$save_mode" == false ]]; then handle_ctrlc; exit; fi
     copy_input $opt_sol ..

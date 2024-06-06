@@ -2,29 +2,9 @@
 * Author  : Anav Prasad
 * Nick    : vrangr
 ****************************************************/
-#include <iostream>
-#include <vector>
-#include <string.h>
-#include <ctype.h>
-#include <set>
-#include <stdlib.h>
-#include <map>
-#include <iterator>
-#include <iomanip>
-#include <algorithm>
-#include <climits>
-#include <numeric>
-#include <cmath>
-#include <queue>
-#include <stack>
-#include <list>
-#include <forward_list>
-#include <bit>
-#include <bitset>
-#include <array>
-#include <random>
-#include <assert.h>
-#define debug(...)
+#include <bits/stdc++.h>
+
+#define debug(...) void(42)
 #ifdef LOCAL
     #undef debug
     #include <algo/debug.hpp>
@@ -69,7 +49,7 @@ unsigned long long int grng(const unsigned long long int maxval){return rng()%ma
 
 void generate_test();
 
-int main(){
+int main() {
 	fastIO;
     TEST;
     generate_test();
@@ -80,6 +60,6 @@ int main(){
 }
 
 // Generate just a singular test. The multitudinous nature of tests are implemented through a bash script
-void generate_test(){
+void generate_test() {
     
 }

@@ -4,7 +4,7 @@
 ****************************************************/
 #include <bits/stdc++.h>
 
-#define debug(...) 42
+#define debug(...) (void)42
 #ifdef LOCAL
     #undef debug
     #include <algo/debug.hpp>
@@ -79,21 +79,29 @@ void check(){
         ss << s << endl;
         return true;
     };
-    auto trash_input = [&s,&ss]() -> void {
+    [[maybe_unused]] auto read_input = [&]() -> void {
+        // Use ss instead of cin to regularly take inputs into variables defined before this function
+    };
+    [[maybe_unused]] auto trash_stream = [&s,&ss]() -> void {
+        // Comment the following line if inputs need to be stored
         ss >> s;
     };
     auto process_input = [&]() -> void {
         assert(!transfer());
         while(transfer())
-            trash_input();
+            trash_stream();
     };
     process_input();
+    [[maybe_unused]] auto read_output = [&](vector<string> &output) -> void {
+        // Read input in from ss as if reading from cin stream
+        // Process however needed and append to output what the converted output that needs to be 1-1 compared with converted correct output
+        ss >> s;
+        output.push_back(s);
+    };
     auto process_output = [&](vector<string> &output) -> void {
         assert(!transfer());
-        while(transfer()){
-            ss >> s;
-            output.push_back(s);
-        }
+        while(transfer())
+            read_output(output);
     };
     vector<string> test_output, correct_output;
     process_output(test_output);
