@@ -300,7 +300,12 @@ public:
 };
 
 S mapping(F f, S x) {
-    return S((x.a + (f.xa*x.len)%mod)%mod,(x.b + (f.xb*x.len)%mod)%mod, (x.prod + ((f.xa*x.b)%mod + (f.xb*x.a)%mod)%mod)%mod,x.len);
+    return S(
+        (x.a + (f.xa*x.len)%mod)%mod,
+        (x.b + (f.xb*x.len)%mod)%mod, 
+        (x.prod + ((((f.xa*f.xb)%mod)*x.len)%mod + ((f.xa*x.b)%mod + (f.xb*x.a)%mod)%mod)%mod)%mod,
+        x.len
+        );
 }
 
 F comp(F f, F g) {
@@ -339,3 +344,21 @@ void solve() {
         }
     }
 }
+
+/*
+
+
+a: 8 1 4 0 4 0 1 0 5 1
+b: 7 6 5 8 8 5 2 4 0 8
+i: 1 2 3 4 5 6 7 8 9 10
+
+1 1 8 8
+1 4 8 4
+2 3 8 7
+3 4 5
+3 7 10
+
+
+
+
+*/
