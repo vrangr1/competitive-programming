@@ -108,12 +108,12 @@ public:
     }
 };
 
-void solve() {
+void solve1() {
     ll n, m; cin >> n >> m;
     vector<ll> a(n), b(n), c(m);
     rep(i,n) cin >> a[i];
     rep(i,n) cin >> b[i];
-    rep(i,n) cin >> c[i];
+    rep(i,m) cin >> c[i];
     sort(rall(c));
     vector<ll> order(n);
     iota(all(order),0);
@@ -128,19 +128,74 @@ void solve() {
         if (it == orda.begin()) return n;
         it = prev(it);
         assert(*it <= lim);
-        return n - (ll)(it-orda.begin()) - 2ll;
+        return n - (ll)(it-orda.begin()) - 1ll;
     };
     auto proc = [&](ll val) -> ll {
         ll lim = val;
         ll ind = get_ind(lim), sol = 0;
-        while(ind != n) {
+        assert(ind >= 0ll);
+        assert(ind <= n);
+        while(ind < n) {
             auto [diff, ga, gb] = st.query(ind, n);
             assert(ga <= val);
-            
+            // ll ct = (val-ga+diff)/diff;
+            // debug(val,diff,ga,gb,ct);
+            sol += (val-ga+diff)/diff;
+            val -= ((val-ga+diff)/diff)*diff;
+            // if (val >= ga || val < 0) {
+            //     exit(0);
+            // }
+            assert(val < ga && val >= 0);
+            ind = get_ind(val);
+            assert(ind >= 0ll);
+            assert(ind <= n);
         }
+        return sol*2ll;
     };
     ll sol = 0ll;
     for (ll val : c) {
-
+        sol += proc(val);
     }
+    cout << sol << endl;
+}
+
+void solve() {
+    ll n, m; cin >> n >> m;
+    vector<ll> a(n), b(n), c(m);
+    rep(i,n) cin >> a[i];
+    rep(i,n) cin >> b[i];
+    rep(i,m) cin >> c[i];
+    vector<ll> order(n);
+    iota(all(order),0);
+    sort(all(order),[&](const ll &i, const ll &j) {
+        return a[i] > a[j];
+    });
+    vector<array<ll,3>> mn(n);
+    mn.back() = {a[order.back()]-b[order.back()],a[order.back()],b[order.back()]};
+    rep(i,n-2,0ll,-1) {
+        ll ind = order[i];
+        ll d = a[ind]-b[ind];
+        auto [l, la, lb] = mn[i+1];
+        if (d < l) mn[i] = {d, a[ind], b[ind]};
+        else mn[i] = mn[i+1];
+    }
+    sort(rall(a));
+    auto get_ind = [&](ll lim) -> ll {
+        return lower_bound(all(a),lim,greater<ll>()) - a.begin();
+    };
+    ll sol = 0ll;
+    for (ll v : c) {
+        ll ind = get_ind(v);
+        while (ind < n) {
+            auto [d, da, db] = mn[ind];
+            assert(v >= da);
+            ll ct = (v-da+d)/d;
+            sol += 2ll*ct;
+            v -= (d*ct);
+            assert(v >= 0ll);
+            assert(v < da);
+            ind = get_ind(v);
+        }
+    }
+    cout << sol << endl;
 }
