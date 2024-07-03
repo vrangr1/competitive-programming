@@ -117,7 +117,7 @@ void solve1() {
     debug(get(true));
 }
 
-void solve() {
+void solve2() {
     ll n; cin >> n;
     vector<ll> a(n);
     rep(i,n) cin >> a[i];
@@ -148,4 +148,39 @@ void solve() {
         return mx;
     };
     cout << dfs(dfs,a,true,0,0) << endl;
+}
+
+
+// tourist's solution
+void solve() {
+    int n;
+    cin >> n;
+    vector<int> a(n);
+    for (int i = 0; i < n; i++) {
+      cin >> a[i];
+    }
+    sort(a.begin(), a.end());
+    vector<int> nxt(n + 1);
+    nxt[n] = n;
+    for (int i = n - 1; i >= 0; i--) {
+      if (i < n - 1 && a[i + 1] != a[i]) {
+        nxt[i] = i + 1;
+      } else {
+        nxt[i] = nxt[i + 1];
+      }
+    }
+    const int inf = int(1e9);
+    vector<vector<int>> f(n + 1, vector<int>(n + 1, inf));
+    for (int j = 0; j <= n; j++) {
+      f[n][j] = 0;
+    }
+    for (int i = n - 1; i >= 0; i--) {
+      for (int j = 0; j <= n; j++) {
+        f[i][j] = f[nxt[i]][min(n, j + 1)] + 1;
+        if (j > 0) {
+          f[i][j] = min(f[i][j], f[i + 1][j - 1]);
+        }
+      }
+    }
+    cout << f[0][0] << '\n';
 }

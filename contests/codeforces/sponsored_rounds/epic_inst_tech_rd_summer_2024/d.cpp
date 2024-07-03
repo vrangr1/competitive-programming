@@ -87,7 +87,7 @@ void solve1() {
     cout << k << endl;
 }
 
-void solve() {
+void solve2() {
     int n; cin >> n;
     vector<int> a(n);
     rep(i,n) cin >> a[i];
@@ -123,4 +123,14 @@ void solve() {
     }
     debug(a,dp,mx);
     cout << sol << endl;
+}
+
+void solve() {
+    int n; cin >> n;
+    vector<int> a(n);
+    rep(i,n) cin >> a[i];
+    sort(all(a));
+    vector<int> ct(n+1,0);
+    for(int v : a) ct[v]++;
+    
 }
