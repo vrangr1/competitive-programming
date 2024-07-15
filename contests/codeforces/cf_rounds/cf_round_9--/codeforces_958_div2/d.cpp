@@ -50,7 +50,7 @@ int main() {
 	return 0;
 }
 
-void solve() {
+void solve1() {
     ll n; cin >> n;
     vector<ll> a(n);
     rep(i,n) cin >> a[i];
@@ -128,4 +128,36 @@ void solve() {
         }
     }
     cout << sol << endl;
+}
+
+void solve() {
+    ll n; cin >> n;
+    vector<ll> a(n);
+    rep(i,n) cin >> a[i];
+    vector<vector<ll>> g(n);
+    rep(i,n-1ll) {
+        ll u, v; cin >> u >> v;
+        g[--u].push_back(--v);
+        g[v].push_back(u);
+    }
+    const ll m = 20;
+    vector<vector<ll>> dp(n,vector<ll>(m,0));
+    vector<ll> mns(m);
+    auto dfs = [&](auto &&self, ll u, ll p) -> void {
+        rep(i,(ll)m) dp[u][i] = (i+1ll)*a[u];
+        for (ll &v : g[u]) {
+            if (v == p) continue;
+            self(self,v,u);
+            ll mn = LLONG_MAX;
+            mns.back() = LLONG_MAX;
+            rep(i,m-2,0ll,-1)
+                mns[i] = min(mns[i+1],dp[v][i+1ll]);
+            rep(i,(ll)m) {
+                dp[u][i] += min(mn,mns[i]);
+                mn = min(mn,dp[v][i]);
+            }
+        }
+    };
+    dfs(dfs,0,-1);
+    cout << *min_element(all(dp[0])) << endl;
 }
