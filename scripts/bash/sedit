@@ -1,4 +1,10 @@
-## Script to open the cpp template for editing
+<<COMMENT
+Details for script lister program:
+command     : sedit
+description : Opens the cpp competitive programming template in VS Code
+list        : true
+COMMENT
+# Shell script to open the cpp template for editing
 
 ## Imports
 source helper.sh

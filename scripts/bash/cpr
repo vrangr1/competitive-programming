@@ -1,4 +1,10 @@
-# Bash Script for compiling and/or running cpp files
+<<COMMENT
+Details for script lister program:
+command     : cpr
+description : Compiles and runs a cpp file
+list        : true
+COMMENT
+# Shell script for compiling and/or running cpp files
 
 ## Imports
 source helper.sh

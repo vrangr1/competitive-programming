@@ -1,4 +1,10 @@
-## Script to test the solution against brute force solution with generator cpp providing the inputs
+<<COMMENT
+Details for script lister program:
+command     : rtest
+description : Script to run tests after the testing system has been set up.
+list        : true
+COMMENT
+# Shell script to test the solution against brute force solution with generator cpp providing the inputs
 
 ## Imports:
 source helper.sh

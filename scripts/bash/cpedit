@@ -1,0 +1,51 @@
+<<COMMENT
+Details for script lister program:
+command     : cpedit
+description : Opens given script in VS Code
+list        : true
+COMMENT
+# Shell script to edit open any shell script
+
+## Imports
+source helper.sh
+
+POSITIONAL_ARGS=()
+help=false
+
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    -h|--help)
+      help=true
+      shift # past argument
+      ;;
+    -*|--*)
+      echo "${RED_BOLD}ERROR:${CLEAR} Unknown option ${RED_BOLD}$1${CLEAR}"
+      sfile -h
+      exit 1
+      ;;
+    *)
+      POSITIONAL_ARGS+=("$1") # save positional arg
+      shift # past argument
+      ;;
+  esac
+done
+
+set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
+
+if [[ "$help" == true ]]; then
+    echo "${RED_BOLD}cpedit${CLEAR} is a script to open any script in VS Code for viewing/editing"
+    echo "${BOLD}Usage:${RED_BOLD} cpedit [script_name]${CLEAR}"
+    echo "${BOLD}Options:"
+    echo " ${RED_BOLD} -h, --help${CLEAR}     Display this help message${CLEAR}"
+    exit
+fi
+
+script=${1:-"NA"}
+if ! test -f $BASH_SCRIPT_DIRECTORY$script
+then
+    echo "${RED_BOLD}ERROR:${CLEAR} Script ${RED_BOLD}${script}${CLEAR} does not exist!"
+    exit 1
+fi
+script=$BASH_SCRIPT_DIRECTORY$script
+
+code $script

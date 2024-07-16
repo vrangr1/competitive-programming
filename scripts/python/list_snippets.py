@@ -48,7 +48,7 @@ def format(line : str, setting : str ):
     return f'{setting}{line}{CLEAR}'
 
 def parse_args(args=None):
-    parser = argparse.ArgumentParser(description ='VS Code Snippet Generator')
+    parser = argparse.ArgumentParser(description ='Internal program to list the snippets in the workspace. Made to be used by the shell script "list_snippets"')
     parser.add_argument('snippets_dir', type=str, nargs='?',\
                         default="/Users/anavp/home/programming/competitive-programming/algo/snippets_code",\
                         help='path to the directory where all the cpp snippets are stored')

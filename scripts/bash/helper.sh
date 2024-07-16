@@ -1,15 +1,26 @@
+<<COMMENT
+Details for script lister program:
+command     : helper.sh
+description : helper file for all constants
+list        : false
+COMMENT
+# Shell script to store all the constants
+
 # Various Constants and helper functions
 
 ## File paths
-CPR="/Users/anavp/home/programming/competitive-programming/scripts/bash/cpr"
-TEMPLATE="/Users/anavp/home/programming/competitive-programming/algo/template.cpp"
-DEBUG_HEADER="/Users/anavp/home/programming/competitive-programming/algo/debug.hpp"
+CP_ROOT="/Users/anavp/home/programming/competitive-programming/"
+CPR=$CP_ROOT"scripts/bash/cpr"
+TEMPLATE=$CP_ROOT"algo/template.cpp"
+DEBUG_HEADER=$CP_ROOT"algo/debug.hpp"
 ALGO_DIRECTORY="/opt/homebrew/Cellar/gcc/14.1.0/include/c++/14/algo"
-LIST_SNIPPETS_PYTHON_SCRIPT="/Users/anavp/home/programming/competitive-programming/scripts/python/list_snippets.py"
+BASH_SCRIPT_DIRECTORY=$CP_ROOT"scripts/bash/"
+LIST_SNIPPETS_PYTHON_SCRIPT=$CP_ROOT"scripts/python/list_snippets.py"
+LIST_SCRIPTS_PYTHON_SCRIPT=$CP_ROOT"scripts/python/list_scripts.py"
 SNIPPET_GENERATOR="/Users/anavp/home/programming/snippet_generator/src/snippet_generator.py"
-TEST_CASE_GENERATOR="/Users/anavp/home/programming/competitive-programming/algo/test/generator.cpp"
+TEST_CASE_GENERATOR=$CP_ROOT"algo/test/generator.cpp"
 BRUTE_FORCE=$TEMPLATE
-CHECKER="/Users/anavp/home/programming/competitive-programming/algo/test/checker.cpp"
+CHECKER=$CP_ROOT"algo/test/checker.cpp"
 COMPILER="g++-14"
 
 ## Constants:

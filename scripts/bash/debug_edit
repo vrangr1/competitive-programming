@@ -1,4 +1,10 @@
-## Script to open the debug header for editing
+<<COMMENT
+Details for script lister program:
+command     : debug_edit
+description : Open the debug header file in VS Code
+list        : true
+COMMENT
+# Shell script to open the debug header for editing
 
 ## Imports
 source helper.sh

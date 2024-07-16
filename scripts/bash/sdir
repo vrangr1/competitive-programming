@@ -1,4 +1,10 @@
-## Script to setup input and output directories in the current folder
+<<COMMENT
+Details for script lister program:
+command     : sdir
+description : Internal script for setting up input and output directories for testing
+list        : false
+COMMENT
+# Shell script to setup input and output directories in the current folder
 
 file=$1
 if [[ $file == *.cpp ]]; then

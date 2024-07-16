@@ -1,7 +1,22 @@
-## Too many scripts!! Need a script to list the scripts lol
+<<COMMENT
+Details for script lister program:
+command     : list_scripts
+description : Lists all the scripts available for use
+list        : true
+COMMENT
+# Shell script to list all the scripts. LOL
 
 ## Imports
 source helper.sh
+
+if ! test -f $LIST_SCRIPTS_PYTHON_SCRIPT
+then
+    echo "${RED_BOLD}${LIST_SCRIPTS_PYTHON_SCRIPT}${CLEAR} does not exist."
+    exit
+fi
+python $LIST_SCRIPTS_PYTHON_SCRIPT
+
+exit 0
 
 echo "${BOLD}List of all scripts:${CLEAR}
 ${UNDERLINE}${RED_BOLD}COMMAND${CLEAR}              : ${UNDERLINE}${BOLD}Description${CLEAR}

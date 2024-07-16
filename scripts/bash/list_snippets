@@ -1,3 +1,10 @@
+<<COMMENT
+Details for script lister program:
+command     : list_snippets
+description : Lists all the snippets available in the workspace
+list        : true
+COMMENT
+# Shell script to list all the snippets in the workspace
 
 ## Imports:
 source helper.sh

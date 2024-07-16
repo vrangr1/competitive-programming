@@ -1,4 +1,10 @@
-## Script for setting up a testing folder for the given problem
+<<COMMENT
+Details for script lister program:
+command     : stest
+description : Sets up the testing system for the given cpp file
+list        : true
+COMMENT
+# Shell script for setting up a testing folder for the given problem
 
 ## Imports:
 source helper.sh

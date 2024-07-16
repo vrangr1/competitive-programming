@@ -1,4 +1,10 @@
-## Publishes the updated debug header file
+<<COMMENT
+Details for script lister program:
+command     : publish_debug_header
+description : Pastes the debug header file into the cpp include/algo directory. Requires sudo access
+list        : true
+COMMENT
+# Shell script to publish the updated debug header file to the cpp include/algo directory. Requires sudo access.
 
 ## Imports
 source helper.sh
