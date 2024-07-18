@@ -1,5 +1,6 @@
 import os
 import argparse
+
 ### Text formatting ###
 
 CLEAR="\033[0m"
@@ -52,6 +53,8 @@ def parse_args(args=None):
     parser.add_argument('scripts_dir', type=str, nargs='?',\
                         default="/Users/anavp/home/programming/competitive-programming/scripts/bash",\
                         help='path to the directory where all the shell scripts are stored')
+    parser.add_argument("-a", "--all", action="store_true",\
+                        help="Use to print even the hidden scripts")
     args = parser.parse_args()
     return args
 
@@ -65,7 +68,7 @@ def get_files(dir_path : str) -> 'list[str]':
         shell_files.append(file_path)
     return shell_files
 
-def process_script(file_path : str) -> None:
+def process_script(file_path : str, print_hidden = False) -> None:
     file = open(file_path,'r')
     lines = file.readlines()
     ind = next((ind for ind,line in enumerate(lines) if line.startswith("COMMENT")),None)
@@ -83,12 +86,14 @@ def process_script(file_path : str) -> None:
     assert command is not None, "prefix cannot be None"
     assert description is not None, "description cannot be None"
     assert list_script == "true" or list_script == "false"
-    # print(command, description, list_script)
     list_script = bool(list_script == "true")
-    if not list_script : return
+    color = RED_BOLD
+    if not list_script:
+        if not print_hidden: return
+        color = MAGENTA_BOLD
     line = command
     line = line.ljust(PREFIX_LENGTH)
-    print(format(line,RED_BOLD),end="")
+    print(format(line,color),end="")
     print(description)
 
 if __name__ == '__main__':
@@ -98,4 +103,4 @@ if __name__ == '__main__':
     print(format("List of scripts are as follows:",BOLD))
     print(format("COMMAND",RED_BOLD+UNDERLINE) + " " * (PREFIX_LENGTH-6) + format("Description",BOLD+UNDERLINE))
     for file in files:
-        process_script(file)
+        process_script(file, args.all)

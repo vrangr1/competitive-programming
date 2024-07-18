@@ -43,6 +43,7 @@ CYAN_BG_BOLD="\033[1;46m"
 ### End of text formatting ###
 
 PREFIX_LENGTH = 23
+EXTENSION=".hpp"
 
 def format(line : str, setting : str ):
     return f'{setting}{line}{CLEAR}'
@@ -60,7 +61,7 @@ def get_files(dir_path : str) -> 'list[str]':
     cpp_files = list()
     for file in files:
         file_path = os.path.join(dir_path,file)
-        if not os.path.isfile(file_path) or os.path.splitext(os.path.basename(file_path))[1] != ".cpp":
+        if not os.path.isfile(file_path) or os.path.splitext(os.path.basename(file_path))[1] != EXTENSION:
             continue
         cpp_files.append(file_path)
     return cpp_files

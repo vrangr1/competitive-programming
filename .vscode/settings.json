@@ -1,5 +1,19 @@
 {
     "files.associations": {
+        "list_scripts": "shellscript",
+        "cpr": "shellscript",
+        "cpredit": "shellscript",
+        "debug_edit": "shellscript",
+        "generate_snippets": "shellscript",
+        "list_snippets": "shellscript",
+        "publish_debug_header": "shellscript",
+        "rtest": "shellscript",
+        "sdir": "shellscript",
+        "sedit": "shellscript",
+        "sfile": "shellscript",
+        "stest": "shellscript",
+        "tletest": "shellscript",
+        "cpedit": "shellscript",
         "vector": "cpp",
         "__locale": "cpp",
         "__threading_support": "cpp",
@@ -107,7 +121,8 @@
         "iterator": "cpp",
         "memory_resource": "cpp",
         "utility": "cpp",
-        "internal_bit": "cpp"
+        "internal_bit": "cpp",
+        "internal_math": "cpp"
     },
     "C_Cpp.default.compilerPath": "/usr/bin/cpp"
 }

@@ -9,12 +9,49 @@ COMMENT
 ## Imports
 source helper.sh
 
+POSITIONAL_ARGS=()
+help=false
+print_all=""
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -h|--help)
+            help=true
+            shift # past argument
+            ;;
+        -a|--all)
+            print_all="-a"
+            shift # past argument
+            ;;
+        -*|--*)
+            echo "${RED_BOLD}ERROR:${CLEAR} Unknown option ${RED_BOLD}$1${CLEAR}"
+            stest -h
+            exit
+            ;;
+        *)
+            POSITIONAL_ARGS+=("$1") # save positional arg
+            shift # past argument
+            ;;
+    esac
+done
+
+set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
+
+if [[ "$help" == true ]]; then
+    echo "${RED_BOLD}list_scripts${CLEAR} is a script list all the scripts available in the CP Shell System"
+    echo "${BOLD}Usage:${RED_BOLD} cpedit script_name [options]${CLEAR}"
+    echo "${BOLD}Options:"
+    echo " ${RED_BOLD} -a, --all               Display even the hidden internal scripts"
+    echo " ${RED_BOLD} -h, --help${CLEAR}      Display this help message"
+    exit
+fi
+
 if ! test -f $LIST_SCRIPTS_PYTHON_SCRIPT
 then
     echo "${RED_BOLD}${LIST_SCRIPTS_PYTHON_SCRIPT}${CLEAR} does not exist."
     exit
 fi
-python $LIST_SCRIPTS_PYTHON_SCRIPT
+python $LIST_SCRIPTS_PYTHON_SCRIPT $print_all
 
 exit 0
 
