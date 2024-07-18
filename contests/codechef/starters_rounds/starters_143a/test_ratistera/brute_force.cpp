@@ -50,6 +50,7 @@ int main() {
 	return 0;
 }
 
+// WRONG!!
 void solve() {
     ll n; cin >> n;
     vector<pair<ll,ll>> r(n);
@@ -62,6 +63,7 @@ void solve() {
             ll lb = max(r[i].first, r[j].first), rb = min(r[i].second, r[j].second);
             if (lb > rb) continue;
             if (r[i].second == r[j].first || r[i].first == r[j].second) continue;
+            debug(i,j);
             sol++;
         }
         cout << sol << " \n"[i==n-1ll];

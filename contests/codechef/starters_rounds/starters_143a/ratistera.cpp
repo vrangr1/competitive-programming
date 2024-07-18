@@ -53,9 +53,7 @@ int main() {
 class DSU {
 public:
     vector<int> parent, size, rank;
-    // DSU(vector<tuple<int,int>> &ratings) {
     DSU(int n) {
-        // int n = sz(ratings);
         parent.assign(n,-1);
         size.assign(n,1);
         rank.assign(n,1);
@@ -101,16 +99,18 @@ void solve() {
         return r[i].second < r[j].second;
     });
     DSU dsu(n);
+    auto [left, right] = r[order[0]];
     rep(i,1,n-1,1) {
         int ind = order[i];
-        int lb = max(r[ind].first,r[order[i-1]].first), rb = min(r[ind].second,r[order[i-1]].second);
-        if (lb > rb) continue;
-        if (lb < rb || (r[ind].second < r[order[i-1]].second && r[ind].first > r[order[i-1]].first)) {
-            dsu.unite(order[i],order[i-1]);
+        int lb = max(r[ind].first,left), rb = min(r[ind].second,right);
+        if (lb > rb || (lb == rb && (r[ind].first == right || r[ind].second == left))) {
+            left = r[ind].first;
+            right = r[ind].second;
+            continue;
         }
+        dsu.unite(order[i],order[i-1]);
+        left = min(r[ind].first,left);
+        right = max(r[ind].second,right);
     }
-    rep(i,n){
-        debug(i,r[i],dsu.find(i));
-        cout << dsu.get_size(i) << " \n"[i==n-1];
-    }
+    rep(i,n) cout << dsu.get_size(i) << " \n"[i==n-1];
 }
