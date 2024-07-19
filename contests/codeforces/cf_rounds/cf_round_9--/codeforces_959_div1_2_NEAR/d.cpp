@@ -50,6 +50,31 @@ int main() {
 	return 0;
 }
 
+// tourist's solution
 void solve() {
-    
+    int n; cin >> n;
+    vector<int> a(n);
+    rep(i,n) cin >> a[i];
+    vector<bool> used(n,false);
+    vector<pair<int,int>> sol;
+    rep(i,n-1,1,-1) {
+        vector<int> p(i,-1);
+        rep(j,n) {
+            if (p[a[j]%i] == -1) p[a[j]%i] = j;
+            else if (!used[j]){
+                used[j] = true;
+                sol.emplace_back(p[a[j]%i]+1,j+1);
+                break;
+            }
+        }
+    }
+    cout << yes;
+    reverse(all(sol));
+    assert(sz(sol) == n-1);
+    int cur = 1;
+    for (auto &[u, v] : sol) {
+        assert((abs(a[u-1]-a[v-1])%cur) == 0);
+        cur++;
+        cout << u << " " << v << endl;
+    }
 }
