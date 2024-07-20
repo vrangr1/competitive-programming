@@ -1,6 +1,6 @@
 {
     "Ordered Set via GNU PBDS": {
-        "prefix": "import_ordered_set",
+        "prefix": "import_oset",
         "body": [
             "#ifndef ORDERED_SET_SNIPPET",
             "#define ORDERED_SET_SNIPPET",

@@ -25,7 +25,6 @@ while [[ $# -gt 0 ]]; do
             ;;
         -*|--*)
             echo "${RED_BOLD}ERROR:${CLEAR} Unknown option ${RED_BOLD}$1${CLEAR}"
-            stest -h
             exit
             ;;
         *)

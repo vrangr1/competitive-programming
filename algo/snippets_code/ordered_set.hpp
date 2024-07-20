@@ -1,7 +1,7 @@
 /*
 Details for snippet generator program:
 title       : Ordered Set via GNU PBDS
-prefix      : import_ordered_set
+prefix      : import_oset
 description : Ordered Set via GNU PBDS
 */
 #ifndef ORDERED_SET_SNIPPET
