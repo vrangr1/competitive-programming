@@ -61,29 +61,42 @@ void solve() {
         sol += (a[i]>0);
     }
     int alt = 0;
-    rep(i,n-4,0,-1) {
-        if (i <= n-4) {
-            if (vector<int>(a.begin()+i,a.begin()+i+4) == vector<int>{2,4,4,2}) {
-                alt+=3;
-                a[i] = 0;
-                a[i+1] = 0;
-                a[i+2] = 0;
-                a[i+3] = 0;
+    int l = 0, r = 0;
+    while(l < n) {
+        if (a[l] == 0) {
+            l++;
+            continue;
+        }
+        if (a[l] > 2) {
+            alt++;
+            l++;
+            continue;
+        }
+        r = l+1;
+        while(r < n && a[r] == 4)
+            r++;
+        if (r == n) {
+            alt += r-l;
+            break;
+        }
+        if (a[r] == 0) {
+            alt += r-l;
+            l = r+1;
+            continue;
+        }
+        if (a[r] == 2) {
+            if ((r-l)%2) {
+                alt += r-l;
+                l = r+1;
+                continue;
             }
-        }
-    }
-    rep(i,n) {
-        if (a[i] == 0) continue;
-        if (i == n-1 || a[i+1] == 0) {
-            alt++;
+            alt += r-l;
+            l = r;
             continue;
         }
-        if (a[i] > 2 || a[i+1] > 2) {
-            alt++;
-            continue;
-        }
-        alt++;
-        i++;
+        assert(a[r] > 4);
+        alt += r-l+1;
+        l = r+1;
     }
     cout << min(sol,alt) << endl;
 }

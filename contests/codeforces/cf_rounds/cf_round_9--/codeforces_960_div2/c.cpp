@@ -54,38 +54,29 @@ void solve() {
     ll n; cin >> n;
     vector<ll> a(n);
     ll sum = 0ll;
-    set<ll> st, mx = {0};
+    set<ll> st;
+    ll mx = 0;
     rep(i,n) {
         cin >> a[i];
         sum += a[i];
         if (st.find(a[i]) != st.end()) {
-            mx.insert(a[i]);
+            mx = max(mx,a[i]);
         }
         st.insert(a[i]);
-        a[i] = *mx.rbegin();
+        a[i] = mx;
     }
     vector<pair<ll,ll>> vals;
-    debug(a);
-    assert(a.front() == 0ll);
     ll cur = a.front(), stt = 0;
-    // ll mn = LLONG_MAX;
-    // vector<ll> mns;
     rep(i,1,n-1ll,1) {
-        if (a[i] == cur) {
-            continue;
-        }
+        if (a[i] == cur) continue;
         vals.emplace_back(cur,i-stt);
-        // mn = min(mn,i-stt);
-        // mns.push_back(mn);
         cur = a[i];
         stt = i;
     }
     vals.emplace_back(cur,n-stt);
-    debug(vals);
     {
         vector<pair<ll,ll>> newvals;
         bool done = false;
-        // bool lasto = false;
         rep(i,(ll)sz(vals)) {
             auto [val,ct] = vals[i];
             if (val == 0) {
@@ -94,12 +85,9 @@ void solve() {
             }
             if (ct == 1ll) {
                 done = true;
-                // if (i == sz(vals)-1ll) lasto = true;
-                assert(!newvals.empty());
                 newvals.back().second++;
                 sum += val;
                 if (i == sz(vals)-1ll) newvals.back().second--;
-                // if (i != sz(vals)-1ll && vals[i+1].second == 1ll) newvals.back().second++;
                 continue;
             }
             sum += val*ct;
@@ -107,51 +95,19 @@ void solve() {
             newvals.emplace_back(val,ct);
         }
         swap(vals,newvals);
-        if (!done) {
-            sum -= accumulate(all(a),0ll);
-            // newvals.back().second++;
-        }
+        if (!done) sum -= accumulate(all(a),0ll);
     }
-    
-    // mn = min(mn,n-stt);
-    // mns.push_back(mn);
-
-
-
-    debug(vals);
-    // ll csum = accumulate(all(a),0ll);
     ll cct = 0ll;
-    // ll oct = 0ll;
-    debug(sum);
-    // ll m = sz(vals);
-    // bool lastoct = false;
     while(sz(vals) > 1) {
-        // assert(sz(vals) == sz(mns));
         auto [val, ct] = vals.back();
-        debug(endl,val,ct);
         if (ct == 1ll) {
             sum += val;
             cct++;
-            // oct+=2ll;
-            // lastoct = (sz(vals)==m);
             vals.pop_back();
-            // mns.pop_back();
             continue;
         }
-        debug(cct,sum);
-        // if (oct) {
-        //     sum += (val*ct);
-        //     if (lastoct) {
-        //         oct--;
-        //     }
-        //     ct += oct-1ll;
-        // }
-        // sum += (((ct*(ct+1ll))/2ll)*val) + ((val*ct)*(cct-(oct/2ll)));
         sum += (((ct*(ct+1ll))/2ll)*val) + ((val*ct)*cct);
-        // oct = 0ll;
-        debug(sum);
         vals.pop_back();
-        // mns.pop_back();
         cct += ct;
     }
     cout << sum << endl;
