@@ -50,7 +50,7 @@ int main() {
 	return 0;
 }
 
-void solve() {
+void solve1() {
     ll n; cin >> n;
     vector<ll> a(n);
     ll sum = 0ll;
@@ -111,4 +111,25 @@ void solve() {
         cct += ct;
     }
     cout << sum << endl;
+}
+
+// tourist's solution. Essentially what I did but so much cleaner!!! And he did it in 6 mins! SMH
+void solve() {
+    ll n; cin >> n;
+    vector<ll> a(n);
+    rep(i,n) cin >> a[i];
+    ll sol = 0ll;
+    ll t = 2;
+    while(t--) {
+        ll mx = 0ll;
+        vector<bool> seen(n+1,false);
+        rep(i,n) {
+            if (seen[a[i]]) mx = max(a[i],mx);
+            seen[a[i]] = true;
+            sol += a[i];
+            a[i] = mx;
+        }
+    }
+    rep(i,n) sol += a[i]*(n-i);
+    cout << sol << endl;
 }
