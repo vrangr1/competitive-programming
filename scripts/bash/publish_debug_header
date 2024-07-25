@@ -7,7 +7,7 @@ COMMENT
 # Shell script to publish the updated debug header file to the cpp include/algo directory. Requires sudo access.
 
 ## Imports
-source helper.sh
+source constants_cp.sh
 
 if ! test -f $DEBUG_HEADER
 then

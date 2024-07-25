@@ -7,7 +7,7 @@ COMMENT
 # Shell script to generate the snippets for the workspace from the snippets code present in algo/snippets_code
 
 ## Imports
-source helper.sh
+source constants_cp.sh
 
 if ! test -f $SNIPPET_GENERATOR
 then

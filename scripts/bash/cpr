@@ -7,7 +7,7 @@ COMMENT
 # Shell script for compiling and/or running cpp files
 
 ## Imports
-source helper.sh
+source constants_cp.sh
 
 ## Cleanup when forcefully exiting execution
 function handle_ctrlc () {

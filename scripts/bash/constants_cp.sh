@@ -7,21 +7,21 @@ COMMENT
 # Shell script to store all the constants
 
 # Various Constants and helper functions
+COMPILER="g++-14"
 
 ## File paths
 CP_ROOT="/Users/anavp/home/programming/competitive-programming/"
+ALGO_DIRECTORY="/opt/homebrew/Cellar/gcc/14.1.0/include/c++/14/algo"
+SNIPPET_GENERATOR="/Users/anavp/home/programming/snippet_generator/src/snippet_generator.py"
 CPR=$CP_ROOT"scripts/bash/cpr"
 TEMPLATE=$CP_ROOT"algo/template.cpp"
 DEBUG_HEADER=$CP_ROOT"algo/debug.hpp"
-ALGO_DIRECTORY="/opt/homebrew/Cellar/gcc/14.1.0/include/c++/14/algo"
 BASH_SCRIPT_DIRECTORY=$CP_ROOT"scripts/bash/"
 LIST_SNIPPETS_PYTHON_SCRIPT=$CP_ROOT"scripts/python/list_snippets.py"
 LIST_SCRIPTS_PYTHON_SCRIPT=$CP_ROOT"scripts/python/list_scripts.py"
-SNIPPET_GENERATOR="/Users/anavp/home/programming/snippet_generator/src/snippet_generator.py"
 TEST_CASE_GENERATOR=$CP_ROOT"algo/test/generator.cpp"
 BRUTE_FORCE=$TEMPLATE
 CHECKER=$CP_ROOT"algo/test/checker.cpp"
-COMPILER="g++-14"
 
 ## Constants:
 OUTPUT_START="OUTPUT_BEGINS"

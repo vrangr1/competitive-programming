@@ -7,7 +7,7 @@ COMMENT
 # Shell script to test the solution against brute force solution with generator cpp providing the inputs
 
 ## Imports:
-source helper.sh
+source constants_cp.sh
 
 ## File names:
 opt_sol="__NA__"

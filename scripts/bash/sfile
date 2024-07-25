@@ -7,7 +7,7 @@ COMMENT
 # Shell script to copy over the template file into the current directory with the given name
 
 #Imports
-source helper.sh
+source constants_cp.sh
 
 POSITIONAL_ARGS=()
 help=false
@@ -49,7 +49,7 @@ if test -f $file_name
 then
     echo "File already exists"
     code $file_name
-    exit 1
+    exit
 fi
 if ! test -f $TEMPLATE
 then

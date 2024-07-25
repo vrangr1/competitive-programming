@@ -7,7 +7,7 @@ COMMENT
 # Shell script to list all the scripts. LOL
 
 ## Imports
-source helper.sh
+source constants_cp.sh
 
 POSITIONAL_ARGS=()
 help=false

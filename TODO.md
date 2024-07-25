@@ -73,6 +73,18 @@
 * AVL trees
 * Red-black trees
 * 2-3 trees
+* Interval tree
+* Static Top Tree (https://codeforces.com/blog/entry/131822)
+* Li-Chao Tree (https://en.oi-wiki.org/ds/li-chao-tree/)
+* Block data structure?? (https://en.oi-wiki.org/ds/decompose/)
+* Dividing Tree (https://en.oi-wiki.org/ds/dividing/)
+* Old Driver Tree (ODT) / Chtholly Tree (https://en.oi-wiki.org/ds/odt/, https://codeforces.com/problemset/problem/896/C)
+* Link Cut Tree (https://en.oi-wiki.org/ds/lct/)
+* Euler Tour Tree (https://en.oi-wiki.org/ds/ett/)
+* Top Tree (https://en.oi-wiki.org/ds/top-tree/)
+* Divide Combine Tree (https://en.oi-wiki.org/ds/divide-combine/)
+* Catalan Numbers
+
 
 
 ## Segment Trees?:
@@ -83,7 +95,11 @@
 * Simple Segment Tree (tourist: https://codeforces.com/contest/380/submission/265506319)
 * segtree?? (tourist: https://codeforces.com/contest/1969/submission/258720683)
 * https://codeforces.com/contest/1942/submission/254161327
+* Li-Chao Segment Tree (https://codeforces.com/blog/entry/92248)
 
+## List of advanced/(useless?) topics:
+* Um_nik: https://codeforces.com/blog/entry/92248
+* https://en.oi-wiki.org/ds/cartesian-tree/#:~:text=When%20it%20comes%20to%20Cartesian,but%20it%20is%20rarely%20used.
 
 ## Theory
 * Cook-Levin's Theorem

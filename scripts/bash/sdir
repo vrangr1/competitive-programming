@@ -6,6 +6,9 @@ list        : false
 COMMENT
 # Shell script to setup input and output directories in the current folder
 
+## Imports
+source constants_cp.sh
+
 file=$1
 if [[ $file == *.cpp ]]; then
     file=${file%".cpp"}

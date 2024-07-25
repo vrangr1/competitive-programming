@@ -7,7 +7,7 @@ COMMENT
 # Shell script to list all the snippets in the workspace
 
 ## Imports:
-source helper.sh
+source constants_cp.sh
 
 if ! test -f $LIST_SNIPPETS_PYTHON_SCRIPT
 then

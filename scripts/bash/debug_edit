@@ -7,7 +7,7 @@ COMMENT
 # Shell script to open the debug header for editing
 
 ## Imports
-source helper.sh
+source constants_cp.sh
 
 if ! test -f $DEBUG_HEADER; then
     echo "${RED_BOLD}${DEBUG_HEADER}${CLEAR} does not exist."

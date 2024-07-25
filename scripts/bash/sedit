@@ -7,7 +7,7 @@ COMMENT
 # Shell script to open the cpp template for editing
 
 ## Imports
-source helper.sh
+source constants_cp.sh
 
 if ! test -f $TEMPLATE
 then
