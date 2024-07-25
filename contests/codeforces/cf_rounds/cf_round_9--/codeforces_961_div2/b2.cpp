@@ -50,7 +50,7 @@ int main() {
 	return 0;
 }
 
-void solve() {
+void solve1() {
     ll n, m; cin >> n >> m;
     vector<ll> b(n), c(n);
     rep(i,n) cin >> b[i];
@@ -83,7 +83,7 @@ void solve() {
         }
         ll unc = mx-c[i];
         if (unc > rem) {
-            ll t = unc/b[i];
+            [[maybe_unused]] ll t = unc/b[i];
             if (c[nxt] >= unc) {
                 
             }
@@ -100,5 +100,30 @@ void solve() {
         // }
     }
     sol = max(sol,min((m/b[order.back()]),c[order.back()])*b[order.back()]);
+    cout << sol << endl;
+}
+
+void solve() {
+    ll n, m; cin >> n >> m;
+    vector<ll> a(n), c(n);
+    rep(i,n) cin >> a[i];
+    rep(i,n) cin >> c[i];
+    vector<ll> order(n);
+    iota(all(order),0ll);
+    sort(all(order),[&](const ll &i, const ll &j) {
+        return a[i] < a[j];
+    });
+    ll sol = 0ll;
+    rep(ind,n) {
+        ll i = order[ind];
+        sol = max(sol, min(m/a[i],c[i])*a[i]);
+        if (ind == n-1) break;
+        ll nxt = order[ind+1ll];
+        if (a[nxt] != a[i]+1ll) continue;
+        ll b = a[i], m1 = m - (min(m/b,c[i])*b);
+        ll m2 = m1 - ((b+1ll)*min(m1/(b+1ll),c[nxt]));
+        ll cur = m - m2, mn = min({c[nxt] - (m1-m2)/(b+1ll), (m-m1)/b, m2});
+        sol = max(sol,cur+mn);
+    }
     cout << sol << endl;
 }
