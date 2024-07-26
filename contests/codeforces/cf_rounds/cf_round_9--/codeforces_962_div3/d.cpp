@@ -78,7 +78,8 @@ void init() {
     }
 }
 
-void solve() {
+// Solution passes (but should be hacked I think)
+void solve1() {
     init();
     ll n, x; cin >> n >> x;
     auto get = [&](auto &cur, ll d, ll ab) -> ll {
@@ -97,6 +98,17 @@ void solve() {
         auto &cur = facs[ab];
         ll d = n-ab;
         sol += get(cur, d, ab);
+    }
+    cout << sol << endl;
+}
+
+// jiangly's solution. Stupidly simple.
+void solve() {
+    ll n, x; cin >> n >> x;
+    ll sol = 0ll;
+    rep(a,1ll,x-2ll,1ll) {
+        for (ll b = 1ll; a + b <= x-1ll && a*b <= n-2ll; ++b)
+            sol += min((n-a*b)/(a+b),x-a-b);
     }
     cout << sol << endl;
 }
