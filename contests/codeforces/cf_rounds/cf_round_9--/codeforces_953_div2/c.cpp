@@ -52,12 +52,33 @@ int main() {
 
 void solve() {
     ll n, k; cin >> n >> k;
-    set<ll,greater<ll>> p1, p2;
-    ll lsum = 0, rsum = 0ll;
-    ll st = 1ll;
-    auto balance = [&]() {
-        while(!p1.empty() && *p1.rbegin() < st+(ll)(sz(p1))-1ll) {
-            
+    if (k == 0) {
+        cout << "Yes\n";
+        rep(i,n) cout << i+1 << " \n"[i==n-1];
+        return;
+    }
+    if (k%2) return void(cout << "No\n");
+    ll mx = 0;
+    rep(i,n) mx += llabs(n-i-(i+1ll));
+    if (k > mx) return void(cout << "No\n");
+    vector<int> p(n);
+    iota(all(p),1);
+    k/=2ll;
+    ll limit = n;
+    for(ll i = 1; i <= n && k > 0; i++) {
+        assert(i < limit);
+        if (limit-i <= k) {
+            swap(p[i-1],p[limit-1]);
+            k-=(limit-i);
+            limit--;
+            continue;
         }
-    };
+        assert(i+k <= limit);
+        swap(p[i-1],p[i+k-1]);
+        k = 0;
+        break;
+    }
+    assert(k == 0);
+    cout << "Yes\n";
+    print_vec(p);
 }
