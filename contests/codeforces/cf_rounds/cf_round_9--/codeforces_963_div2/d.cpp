@@ -50,7 +50,7 @@ int main() {
 	return 0;
 }
 
-void solve() {
+void solve1() {
     int n, k; cin >> n >> k;
     vector<int> a(n);
     rep(i,n) cin >> a[i];
@@ -127,7 +127,6 @@ void solve() {
         while(i > ind) {
 
         }
-    
         // int ct = 0;
         // int i = 0;
         // while(i < ind) {
@@ -138,9 +137,38 @@ void solve() {
         //     }
 
         // }
+        return 0;
     };
     rep(i,n) {
         sol = max(sol,proc(i));
     }
     cout << sol << endl;
+}
+
+void solve() {
+    int n, k; cin >> n >> k;
+    vector<int> a(n);
+    rep(i,n) cin >> a[i];
+    auto pos = [&](int med) -> bool {
+        vector<int> b(n);
+        for (int i = 0; i < n; ++i)
+            b[i] = a[i]>=med?1:-1;
+        vector<int> dp(n, INT_MIN);
+        dp[0] = b[0];
+        for (int i = 1; i < n; ++i)
+            if (i%k)
+                dp[i] = max(dp[i-1]+b[i],(i>=k?dp[i-k]:dp[i]));
+            else dp[i] = max(b[i],dp[i-k]);
+                // would be dp[i] = max({b[i],dp[i-k],dp[i-1]+b[i]}); in the else case 
+                // if we weren't mandated to keep doing the operations until |a| <= k
+        return dp.back() > 0;
+    };
+    int low = 1, high = *max_element(all(a));
+    debug(low,high,pos(9));
+    while (low < high) {
+        int mid = (low+high+1)/2;
+        if (pos(mid)) low = mid;
+        else high = mid-1;
+    }
+    cout << low << endl;
 }
