@@ -50,17 +50,19 @@ int main() {
 	return 0;
 }
 
-void solve() {
+// Incorrect Solution. Forgot to account for the fact that the center for the 'star' patterned
+// graph can be **any** node.
+void solve1() {
     ll n, m; cin >> n >> m;
     vector<vector<ll>> chains(n,vector<ll>(m));
     rep(i,n) {
         rep(j,m) cin >> chains[i][j];
     }
     vector<array<ll,2>> vals;
-    ll sol = 0ll, nsum = 0ll;
+    ll chdia = 0;
     rep(i,n) {
         ll sum = 0ll, total = accumulate(all(chains[i]),0ll);
-        sol = max(sol,total);
+        chdia = max(chdia,total);
         array<ll,3> ar = {0ll,chains[i][0],total};
         rep(j,m) {
             sum += chains[i][j];
@@ -72,38 +74,59 @@ void solve() {
         auto [node,lt,rt] = ar;
         node = chains[i][node];
         vals.push_back({node,(ll)max(lt-node,rt-node)});
-        nsum += node;
     }
-    sol = max(sol,nsum);
     sort(all(vals),[](const array<ll,2> &a, const array<ll,2> &b) {
         auto [an,am] = a;
         auto [bn,bm] = b;
-        return am < bm;
+        return an+am < bn+bm;
     });
-    ll lt = 0, rt = 0, ch = 0;
-    while(!vals.empty()) {
-        if (sz(vals) == 1) {
-            auto [cn,cm] = vals.back();
-            vals.pop_back();
-            sol = max(sol,min(lt,rt)+cn+cm);
-            break;
-        }
-        auto [bn,bm] = vals.back();
-        vals.pop_back();
-        auto [sn,sm] = vals.back();
-        vals.pop_back();
-        sol = max(sol,bn+bm+sn+sm+ch);
-        ch+=sn+bn;
-        if (max(bn+bm+rt,sn+sm+lt) <= max(bn+bm+lt,sn+sm+rt)) {
-            sol = max(sol,max(bn+bm+rt,sn+sm+lt));
-            rt+=bn;
-            lt+=sn;
-        }
-        else {
-            sol = max(sol,max(bn+bm+lt,sn+sm+rt));
-            rt+=sn;
-            lt+=bn;
+    if (n == 2)
+        return void(cout << max(chdia,vals[0][0]+vals[0][1]+vals[1][0]+vals[1][1]) << endl);
+    ll sol = LLONG_MAX;
+    debug(vals);
+    rep(i,n) {
+        ll cur = 0;
+        if (i == n-1) cur = vals[i][0]+vals[i][1]+vals[i-1][0]+vals[i-1][1];
+        else cur = vals[i][0]+vals[i][1]+vals[n-1][0]+vals[n-1][1];
+        ll i1 = n-2, i2 = n-1;
+        if (i == n-1) i2 = n-3;
+        else if (i == n-2) i1 = n-3;
+        cur = max(cur,vals[i][0]+vals[i1][0]+vals[i1][1]+vals[i2][0]+vals[i2][1]);
+        debug(endl,vals[i],cur);
+        sol = min(sol,cur);
+    }
+    cout << max(chdia,sol) << endl;
+}
+
+// Correct solution based on editorial.
+void solve() {
+    ll n, m; cin >> n >> m;
+    vector<vector<ll>> a(n,vector<ll>(m));
+    rep(i,n) rep(j,m) cin >> a[i][j];
+    vector<vector<ll>> mx(n,vector<ll>(m));
+    vector<ll> mn(n, LLONG_MAX);
+    ll mxdia = 0ll, sol = LLONG_MAX;
+    rep(i,n) {
+        ll sum = accumulate(all(a[i]),0ll), cur = 0ll;
+        mxdia = max(mxdia,sum);
+        rep(j,m) {
+            cur += a[i][j];
+            mx[i][j] = max(cur,sum);
+            sum-=a[i][j];
+            mn[i] = min(mn[i],mx[i][j]);
         }
     }
-    cout << sol << endl;
+    multiset<ll> mst(all(mn));
+    rep(i,n) {
+        mst.erase(mst.find(mn[i]));
+        rep(j,m) {
+            ll m1 = 0, m2 = 0;
+            m1 = *mst.rbegin();
+            if (sz(mst) > 1) m2 = *next(mst.rbegin());
+            ll cur = max(mx[i][j]+m1,m1+m2+a[i][j]);
+            sol = min(sol,cur);
+        }
+        mst.insert(mn[i]);
+    }
+    cout << max(sol,mxdia) << endl;
 }
