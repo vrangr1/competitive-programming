@@ -1,6 +1,6 @@
-<<COMMENT
+: <<COMMENT
 Details for script lister program:
-command     : helper.sh
+command     : constants_cp.sh
 description : helper file for all constants
 list        : false
 COMMENT

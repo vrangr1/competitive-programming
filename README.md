@@ -42,10 +42,11 @@ The ```competitions``` directory contains my codes of competitive programming co
     * Competed in 2023 Meta Hacker Cup. [Certificate](https://www.facebook.com/codingcompetitions/hacker-cup/2023/certificate/292420118561533)
 * [MIT Informatics Tournament (M(IT)^2)](https://mitit.org):
     * Competed in MIT IT's Inaugural Round Jan 20, 2024. [Result, handle=vrangr](https://mitit.org/Contest/ViewScoreboard/beginner-2024)
+* [Osijek Competitive Programming Camp](https://ocpc.mathos.unios.hr/)
 
 ## My CP Profiles:
 
 * Codeforces: [vrangr](https://codeforces.com/profile/vrangr)
 * Atcoder: [vrangr](https://atcoder.jp/users/vrangr)
-* Codechef: [anav1458](https://www.codechef.com/users/anav1458)
+* Codechef: [anav1458](https://www.codechef.com/users/vrangr1)
 * Leetcode: [vrangr](https://leetcode.com/vrangr)

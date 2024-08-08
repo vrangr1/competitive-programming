@@ -2,19 +2,13 @@
     "configurations": [
         {
             "name": "Mac",
-            "includePath": [
-                "${workspaceFolder}/**",
-                "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/**"
-            ],
+            "includePath": [],
             "defines": [],
             "macFrameworkPath": [],
             "cStandard": "c17",
             "cppStandard": "c++20",
-            "intelliSenseMode": "macos-clang-arm64",
-            "compilerArgs": [
-                "${workspaceFolder}/**",
-                "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/"
-            ],
+            "intelliSenseMode": "macos-gcc-arm64",
+            "compilerArgs": [],
             "compilerPath": "/opt/homebrew/Cellar/gcc/14.1.0/bin/g++-14"
         }
     ],

@@ -1,4 +1,4 @@
-<<COMMENT
+: <<COMMENT
 Details for script lister program:
 command     : sfile
 description : Creates a new cpp file by copying over the template
@@ -6,7 +6,7 @@ list        : true
 COMMENT
 # Shell script to copy over the template file into the current directory with the given name
 
-#Imports
+# Imports
 source constants_cp.sh
 
 POSITIONAL_ARGS=()

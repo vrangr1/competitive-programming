@@ -52,7 +52,7 @@
 * Maximal Independent Sets
 * Low Link Algorithm (for measuring #disjoint sets after removal of edges in a graph?) (https://atcoder.jp/contests/abc334/editorial/8988)
     -> Similar to Tarjan's Algo? 
-* Aho Corasik algo
+* Aho Corasick algo
 * Sparse Tables (https://codeforces.com/contest/1987/submission/268209905)
 * Disjoint Sparse Table (https://codeforces.com/blog/entry/79108, https://discuss.codechef.com/t/tutorial-disjoint-sparse-table/17404)
 * https://codeforces.com/blog/entry/91608?#comment-801782
@@ -84,8 +84,8 @@
 * Top Tree (https://en.oi-wiki.org/ds/top-tree/)
 * Divide Combine Tree (https://en.oi-wiki.org/ds/divide-combine/)
 * Catalan Numbers
-
-
+* Boyer Moore's Algo for pattern searching (https://www.geeksforgeeks.org/boyer-moore-algorithm-for-pattern-searching/?ref=lbp)
+* XOR Hashing (https://codeforces.com/blog/entry/85900)
 
 ## Segment Trees?:
 * Lazy segment tree (tourist: https://codeforces.com/contest/341/submission/267807488)
@@ -105,6 +105,9 @@
 * Cook-Levin's Theorem
 * Church Turing Thesis
 * Polynomial Hierarchies
+* vertex cover
+* maximal matching
+* Set Cover
 
 
 ## Refer Solution:

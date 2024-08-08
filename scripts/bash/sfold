@@ -1,0 +1,55 @@
+true <<COMMENT
+Details for script lister program:
+command     : sfold
+description : Creates a directory and new cpp file within it by copying over the template
+list        : true
+COMMENT
+
+# Imports
+source constants_cp.sh
+
+POSITIONAL_ARGS=()
+help=false
+
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    -h|--help)
+      help=true
+      shift # past argument
+      ;;
+    -*|--*)
+      echo "${RED_BOLD}ERROR:${CLEAR} Unknown option ${RED_BOLD}$1${CLEAR}"
+      sfold -h
+      exit 1
+      ;;
+    *)
+      POSITIONAL_ARGS+=("$1") # save positional arg
+      shift # past argument
+      ;;
+  esac
+done
+
+set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
+
+if [[ "$help" == true ]]; then
+    echo "${RED_BOLD}sfold${CLEAR} is a script for creation of a directory and a cpp file within it, optionally with the given name (default: ${BOLD}file[.cpp]${CLEAR}), using the custom cpp competitive programming template."
+    echo "${BOLD}Usage:${RED_BOLD} sfold [options] [dir_name]${CLEAR}"
+    echo "${BOLD}Options:"
+    echo " ${RED_BOLD} -h, --help${CLEAR}     Display this help message${CLEAR}"
+    exit
+fi
+
+dir_name=${1:-"file"}
+if [[ $dir_name == *.cpp ]]; then
+    dir_name=${dir_name%".cpp"}
+fi
+file_name=$dir_name".cpp"
+
+if test -d $dir_name; then
+    echo "${RED_BOLD}ERROR:${CLEAR} directory ${RED_BOLD}$dir_name${CLEAR} already exists."
+    exit 0
+fi
+
+mkdir $dir_name
+cd $dir_name
+sfile $dir_name
