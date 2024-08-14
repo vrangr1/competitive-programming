@@ -50,7 +50,7 @@ int main() {
 	return 0;
 }
 
-void solve() {
+void solve1() {
     int n, k; cin >> n >> k;
     vector<pair<int,int>> rs(n);
     rep(i,n) {
@@ -160,41 +160,40 @@ void solve() {
     else cout << cost << endl;
 }
 
+void solve() {
+    int n, k; cin >> n >> k;
+    vector<pair<int,int>> rs;
+    rep(i,n) {
+        int l, w; cin >> l >> w;
+        if (l > w) swap(l,w);
+        rs.emplace_back(l,w);
+    }
+    vector<pair<int,int>> take;
+    pair<int,int> part = {-1,-1};
+    int ops = 0, ptops = 0, sol = INT_MAX;
+    auto comp = [](auto &tk, auto &p) -> int {
+        
+    };
+    auto ins = [&](pair<int,int> r) -> void {
+        auto [l, w] = r;
+        if (take.empty() && part.first == -1) {
+            if (l+w <= k+1) {
+                ops+=l*w;
+                take.emplace_back(l,w);
+                return;
+            }
+            while(ops < k) {
+                ptops++;
+                ops++;
+                w--;
+                if (l > w) swap(l,w);
+            }
+            part = r;
+            return;
+        }
+        
+    };
+    rep(i,n) {
 
-/*
-
-l: 2
-r: 6
-l: 2
-r: 5
-l: 2
-r: 4
-l: 2
-r: 3
-l: 2
-r: 2
-l: 1
-r: 2
-l: 1
-r: 1
-l: 4
-r: 5
-l: 4
-r: 4
-l: 3
-r: 4
-l: 3
-r: 3
-l: 2
-r: 3
-l: 2
-r: 2
-l: 1
-r: 2
-l: 1
-r: 1
-l: 3
-r: 8
-
-
-*/
+    }
+}
