@@ -50,7 +50,13 @@ int main() {
 	return 0;
 }
 
-void solve() {
+/*
+
+
+
+*/
+
+void solve1() {
     ll n, m, k; cin >> n >> m >> k;
     ll w; cin >> w;
     vector<ll> a(w);
@@ -60,16 +66,17 @@ void solve() {
     vector<ll> col(n,0ll);
     rep(i,n-k+1ll) col[i]++;
     rep(i,k,n-1ll,1) col[i]--;
-    debug(col);
     rep(i,1,n-1ll,1) col[i]+=col[i-1ll];
-    debug(col);
+
+
     rep(i,n) {
         rep(j,m-k+1ll) g[i][j] += col[i];
     }
     rep(i,n)
         rep(j,k,m-1ll,1) g[i][j] -= col[i];
+    
+    
     vector<pair<ll,ll>> inds;
-    debug(g);
     rep(i,n)
         rep(j,m) {
             if (j) 
@@ -87,6 +94,37 @@ void solve() {
         if (ind == w || g[l][r] <= 0ll) break;
         // debug(l,r,g[l][r]);
         sol += g[l][r]*a[ind++];
+    }
+    cout << sol << endl;
+}
+
+// Shashwat's Solution
+void solve() {
+    ll n, m, k; cin >> n >> m >> k;
+    ll w; cin >> w;
+    vector<ll> a(w);
+    rep(i,w) cin >> a[i];
+    sort(rall(a));
+    vector<vector<ll>> grid(n,vector<ll>(m,0ll));
+    rep(i,n)
+        rep(j,m) {
+            // grid[i][j] = min({i+1,k,n-i})*min({j+1,k,m-j});
+            ll ict = min(i+k-1ll,n-1ll) - max(i,k-1ll) + 1ll;
+            ll jct = min(j+k-1ll,m-1ll) - max(j,k-1ll) + 1ll;
+            grid[i][j] = ict*jct;
+        }
+    debug(grid);
+    vector<pair<ll,ll>> inds;
+    rep(i,n) rep(j,m) inds.emplace_back(i,j);
+    sort(rall(inds),[&](const pair<ll,ll> &l, const pair<ll,ll> &r) {
+        auto [l1, l2] = l;
+        auto [r1, r2] = r;
+        return grid[l1][l2] < grid[r1][r2];
+    });
+    ll sol = 0ll;
+    rep(i,w){
+        auto [l,r] = inds[i];
+        sol += grid[l][r]*a[i];
     }
     cout << sol << endl;
 }
