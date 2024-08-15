@@ -8,12 +8,13 @@
         
 * Rolling Hash (allowing for handling of multiple bases and primes simultaneously).
 * Either use AtCoder's lib or write your own generic Segtree implementation.
-* General ncr setup.
+~~* General ncr setup.~~
 * Finding nth root using binary search.
 * Y-combinator (neal: https://codeforces.com/contest/1983/submission/269241095, tourist: https://codeforces.com/contest/1984/submission/264893993, ecnerwala: https://codeforces.com/contest/1949/submission/253078193)
 * DSU
 * Ordered set (treap) setup
 * Ordered multi set (treap) setup
+* Euler Tour
 
 ## Scripts:
 ### rtest:
@@ -86,6 +87,8 @@
 * Catalan Numbers
 * Boyer Moore's Algo for pattern searching (https://www.geeksforgeeks.org/boyer-moore-algorithm-for-pattern-searching/?ref=lbp)
 * XOR Hashing (https://codeforces.com/blog/entry/85900)
+* FFT (also for problem: https://judge.yosupo.jp/problem/convolution_mod_1000000007)
+* The Scale Method (https://atcoder.jp/contests/abc366/editorial/10640)
 
 ## Segment Trees?:
 * Lazy segment tree (tourist: https://codeforces.com/contest/341/submission/267807488)
@@ -112,7 +115,7 @@
 
 ## Refer Solution:
 * Get count of smaller nodes in the subtree for every node (problem: [Insomnia 2k24 finals problem I](https://codeforces.com/gym/510369/problem/I))
-* 
+* Aug 11 leetcode daily prob: (https://leetcode.com/problems/minimum-number-of-days-to-disconnect-island/description/)
 
 ## Blog Topics:
 * Ordered Set intro and list of methods (and how to convert it into an ordered multiset)
