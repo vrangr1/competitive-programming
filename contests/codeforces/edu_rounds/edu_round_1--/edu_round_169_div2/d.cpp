@@ -150,7 +150,7 @@ public:
     }
 };
 
-void solve() {
+void solve1() {
     init();
     ll n, q; cin >> n >> q;
     vector<set<ll>> inds(4);
@@ -198,5 +198,54 @@ void solve() {
         ll x, y; cin >> x >> y;
         --x;--y;
         cout << get(x,y) << endl;
+    }
+}
+
+void solve() {
+    int n, q; cin >> n >> q;
+    map<pair<int,int>,vector<int>> inds;
+    vector<pair<int,int>> cols(n);
+    auto getcol = [](char ch) -> int {
+        switch(ch) {
+            case 'R': return 0;
+            case 'B': return 1;
+            case 'G': return 2;
+            default: return 3;
+        }
+    };
+    rep(i,n) {
+        string s; cin >> s;
+        cols[i] = {getcol(s[0]),getcol(s[1])};
+        auto &[l, r] = cols[i];
+        if (l > r) swap(l,r);
+        inds[cols[i]].push_back(i);
+    }
+    auto get = [&](int c1, int c2, int x, int y) -> int {
+        if (x > y) swap(x,y);
+        if (c1 == c2) return y-x;
+        if (c1 > c2) swap(c1,c2);
+        auto &v = inds[{c1,c2}];
+        int sol = INT_MAX;
+        auto it = lower_bound(all(v),x);
+        if (it != v.end() && *it <= y) return y-x;
+        else if (it != v.end()) sol = *it-y+*it-x;
+        auto it2 = upper_bound(rall(v),x,[](const int c, const int &val){
+            return c > val;
+        });
+        if (it2 != v.rend()) sol = min(sol,y-*it2+x-*it2);
+        return sol;
+    };
+    while(q--) {
+        int x, y; cin >> x >> y;
+        --x;--y;
+        if (x == y) {
+            cout << "0\n";
+            continue;
+        }
+        auto [xl,xr] = cols[x];
+        auto [yl,yr] = cols[y];
+        int sol = min({get(xl,yl,x,y), get(xl,yr,x,y), get(xr,yl,x,y), get(xr,yr,x,y)});
+        if (sol == INT_MAX) cout << "-1\n";
+        else cout << sol << endl;
     }
 }
