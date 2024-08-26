@@ -38,7 +38,21 @@ template<typename type>inline void print_vec(const vector<type> &v){rep(i,sz(v))
 void solve();
 
 // IMPORT SNIPPETS HERE
-
+#ifndef SQRT_SNIPPET
+#define SQRT_SNIPPET
+#include <iostream>
+// Babylonian Method
+template <typename type, typename = typename std::enable_if<std::is_integral<type>::value>::type>
+type bsqrt(type x){
+    const type one = 1, two = 2;
+    type a = x, b = (x + one) / two;
+    while (a > b){
+        a = b;
+        b = (b + x / b) / two;
+    }
+    return a;
+}
+#endif
 // END OF SNIPPETS
 
 int main() {
@@ -49,68 +63,38 @@ int main() {
 #endif
 	return 0;
 }
-
-const ll maxa = (ll)1e7+1ll;
-vector<ll> gr(maxa);
+const int maxn = int(1e7)+1;
+vector<int> sieve(maxn,INT_MAX);
 
 void init() {
     static bool init = false;
     if (init) return;
     init = true;
-    gr[0] = 0;
-    gr[1] = 1;
-    gr[2] = 0;
-    rep(f,3,(ll)maxa-1ll,1) {
-        if (!gr[f-1]) {
-            gr[f] = 1;
-            continue;
+    sieve[0] = 0;
+    sieve[1] = 1;
+    sieve[2] = 0;
+    int cur = 1;
+    rep(f,4,maxn-1,2) {
+        sieve[f] = 0;
+    }
+    rep(f,3,maxn-1,2) {
+        if (sieve[f] != INT_MAX) continue;
+        sieve[f] = ++cur;
+        rep(v,f*2,maxn-1,f) {
+            sieve[v] = min(cur,sieve[v]);
         }
-        gr[f] = 0; // ??
     }
-}
-
-void solve1() {
-    init();
-    ll n; cin >> n;
-    vector<ll> a(n), g(n);
-    ll xr = 0;
-    rep(i,n) {
-        cin >> a[i];
-        g[i] = gr[a[i]];
-        xr ^= g[i];
-    }
-    debug(n,a,g,xr);
-    if (xr == 0) cout << "Bob\n";
-    else cout << "Alice\n";
 }
 
 void solve() {
     init();
-    ll n; cin >> n;
-    bool z = false;
-    vector<ll> a(n);
-    ll w = 0, l = 0;
+    int n; cin >> n;
+    int xr = 0;
     rep(i,n) {
-        cin >> a[i];
-        if (gr[a[i]]) w++;
-        else l++;
+        int v; cin >> v;
+        debug(v,sieve[v]);
+        xr^=sieve[v];
     }
-    if (n == 1) return void(cout << (gr[a[0]]?"Alice\n":"Bob\n"));
-    if (w == 0) {
-        cout << "Bob\n";
-        return;
-    }
-    if (l == 0) {
-        if (w%2ll) {
-            cout << "Alice\n";
-            return;
-        }
-        cout << "Bob\n";
-        return;
-    }
-    if (w%2ll) {
-        cout << "Alice\n";
-        return;
-    }
-    cout << "Bob\n";
+    if (xr) cout << "Alice\n";
+    else cout << "Bob\n";
 }
