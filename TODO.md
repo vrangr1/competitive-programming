@@ -29,6 +29,8 @@
 ### list_scripts
 * Fix list_scripts
 ### cpr:
+* When -g bruteforce, run checker!!
+* Checker debug with cpr!!
 * Create the option to overwrite the correct answer of a test case.
 * Create the option to split after the test cases and save them
 * cpr -g bug. When 5 test files and 4th deleted and new one saved, 5th one overwritten.
@@ -84,7 +86,7 @@
 * Euler Tour Tree (https://en.oi-wiki.org/ds/ett/)
 * Top Tree (https://en.oi-wiki.org/ds/top-tree/)
 * Divide Combine Tree (https://en.oi-wiki.org/ds/divide-combine/)
-* Catalan Numbers
+* Catalan Numbers (https://codeforces.com/contest/2001/problem/E1)
 * Boyer Moore's Algo for pattern searching (https://www.geeksforgeeks.org/boyer-moore-algorithm-for-pattern-searching/?ref=lbp)
 * XOR Hashing (https://codeforces.com/blog/entry/85900)
 * FFT (also for problem: https://judge.yosupo.jp/problem/convolution_mod_1000000007)

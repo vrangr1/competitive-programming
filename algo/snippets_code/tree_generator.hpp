@@ -8,6 +8,7 @@ description : Tree Generator Snippet
 #define TREE_GENERATOR_SNIPPET
 #include <vector>
 #include <assert.h>
+#include <climits>
 
 #ifndef RANDOM_SNIPPET
 #define RANDOM_SNIPPET

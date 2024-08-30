@@ -1,6 +1,6 @@
 /***************************************************
 * Author  : Anav Prasad
-* Nick    : vrangr
+* Handle  : vrangr
 ****************************************************/
 #include <bits/stdc++.h>
 
@@ -31,8 +31,6 @@ typedef __int128_t i128;
 #define rep(...) GET_MACRO(__VA_ARGS__, forsn, debug, forn)(__VA_ARGS__)
 #define forn(i, n) for (__typeof(n) i = 0; i < n; i++)
 #define forsn(i, st, end, d) for(__typeof(end) i = st; (d>0?i<=end:i>=end); i+=((__typeof(end))d))
-#define yes "YES\n"
-#define no "NO\n"
 template<typename type>inline void print_vec(const vector<type> &v){rep(i,sz(v))cout<<v[i]<<" \n"[i==sz(v)-1];}
 void solve();
 

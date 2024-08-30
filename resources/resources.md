@@ -28,6 +28,7 @@ ICPC
 Meta Hacker Cup  
 Topcoder Open  
 IPSC? Seems to be stopped now
+[Osijek Competitive Programming Camp](https://ocpc.mathos.unios.hr/)
 
 ## Books/References
 
