@@ -73,7 +73,7 @@ void solve1() {
     }
 }
 
-void solve() {
+void solve2() {
     int n, q; cin >> n >> q;
     vector<int> a(n);
     rep(i,n) cin >> a[i];
@@ -169,6 +169,42 @@ void solve() {
         debug(delims);
         upd(x);
         debug(delims);
+    }
+    while(q--) {
+        int x; cin >> x;
+        cout << sol[x] << " \n"[q==0];
+    }
+}
+
+void solve() {
+    int n, q; cin >> n >> q;
+    vector<int> a(n);
+    rep(i,n) cin >> a[i];
+    vector<int> ct(n+1,0);
+    rep(i,n) ct[a[i]]++;
+    vector<int> psum(n+1);
+    partial_sum(all(ct),psum.begin());
+    auto get_sum = [&](int l, int r) -> int {
+        assert(l <= r && l >= 0 && r <= n);
+        return psum[r]-(l>0?psum[l-1]:0);
+    };
+    vector<int> sol(n+1,0);
+    auto pos = [&](const int med, const int x) -> bool {
+        assert(med < x);
+        int d = 0;
+        rep(i,0,n,x) {
+            d += get_sum(i,min(i+med,n));
+        }
+        return d > n-d;
+    };
+    rep(x,1,n,1) {
+        int low = 0, high = x-1;
+        while(low < high) {
+            int mid = (low+high)/2;
+            if (pos(mid,x)) high = mid;
+            else low = mid+1;
+        }
+        sol[x] = high;
     }
     while(q--) {
         int x; cin >> x;
