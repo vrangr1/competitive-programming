@@ -48,5 +48,29 @@ void solve() {
     ll n, k; cin >> n >> k;
     vector<ll> a(n);
     rep(i,n) cin >> a[i];
-    
+    if (n == 1) {
+        if (a[0] > k-1) cout << k-1 << endl;
+        else cout << k << endl;
+        return;
+    }
+    sort(all(a));
+    ll v = 0;
+    rep(i,n) v = gcd(v,a[i]);
+    debug(v);
+    if (v != 1) {
+        ll mex = 1;
+        --n;
+        while(--k) {
+            mex++;
+            if (mex%v == 0 && n > 0) {
+                k++;
+                --n;
+                continue;
+            }
+            mex++;
+        }
+        cout << mex << endl;
+        return;
+    }
+    cout << n + k - 1 << endl;
 }
