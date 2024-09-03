@@ -46,31 +46,31 @@ int main() {
 
 void solve() {
     ll n, k; cin >> n >> k;
-    vector<ll> a(n);
-    rep(i,n) cin >> a[i];
-    if (n == 1) {
-        if (a[0] > k-1) cout << k-1 << endl;
+    ll g = 0;
+    rep(i,n) {
+        ll v; cin >> v;
+        g = gcd(g,v);
+    }
+    if (n == 1ll) {
+        if (g > k-1ll) cout << k-1ll << endl;
         else cout << k << endl;
         return;
     }
-    sort(all(a));
-    ll v = 0;
-    rep(i,n) v = gcd(v,a[i]);
-    debug(v);
-    if (v != 1) {
-        ll mex = 1;
-        --n;
-        while(--k) {
-            mex++;
-            if (mex%v == 0 && n > 0) {
-                k++;
-                --n;
-                continue;
-            }
-            mex++;
+    if (g == 1) return void(cout << n+k-1 << endl);
+    ll mex = 1;
+    --k;
+    rep(i,1,n-1ll,1) {
+        assert(g*i > mex);
+        ll v = g*i;
+        debug(endl,v,mex,k);
+        if (k >= v-mex) {
+            k-=v-mex;
+            mex = v+1ll;
+            continue;
         }
-        cout << mex << endl;
-        return;
+        mex += k;
+        k = 0ll;
+        break;
     }
-    cout << n + k - 1 << endl;
+    cout << mex+k << endl;
 }
