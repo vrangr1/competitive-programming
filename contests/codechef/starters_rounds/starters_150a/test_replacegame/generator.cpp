@@ -60,11 +60,22 @@ int main() {
 	return 0;
 }
 
-const ll maxn = 7;
+const ll maxn = 5;
 
 // Generate just a singular test. The multitudinous nature of tests are implemented through a bash script
 void generate_test() {
     ll n = grng(maxn)+2ll, k = grng(n-1ll)+2ll;
+    k = 1;
+    cout << n << " " << k << endl;
+    rep(i,n) cout << char('a'+int(grng(26)));
+    cout << endl;
+    rep(i,n) cout << char('a'+int(grng(26)));
+    cout << endl;
+}
+
+// Generate just a singular test. The multitudinous nature of tests are implemented through a bash script
+void generate_test1() {
+    ll n = grng(maxn)+5ll, k = grng(4)+n-3; // k \in [n-3,n]
     cout << n << " " << k << endl;
     rep(i,n) cout << char('a'+int(grng(26)));
     cout << endl;

@@ -80,29 +80,54 @@ void check(){
         ss << s << endl;
         return true;
     };
+    int n, k;
+    string a, b;
     [[maybe_unused]] auto read_input = [&]() -> void {
         // Use ss instead of cin to regularly take inputs into variables defined before this function
+        int t; ss >> t;
+        ss >> n >> k;
+        ss >> a >> b;
     };
     [[maybe_unused]] auto trash_stream = [&s,&ss]() -> void {
         // Comment the following line if inputs need to be stored
-        ss >> s;
+        // ss >> s;
     };
     auto process_input = [&]() -> void {
         assert(!transfer());
         while(transfer())
             trash_stream();
+        read_input();
     };
     process_input();
     [[maybe_unused]] auto read_output = [&](vector<string> &output) -> void {
         // Read input in from ss as if reading from cin stream
         // Process however needed and append to output what the converted output that needs to be 1-1 compared with converted correct output
-        ss >> s;
-        output.push_back(s);
+        auto do_op = [&](string &cur, int i, char ch) -> void {
+            assert(i <= n-k);
+            assert(i >= 0);
+            rep(j,i,i+k-1,1)
+                cur[j] = ch;
+        };
+        string cur = a;
+        int f; ss >> f;
+        if (f >= 0) {
+            rep(i,f) {
+                int ind;
+                char ch;
+                ss >> ind >> ch;
+                do_op(cur,ind-1,ch);
+            }
+        }
+        if (f < 0) output.push_back("-1\n");
+        else if (f > 2*n) output.push_back("-2\n");
+        else if (s == b) output.push_back("YES\n");
+        else output.push_back("NO\n");
     };
     auto process_output = [&](vector<string> &output) -> void {
         assert(!transfer());
         while(transfer())
-            read_output(output);
+            trash_stream();
+        read_output(output);
     };
     vector<string> test_output, correct_output;
     process_output(test_output);

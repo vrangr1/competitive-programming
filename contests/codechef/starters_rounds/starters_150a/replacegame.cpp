@@ -48,53 +48,22 @@ void solve() {
     int n, k; cin >> n >> k;
     string a, b; cin >> a >> b;
     if (a == b) return void(cout << "0\n");
-    int last = n;
-    char ch = '.';
-    vector<pair<int,char>> ops;
-    rep(i,n-k+1) {
-        if (((last >= i || i-last >= k) && a[i] == b[i]) || ((last < i && i-last < k) && ch == b[i])) {
-            a[i] = b[i];
-            continue;
+    vector<int> freq(26,0);
+    rep(i,k-1)
+        freq[b[i]-'a']++;
+    int ind = -1;
+    rep(i,k-1,n-1,1) {
+        freq[b[i]-'a']++;
+        if (i-k >= 0) freq[b[i-k]-'a']--;
+        if (*max_element(all(freq)) == k) {
+            ind = i-k+1;
+            break;
         }
-        last = i;
-        ch = b[i];
-        a[i] = b[i];
-        ops.emplace_back(i+1,ch);
     }
-    rep(i,n-k+1,n-1,1) {
-        if (last >= i || i-last >= k) break;
-        a[i] = ch;
-    }
-    auto ans = [&]() -> void {
-        assert(sz(ops) <= 2*n);
-        cout << sz(ops) << endl;
-        for (auto [i, c] : ops) {
-            cout << i << " " << c << endl;
-        }
-    };
-    if (a == b) {
-        ans();
-        return;
-    }
-    last = -1;
-    ch = '.';
-    rep(i,n-1,k-1,-1) {
-        if (((last <= i || last-i >= k) && a[i] == b[i]) || ((last > i && last-i < k) && ch == b[i])) {
-            a[i] = b[i];
-            continue;
-        }
-        last = i;
-        ch = b[i];
-        a[i] = b[i];
-        ops.emplace_back(i-k+2,ch);
-    }
-    rep(i,k-2,0,-1) {
-        if (last <= i || last-i >= k) break;
-        a[i] = ch;
-    }
-    if (a == b) {
-        ans();
-        return;
-    }
-    cout << "-1\n";
+    if (ind == -1) return void(cout << "-1\n");
+    cout << n-k+1 << endl;
+    rep(i,ind) cout << i+1 << " " << b[i] << endl;
+    rep(i,n-1,ind+k,-1)
+        cout << i-k+2 << " " << b[i] << endl;
+    cout << ind+1 << " " << b[ind] << endl;
 }
