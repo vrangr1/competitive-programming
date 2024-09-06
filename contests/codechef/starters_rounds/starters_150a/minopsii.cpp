@@ -44,11 +44,11 @@ int main() {
 	return 0;
 }
 
-class segtree {
+class segtree1 {
 public:
     ll n;
     vector<ll> tree;
-    segtree(const vector<ll> &a) {
+    segtree1(const vector<ll> &a) {
         n = sz(a);
         ll gn = (n<<1ll);
         if (__builtin_popcountll(gn) != 1ll)
@@ -70,7 +70,7 @@ public:
     }
 };
 
-void solve() {
+void solve1() {
     ll n, q; cin >> n >> q;
     vector<ll> a(n);
     rep(i,n) cin >> a[i];
@@ -82,6 +82,7 @@ void solve() {
     inds[0] = 0;
     sttl[0] = true;
     stt[0] = 0;
+    edd[0] = 0;
     rep(i,1,n-1ll,1) {
         if (last == a[i]) {
             inds[i] = max(sz(b)-1ll,0ll);
@@ -112,6 +113,9 @@ void solve() {
             inds[i] = 0ll;
             // stt[inds[i]] = i;
             // sttl[i] = true;
+            if (edd[inds[i]] != -1) {
+                eddl[edd[inds[i]]] = false;
+            }
             edd[inds[i]] = i;
             eddl[i] = true;
             assert(sz(b) == 1);
@@ -132,7 +136,7 @@ void solve() {
     auto get_sum = [&](ll l, ll r) -> ll {
         return psum[r]-(l?psum[l-1ll]:0ll);
     };
-    segtree seg(b);
+    segtree1 seg(b);
     auto get_max = [&](ll l, ll r) -> ll {
         return seg.query(l,r+1ll);
     };
@@ -199,4 +203,222 @@ void solve() {
         sol += sum-k;
         cout << sol << endl;
     }
+}
+#define mxi 0
+#define lvi 1
+#define rvi 2
+#define ldi 3
+#define rdi 4
+#define lsi 5
+#define rsi 6
+#define eql 0
+#define inc 1
+#define dec 2
+class segtree {
+private:
+    ll adjsum(ll l, ll r) {
+        return sum[l]+sum[r] + llabs(eds[l][rvi]-eds[r][lvi]);
+    }
+
+    ll adjmx(array<ll,7> &res, ll l, ll r) {
+        res[mxi] = max(eds[l][mxi],eds[r][mxi]);
+        if (eds[l][rvi] == eds[r][lvi]) {
+            if (eds[l][rdi] == eds[r][ldi]) {
+                res[mxi] = max(res[mxi],eds[l][rsi]+eds[r][lsi]);
+                if (eds[l][lsi] == sum[l]) {
+                    res[lsi] = eds[l][lsi]+eds[r][lsi];
+                }
+                else res[lsi] = eds[l][lsi];
+                if (eds[r][rsi] == sum[r])
+                    res[rsi] = eds[r][rsi]+eds[l][rsi];
+                else res[rsi] = eds[r][rsi];
+            }
+            else {
+                if (eds[l][ldi] == eql)
+                    res[lsi] = eds[r][lsi];
+                else
+                    res[lsi] = eds[l][lsi];
+                if (eds[r][rdi] == eql)
+                    res[rsi] = eds[l][rsi];
+                else
+                    res[rsi] = eds[r][rsi];
+            }
+        }
+        else if (eds[l][rvi] < eds[r][lvi]) {
+            if (eds[l][rdi] == inc) {
+                if (eds[r][ldi] == inc) {
+                    res[mxi] = max(res[mxi],eds[l][rsi]+eds[r][lsi]+eds[r][lvi]-eds[l][rvi]);
+                    if (eds[l][lsi] == sum[l])
+                        res[lsi] = eds[l][lsi] + eds[r][lvi] - eds[l][rvi] + eds[r][lsi];
+                    else res[lsi] = eds[l][lsi];
+                    if (eds[r][rsi] == sum[r])
+                        res[rsi] = eds[r][rsi] + eds[r][lvi] - eds[l][rvi] + eds[l][rsi];
+                    else res[rsi] = eds[r][rsi];
+                }
+                else {
+                    res[mxi] = max(res[mxi],eds[l][rsi]+eds[r][lvi]-eds[l][rvi]);
+                    if (eds[l][lsi] == sum[l])
+                        res[lsi] = eds[l][lsi] + eds[r][lvi]-eds[l][rvi];
+                    else
+                        res[lsi] = eds[l][lsi];
+                    if (eds[r][rdi] == dec)
+                        res[rsi] = eds[r][rsi];
+                    else res[rsi] = eds[r][lvi] - eds[l][rvi] + eds[l][rsi];
+                }
+            }
+            else if (eds[l][rdi] == dec) {
+                if (eds[r][ldi] == dec) {
+                    res[mxi] = max(res[mxi],eds[r][lvi]-eds[l][rvi]);
+                    res[lsi] = eds[l][lsi];
+                    res[rsi] = eds[r][rsi];
+                }
+                else {
+                    res[mxi] = max(res[mxi],eds[r][lvi]-eds[l][rvi] + eds[r][lsi]);
+                    res[lsi] = eds[l][lsi];
+                    if (eds[r][rsi] == sum[r])
+                        res[rsi] = eds[r][rsi] + eds[r][lvi]-eds[l][rvi]+eds[l][rsi];
+                    else res[rsi] = eds[r][rsi];
+                }
+            }
+            else {
+                if (eds[r][ldi] == inc) {
+                    res[mxi] = max(res[mxi],eds[r][lvi]-eds[l][rvi]+eds[r][lsi]);
+                    res[lsi] = eds[r][lvi]-eds[l][rvi]+eds[r][lsi];
+                    if (eds[r][rsi] == sum[r])
+                        res[rsi] = eds[r][rsi] + eds[r][lvi]-eds[l][rvi];
+                    else res[rsi] = eds[r][rsi];
+                }
+                else {
+                    res[mxi] = max(res[mxi],eds[r][lvi]-eds[l][rvi]);
+                    res[lsi] = eds[r][lvi]-eds[l][rvi];
+                    if (eds[r][ldi] == dec)
+                        res[rsi] = eds[r][rsi];
+                    else res[rsi] = eds[r][lvi]-eds[l][rvi];
+                }
+            }
+        }
+        else {
+            if (eds[l][rdi] == dec) {
+                if (eds[r][ldi] == dec) {
+                    res[mxi] = max(res[mxi],eds[l][rsi]+eds[r][lsi]+eds[l][rvi]-eds[r][lvi]);
+                    if (eds[l][lsi] == sum[l])
+                        res[lsi] = eds[l][lsi] + eds[l][rvi]-eds[r][lvi] + eds[r][lsi];
+                    else res[lsi] = eds[l][lsi];
+                    if (eds[r][rsi] == sum[r])
+                        res[rsi] = eds[r][rsi] + eds[l][rvi]-eds[r][lvi] + eds[l][rsi];
+                    else res[rsi] = eds[r][rsi];
+                }
+                else {
+                    res[mxi] = max(res[mxi],eds[l][rsi]+eds[l][rvi]-eds[r][lvi]);
+                    if (eds[l][lsi] == sum[l])
+                        res[lsi] = eds[l][lsi] + eds[l][rvi]-eds[r][lvi];
+                    else res[lsi] = eds[l][lsi];
+                    if (eds[r][ldi] == inc)
+                        res[rsi] = eds[r][rsi];
+                    else res[rsi] = eds[l][rvi] - eds[r][lvi] + eds[l][rsi];
+                }
+            }
+            else if (eds[l][rdi] == inc) {
+                if (eds[r][ldi] == inc) {
+                    res[mxi] = max(res[mxi],eds[l][rvi]-eds[r][lvi]);
+                    res[lsi] = eds[l][lsi];
+                    res[rsi] = eds[r][rsi];
+                }
+                else {
+                    res[mxi] = max(res[mxi],eds[l][rvi]-eds[r][lvi]+eds[r][lsi]);
+                    res[lsi] = eds[l][lsi];
+                    if (eds[r][rsi] == sum[r])
+                        res[rsi] = eds[r][rsi] + eds[l][rvi]-eds[r][lvi];
+                    else res[rsi] = eds[r][rsi];
+                }
+            }
+            else {
+                if (eds[r][ldi] == dec) {
+                    res[mxi] = max(res[mxi],eds[l][rvi]-eds[r][lvi]+eds[r][lsi]);
+                    res[lsi] = eds[l][rvi]-eds[r][lvi]+eds[r][lsi];
+                    if (eds[r][rsi] == sum[r])
+                        res[rsi] = eds[r][rsi] + eds[l][rvi]-eds[r][lvi];
+                    else res[rsi] = eds[r][rsi];
+                }
+                else {
+                    res[mxi] = max(res[mxi],eds[l][rvi]-eds[r][lvi]);
+                    res[lsi] = eds[l][rvi] - eds[r][lvi];
+                    if (eds[r][ldi] == inc)
+                        res[rsi] = eds[r][rsi];
+                    else res[rsi] = eds[l][rvi] - eds[r][lvi] + eds[l][rsi];
+                }
+            }
+        }
+        res[lvi] = eds[l][lvi];
+        res[rvi] = eds[r][rvi];
+        if (eds[l][ldi] != eql) res[ldi] = eds[l][ldi];
+        else if (eds[r][ldi] != eql) res[ldi] = eds[r][ldi];
+        else res[ldi] = eql;
+        if (eds[r][rdi] != eql) res[rdi] = eds[r][rdi];
+        else if (eds[l][rdi] != eql) res[rdi] = eds[l][rdi];
+        else res[rdi] = eql;
+    }
+public:
+    ll n;
+    vector<ll> sum;
+    vector<array<ll,7>> eds; // mx,lval,rval,ldir,rdir,lsum,rsum
+                             //  0, 1  , 2  , 3  , 4  , 5  , 6
+    segtree(vector<ll> a) {
+        n = sz(a);
+        if (__builtin_popcountll(n) != 1ll)
+            n = (1ll<<(64ll-__builtin_clzll(n)));
+        while(sz(a) < n) {
+            a.push_back(a.back());
+        }
+        ll gn = (n<<1ll);
+        sum.assign(gn,0ll);
+        eds.resize(gn);
+        rep(i,n) {
+            sum[i+n] = 0ll;
+            eds[i+n] = {0ll,a[i],a[i],eql,eql,0ll,0ll};
+        }
+        rep(i,n-1,1ll,-1) {
+            sum[i] = adjsum((i<<1ll),(i<<1ll|1ll));
+            adjmx(eds[i],(i<<1ll),(i<<1ll|1ll));
+        }
+    }
+
+    ll query_sum(ll l, ll r) {
+        array<ll,3> resl = {0ll,-1ll,-1ll}, resr = {0ll,-1ll,-1ll};
+        for(l+=n,r+=n;l<r;l>>=1ll,r>>=1ll) {
+            if (l&1ll) {
+                if (resl[1] == -1ll) {
+                    resl[0] = sum[l];
+                    resl[1] = eds[l][lvi];
+                    resl[2] = eds[l][rvi];
+                } else {
+                    resl[0] += sum[l] + llabs(resl[2]-eds[l][lvi]);
+                    resl[2] = eds[l][rvi];
+                }
+                l++;
+            }
+            if (r&1ll) {
+                --r;
+                if (resr[1] == -1ll) {
+                    resr[0] = sum[r];
+                    resr[1] = eds[r][lvi];
+                    resr[2] = eds[r][rvi];
+                } else {
+                    resr[0] += sum[r] + llabs(resr[1]-eds[r][rvi]);
+                    resr[l] = eds[r][lvi];
+                }
+            }
+        }
+        return resl[0] + resr[0] + llabs(resl[2]-resr[1]);
+    }
+
+    ll query_max(ll l, ll r) {
+        
+    }
+};
+
+void solve() {
+    ll n, q; cin >> n >> q;
+    vector<ll> a(n);
+    rep(i,n) cin >> a[i];
 }
