@@ -15,6 +15,8 @@
 * Ordered set (treap) setup
 * Ordered multi set (treap) setup
 * Euler Tour
+* Stress Tester macros (for ex. macro for defining maxs, defining vectors, permutations, graphs, strings, gen. rnd number in [l,r], etc)
+* 5 min stress tester : https://codeforces.com/contest/2006/submission/278921664
 
 ## Scripts:
 ### rtest:
@@ -91,6 +93,7 @@
 * XOR Hashing (https://codeforces.com/blog/entry/85900)
 * FFT (also for problem: https://judge.yosupo.jp/problem/convolution_mod_1000000007)
 * The Scale Method (https://atcoder.jp/contests/abc366/editorial/10640)
+* Compute Modular Inverse using Extended Euclidean Algorithm. (https://codeforces.com/contest/1992/submission/269939496), (https://math.stackexchange.com/questions/524596/how-do-i-calculate-inverse-modulo-of-a-number-when-the-modulus-is-not-prime)
 
 ## Segment Trees?:
 * Lazy segment tree (tourist: https://codeforces.com/contest/341/submission/267807488)
@@ -113,6 +116,9 @@
 * vertex cover
 * maximal matching
 * Set Cover
+
+## C++ Things:
+* 'requires' ?? : https://codeforces.com/contest/2008/submission/279357035
 
 
 ## Refer Solution:
