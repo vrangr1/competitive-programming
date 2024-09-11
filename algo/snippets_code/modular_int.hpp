@@ -77,14 +77,22 @@ private:
         return result;
     }
 
+    pair<type,type> inverse(type a, type b) const {
+        assert(gcd(a, b) == 1);
+        if (a == 1) return {1,0};
+        auto [x, y] = inverse(b%a,a);
+        return {y - (b / a) * x, x};
+    }
+
     // Assumes 1 <= x < mod
     type inverse(type x) const {
         if (x == 1) return 1;
-        return multiply(this->mod - (this->mod / x), inverse(this->mod % x));
+        return inverse(x, this->mod).first;
     }
 
     // Assumes 0 <= lhs < mod, 0 <= rhs < mod
     void divide(type lhs, type rhs, type &result) const {
+        assert(gcd(this->mod,rhs) == 1);
         multiply(lhs, inverse(rhs), result);
     }
 
@@ -317,6 +325,15 @@ template <typename T, typename U>
 U& operator/=(U &lhs, ModularInt<T> rhs) {
     return lhs /= U(rhs);
 }
+
+// For variable mod cases:
+// using MOD_TYPE = ll;
+// struct VarMod {
+//     static MOD_TYPE value;
+// };
+// MOD_TYPE VarMod::value;
+// MOD_TYPE &mod = VarMod::value;
+// using mint = ModularInt<VarMod>;
 
 const int mod = int(1e9) + 7;
 using mint = ModularInt<std::integral_constant<std::decay<decltype(mod)>::type,mod>>;
