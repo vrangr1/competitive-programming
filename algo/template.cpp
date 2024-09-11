@@ -34,10 +34,6 @@ typedef __int128_t i128;
 template<typename type>inline void print_vec(const vector<type> &v){rep(i,sz(v))cout<<v[i]<<" \n"[i==sz(v)-1];}
 void solve();
 
-// IMPORT SNIPPETS HERE
-
-// END OF SNIPPETS
-
 int main() {
 	fastIO;
 	TEST;
