@@ -118,11 +118,10 @@ private:
     }
 
     pair<type,type> inverse(type a, type b) const {
-        assert(a < b);
-        assert(gcd(a,b) == 1);
+        assert(gcd(a, b) == 1);
         if (a == 1) return {1,0};
         auto [x, y] = inverse(b%a,a);
-        return {y-(b/a)*x,x};
+        return {subtract(y, multiply((b / a), x)), x};
     }
 
     // Assumes 1 <= x < mod
@@ -133,7 +132,6 @@ private:
 
     // Assumes 0 <= lhs < mod, 0 <= rhs < mod
     void divide(type lhs, type rhs, type &result) const {
-        assert(gcd(this->mod,rhs) == 1);
         multiply(lhs, inverse(rhs), result);
     }
 
