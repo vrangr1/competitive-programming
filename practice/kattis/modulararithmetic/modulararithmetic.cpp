@@ -150,7 +150,7 @@ public:
     }
     
     template <typename U>
-    ModularInt(U val) {
+    ModularInt(const U val) {
         this->value = normalize(val);
     }
 
@@ -178,7 +178,7 @@ public:
     }
 
     template <typename U>
-    ModularInt& operator=(U val) {
+    ModularInt& operator=(const U val) {
         this->value = this->normalize(val);
         return *this;
     }
@@ -234,7 +234,7 @@ public:
     }
 
     template <typename U>
-    ModularInt power(U n) const {
+    ModularInt power(const U n) const {
         if (n == 0) {
             return ModularInt(1);
         } else if (n < 0) {
@@ -261,7 +261,7 @@ public:
     }
 
     template <typename T, typename U>
-    friend ModularInt<T> operator+(const ModularInt<T> &lhs, U rhs) {
+    friend ModularInt<T> operator+(const ModularInt<T> &lhs, const U rhs) {
         ModularInt<T> result;
         type rhs_normalized = result.normalize(rhs);
         result.add(lhs.value, rhs_normalized, result.value);
@@ -269,7 +269,7 @@ public:
     }
 
     template <typename T, typename U>
-    friend ModularInt<T> operator+(U lhs, const ModularInt<T> &rhs) {
+    friend ModularInt<T> operator+(const U lhs, const ModularInt<T> &rhs) {
         return rhs + lhs;
     }
 
@@ -281,7 +281,7 @@ public:
     }
 
     template <typename T, typename U>
-    friend ModularInt<T> operator-(const ModularInt<T> &lhs, U rhs) {
+    friend ModularInt<T> operator-(const ModularInt<T> &lhs, const U rhs) {
         ModularInt<T> result;
         type rhs_normalized = result.normalize(rhs);
         result.subtract(lhs.value, rhs_normalized, result.value);
@@ -289,7 +289,7 @@ public:
     }
 
     template <typename T, typename U>
-    friend ModularInt<T> operator-(U lhs, const ModularInt<T> &rhs) {
+    friend ModularInt<T> operator-(const U lhs, const ModularInt<T> &rhs) {
         ModularInt<T> result;
         type lhs_normalized = result.normalize(lhs);
         result.subtract(lhs_normalized, rhs.value, result.value);
@@ -304,7 +304,7 @@ public:
     }
 
     template <typename T, typename U>
-    friend ModularInt<T> operator*(const ModularInt<T> &lhs, U rhs) {
+    friend ModularInt<T> operator*(const ModularInt<T> &lhs, const U rhs) {
         ModularInt<T> result;
         type rhs_normalized = result.normalize(rhs);
         result.multiply(lhs.value, rhs_normalized, result.value);
@@ -312,7 +312,7 @@ public:
     }
 
     template <typename T, typename U>
-    friend ModularInt<T> operator*(U lhs, const ModularInt<T> &rhs) {
+    friend ModularInt<T> operator*(const U lhs, const ModularInt<T> &rhs) {
         return rhs * lhs;
     }
 
@@ -324,7 +324,7 @@ public:
     }
 
     template <typename T, typename U>
-    friend ModularInt<T> operator/(const ModularInt<T> &lhs, U rhs) {
+    friend ModularInt<T> operator/(const ModularInt<T> &lhs, const U rhs) {
         ModularInt<T> result;
         type rhs_normalized = result.normalize(rhs);
         result.divide(lhs.value, rhs_normalized, result.value);
@@ -332,11 +332,86 @@ public:
     }
 
     template <typename T, typename U>
-    friend ModularInt<T> operator/(U lhs, const ModularInt<T> &rhs) {
+    friend ModularInt<T> operator/(const U lhs, const ModularInt<T> &rhs) {
         ModularInt<T> result;
         type lhs_normalized = result.normalize(lhs);
         result.divide(lhs_normalized, rhs.value, result.value);
         return result;
+    }
+
+    template <typename T>
+    friend bool operator<(const ModularInt<T> lhs, const ModularInt<T>rhs) {
+        return lhs.value < rhs.value;
+    }
+
+    template <typename T>
+    friend bool operator>(const ModularInt<T> lhs, const ModularInt<T> rhs) {
+        return lhs.value > rhs.value;
+    }
+
+    template <typename T>
+    friend bool operator<=(const ModularInt<T> lhs, const ModularInt<T> rhs) {
+        return lhs.value <= rhs.value;
+    }
+
+    template <typename T>
+    friend bool operator>=(const ModularInt<T> lhs, const ModularInt<T> rhs) {
+        return lhs.value >= rhs.value;
+    }
+
+    template <typename T, typename U>
+    friend bool operator<(const ModularInt<T> lhs, const U rhs) {
+        return lhs < ModularInt<T>(rhs);
+    }
+
+    template <typename T, typename U>
+    friend bool operator<(const U lhs, const ModularInt<T> rhs) {
+        return ModularInt<T>(lhs) < rhs;
+    }
+
+    template <typename T, typename U>
+    friend bool operator>(const ModularInt<T> lhs, const U rhs) {
+        return lhs > ModularInt<T>(rhs);
+    }
+
+    template <typename T, typename U>
+    friend bool operator>(const U lhs, const ModularInt<T> rhs) {
+        return ModularInt<T>(lhs) > rhs;
+    }
+
+    template <typename T, typename U>
+    friend bool operator<=(const ModularInt<T> lhs, const U rhs) {
+        return lhs <= ModularInt<T>(rhs);
+    }
+
+    template <typename T, typename U>
+    friend bool operator<=(const U lhs, const ModularInt<T> rhs) {
+        return ModularInt<T>(lhs) <= rhs;
+    }
+
+    template <typename T, typename U>
+    friend bool operator>=(const ModularInt<T> lhs, const U rhs) {
+        return lhs >= ModularInt<T>(rhs);
+    }
+
+    template <typename T, typename U>
+    friend bool operator>=(const U lhs, const ModularInt<T> rhs) {
+        return ModularInt<T>(lhs) >= rhs;
+    }
+
+    template <typename T>
+    friend bool operator==(const ModularInt<T> lhs, const ModularInt<T> rhs) {
+        return lhs.value == rhs.value;
+    }
+
+    template <typename T, typename U>
+    friend bool operator==(const ModularInt<T> lhs, const U rhs) {
+        return lhs == ModularInt<T>(rhs);
+    }
+
+    template <typename T, typename U>
+    friend bool operator==(const U lhs, const ModularInt<T> rhs) {
+        return ModularInt<T>(lhs) == rhs;
     }
 };
 
