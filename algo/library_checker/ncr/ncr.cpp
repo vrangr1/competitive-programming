@@ -1,9 +1,40 @@
-/*
-Details for snippet generator program:
-title       : Modular Int Snippet
-prefix      : import_modint
-description : Modular Int Snippet
-*/
+/***************************************************
+* Author  : Anav Prasad
+* Handle  : vrangr
+* Created : Wed Sep 18 19:27:58 IST 2024
+****************************************************/
+#include <bits/stdc++.h>
+
+#define debug(...) (void)42
+#ifdef LOCAL
+    #undef debug
+    #include <algo/debug.hpp>
+    const bool DEBUG = true;
+#else
+    [[maybe_unused]] const bool DEBUG = false;
+#endif
+
+using namespace std;
+
+typedef unsigned int uint;
+typedef long long int ll;
+typedef unsigned long long int ull;
+typedef long double ld;
+typedef __int128_t i128;
+#define endl "\n"
+#define fastIO ios_base::sync_with_stdio(false),cin.tie(0)
+#define TEST int T;cin>>T;while(T--)solve();
+#define TEST1 solve();
+#define all(x) (x).begin(), (x).end()
+#define rall(x) (x).rbegin(), (x).rend()
+#define sz(v) ((int)(v).size())
+#define GET_MACRO(_1,_2,_3,_4,NAME,...) NAME
+#define rep(...) GET_MACRO(__VA_ARGS__, forsn, debug, forn)(__VA_ARGS__)
+#define forn(i, n) for (__typeof(n) i = 0; i < n; i++)
+#define forsn(i, st, end, d) for(__typeof(end) i = st; (d>0?i<=end:i>=end); i+=((__typeof(end))d))
+template<typename type>inline void print_vec(const vector<type> &v){rep(i,sz(v))cout<<v[i]<<" \n"[i==sz(v)-1];}
+void solve();
+
 #ifndef MODULAR_INT_SNIPPET
 #define MODULAR_INT_SNIPPET
 
@@ -401,20 +432,20 @@ U& operator/=(U &lhs, ModularInt<T> rhs) {
 }
 
 // For variable mod cases:
-// using MOD_TYPE = int;
-// struct VarMod {
-//     static MOD_TYPE value;
-// };
-// MOD_TYPE VarMod::value;
-// MOD_TYPE &mod = VarMod::value;
-// using mint = ModularInt<VarMod>;
+using MOD_TYPE = int;
+struct VarMod {
+    static MOD_TYPE value;
+};
+MOD_TYPE VarMod::value;
+MOD_TYPE &mod = VarMod::value;
+using mint = ModularInt<VarMod>;
 
-const int mod = int(1e9) + 7;
-using mint = ModularInt<std::integral_constant<std::decay<decltype(mod)>::type,mod>>;
+// const int mod = int(1e9) + 7;
+// using mint = ModularInt<std::integral_constant<std::decay<decltype(mod)>::type,mod>>;
 
-// #define USE_NCR
+#define USE_NCR
 #ifdef USE_NCR
-const int NCR_MAX = int(1e5)+10;
+const int NCR_MAX = int(1e7)+50;
 bool NCR_SETUP = false;
 std::vector<mint> factorial;
 
@@ -433,3 +464,19 @@ mint ncr(int n, int r) {
 }
 #endif
 #endif
+
+int main() {
+	fastIO;
+	int T; cin >> T >> mod;
+    while(T--) solve();
+#ifdef LOCAL
+    cout << "\nTime elapsed: " << (double)clock() / CLOCKS_PER_SEC << " s.\n";
+#endif
+	return 0;
+}
+
+void solve() {
+    int n, r; cin >> n >> r;
+    if (n < r) cout << "0\n";
+    else cout << ncr(n,r) << endl;
+}
