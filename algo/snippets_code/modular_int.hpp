@@ -9,6 +9,7 @@ description : Modular Int Snippet
 
 #include <string>
 #include <vector>
+#include <assert.h>
 // Based on ACL's modint header and tourist's Modular class.
 template <typename MOD>
 class ModularInt {
@@ -143,11 +144,11 @@ public:
         return *this;
     }
 
-    ModularInt operator+() {
+    ModularInt operator+() const {
         return ModularInt(this->value);
     }
 
-    ModularInt operator-() {
+    ModularInt operator-() const {
         return ModularInt(-this->value);
     }
 
@@ -195,10 +196,12 @@ public:
 
     template <typename U>
     ModularInt power(const U n) const {
+        if (typeid(U) == typeid(ModularInt))
+            return this->power(__int128_t(n));
         if (n == 0) {
             return ModularInt(1);
         } else if (n < 0) {
-            return 1 / power(-n);
+            return 1 / this->power(-n);
         } else {
             ModularInt result = this->value;
             result *= result;
@@ -297,6 +300,22 @@ public:
         type lhs_normalized = result.normalize(lhs);
         result.divide(lhs_normalized, rhs.value, result.value);
         return result;
+    }
+
+    template <typename T>
+    friend ModularInt<T> operator%(const ModularInt<T> &lhs, const ModularInt<T> &rhs) {
+        assert(rhs.value != 0);
+        return ModularInt<T>(lhs.value % rhs.value);
+    }
+
+    template <typename T, typename U>
+    friend U operator%(const ModularInt<T> &lhs, const U rhs) {
+        return U(lhs.value) % rhs;
+    }
+
+    template <typename T, typename U>
+    friend U operator%(const U lhs, const ModularInt<T> &rhs) {
+        return lhs % U(rhs);
     }
 
     template <typename T>
