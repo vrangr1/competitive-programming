@@ -84,7 +84,7 @@ void solve() {
             if (pv->second >= l) {
                 del.push_back(*pv);
                 l = min(l,pv->first);
-                r = max(l,pv->second);
+                r = max(r,pv->second);
             }
         }
         if (it != st.end()) {
