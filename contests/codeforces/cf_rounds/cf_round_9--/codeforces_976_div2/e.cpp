@@ -495,112 +495,6 @@ int main() {
 
 const mint t4 = 10000;
 
-void solve1() {
-    int n; cin >> n;
-    vector<int> a(n);
-    rep(i,n) cin >> a[i];
-    vector<mint> p(n);
-    rep(i,n) {
-        cin >> p[i];
-        p[i]/=t4;
-        // p[i]*=p[i];
-    }
-    mint sol = 0;
-    vector<mint> terms;
-    rep(bit,11) {
-        int val = (1<<bit);
-        mint zero, one;
-        bool def = false;
-        rep(i,n) {
-            if ((a[i]&val) == 0) continue;
-            if (!def) {
-                def = true;
-                one = p[i];
-                zero = 1-one;
-                continue;
-            }
-            mint no, nz;
-            no = zero*p[i] + one*(1-p[i]);
-            nz = zero*(1-p[i]) + one*p[i];
-            swap(no,one);
-            swap(nz,zero);
-        }
-        if (!def) continue;
-        // debug(bit);
-        // terms.push_back()
-        // sol += mint(val).power(2)*one;
-    }
-    // debug(sol());
-    // mint temp = 9;
-    // temp/=mint(4);
-    // debug(temp);
-    // cout << sol*sol << endl;
-    cout << sol << endl;
-}
-
-void solve2() {
-    int n; cin >> n;
-    vector<int> a(n);
-    rep(i,n) cin >> a[i];
-    vector<mint> p(n);
-    rep(i,n) {
-        cin >> p[i];
-        p[i]/=t4;
-    }
-    vector<mint> zero(10), one(10);
-    // vector<bool> bdef(10,false);
-    rep(bit,10) {
-        int val = (1<<bit);
-        mint cz, co;
-        bool def = false;
-        rep(i,n) {
-            if ((a[i]&val) == 0) continue;
-            if (!def) {
-                def = true;
-                co = p[i];
-                cz = 1-co;
-                continue;
-            }
-            mint no, nz;
-            no = cz*p[i] + co*(1-p[i]);
-            nz = cz*(1-p[i]) + co*p[i];
-            swap(no,co);
-            swap(nz,cz);
-        }
-        // if (!def) continue;
-        if (!def) {
-            zero[bit] = 1;
-            one[bit] = 0;
-            continue;
-        }
-        // bdef[bit] = true;
-        zero[bit] = cz;
-        one[bit] = co;
-    }
-    mint sol = 0;
-    rep(stat,1024) {
-        mint prob = 1;
-        // bool def = true;
-        rep(bit,10) {
-            int val = (1<<bit);
-            if (stat&val) {
-                // if (!bdef[bit]) {
-                //     def = false;
-                //     break;
-                // }
-                prob*=one[bit];
-            } else {
-                // if (bdef[bit]) {
-                prob*=zero[bit];
-                // }
-            }
-        }
-        // if (!def) continue;
-        sol += (mint(stat)*stat)*prob;
-    }
-    cout << sol << endl;
-}
-
 void solve() {
     int n; cin >> n;
     vector<int> a(n);
@@ -610,7 +504,25 @@ void solve() {
         cin >> p[i];
         p[i]/=t4;
     }
-    rep(stat,1024) {
-        
+    vector<vector<vector<mint>>> dp(10,vector<vector<mint>>(10,vector<mint>(2)));
+    rep(b1,10) {
+        rep(b2,10) {
+            int v1 = (1<<b1), v2 = (1<<b2);
+            array<mint, 4> cur = {1,0,0,0};
+            rep(i,n) {
+                array<mint,4> nxt;
+                int v = (((a[i]&v1) > 0)<<1) + ((a[i]&v2) > 0);
+                rep(j,4)
+                    nxt[j] = cur[j^v]*p[i] + cur[j]*(1-p[i]);
+                swap(cur,nxt);
+            }
+            dp[b1][b2][0] = cur[0]+cur[1]+cur[2];
+            dp[b1][b2][1] = cur[3];
+        }
     }
+    mint sol = 0;
+    rep(i,10)
+        rep(j,10)
+            sol += mint((1<<(i+j)))*dp[i][j][1];
+    cout << sol << endl;
 }
