@@ -10,6 +10,19 @@ description : Modular Int Snippet
 #include <string>
 #include <vector>
 #include <assert.h>
+
+#define IS_SMALL_INT_TYPE(T) ( \
+    std::is_same<T, int>::value || \
+    std::is_same<T, int32_t>::value || \
+    std::is_same<T, unsigned int>::value || \
+    std::is_same<T, int16_t>::value || \
+    std::is_same<T, short int>::value || \
+    std::is_same<T, int8_t>::value )
+#define OVERFLOW_MULTIPLY(T, lhs, rhs) \
+    (IS_SMALL_INT_TYPE(T) ? \
+        normalize(static_cast<int64_t>(lhs) * static_cast<int64_t>(rhs)) : \
+        normalize(static_cast<__uint128_t>(lhs) * static_cast<__uint128_t>(rhs)))
+
 // Based on ACL's modint header and tourist's Modular class.
 template <typename MOD>
 class ModularInt {
@@ -67,7 +80,7 @@ private:
     // Assumes 0 <= lhs < mod, 0 <= rhs < mod
     void multiply(type lhs, type rhs, type &result) const {
         if (__builtin_mul_overflow(lhs, rhs, &result))
-            result = normalize(__uint128_t(lhs) * __uint128_t(rhs));
+            result = OVERFLOW_MULTIPLY(type, lhs, rhs);
         else
             result = normalize(result);
     }

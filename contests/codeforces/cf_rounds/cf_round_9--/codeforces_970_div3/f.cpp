@@ -48,6 +48,21 @@ int main() {
 #define MODULAR_INT_SNIPPET
 
 #include <string>
+#include <vector>
+#include <assert.h>
+
+#define IS_SMALL_INT_TYPE(T) ( \
+    std::is_same<T, int>::value || \
+    std::is_same<T, int32_t>::value || \
+    std::is_same<T, unsigned int>::value || \
+    std::is_same<T, int16_t>::value || \
+    std::is_same<T, short int>::value || \
+    std::is_same<T, int8_t>::value )
+#define OVERFLOW_MULTIPLY(T, lhs, rhs) \
+    (IS_SMALL_INT_TYPE(T) ? \
+        normalize(static_cast<int64_t>(lhs) * static_cast<int64_t>(rhs)) : \
+        normalize(static_cast<__uint128_t>(lhs) * static_cast<__uint128_t>(rhs)))
+
 // Based on ACL's modint header and tourist's Modular class.
 template <typename MOD>
 class ModularInt {
@@ -105,7 +120,7 @@ private:
     // Assumes 0 <= lhs < mod, 0 <= rhs < mod
     void multiply(type lhs, type rhs, type &result) const {
         if (__builtin_mul_overflow(lhs, rhs, &result))
-            result = normalize(__uint128_t(lhs) * __uint128_t(rhs));
+            result = OVERFLOW_MULTIPLY(type, lhs, rhs);
         else
             result = normalize(result);
     }
@@ -118,7 +133,6 @@ private:
     }
 
     pair<type,type> inverse(type a, type b) const {
-        assert(gcd(a, b) == 1);
         if (a == 1) return {1,0};
         auto [x, y] = inverse(b%a,a);
         return {subtract(y, multiply((b / a), x)), x};
@@ -183,11 +197,11 @@ public:
         return *this;
     }
 
-    ModularInt operator+() {
+    ModularInt operator+() const {
         return ModularInt(this->value);
     }
 
-    ModularInt operator-() {
+    ModularInt operator-() const {
         return ModularInt(-this->value);
     }
 
@@ -235,16 +249,18 @@ public:
 
     template <typename U>
     ModularInt power(const U n) const {
+        if (typeid(U) == typeid(ModularInt))
+            return this->power(__int128_t(n));
         if (n == 0) {
             return ModularInt(1);
         } else if (n < 0) {
-            return 1 / power(-n);
+            return 1 / this->power(-n);
         } else {
             ModularInt result = this->value;
             result *= result;
             if (n % 2 == 1)
-                return this->value * result;
-            return result;
+                return this->value * result.power(n/2);
+            return result.power(n/2);
         }
     }
 
@@ -337,6 +353,22 @@ public:
         type lhs_normalized = result.normalize(lhs);
         result.divide(lhs_normalized, rhs.value, result.value);
         return result;
+    }
+
+    template <typename T>
+    friend ModularInt<T> operator%(const ModularInt<T> &lhs, const ModularInt<T> &rhs) {
+        assert(rhs.value != 0);
+        return ModularInt<T>(lhs.value % rhs.value);
+    }
+
+    template <typename T, typename U>
+    friend U operator%(const ModularInt<T> &lhs, const U rhs) {
+        return U(lhs.value) % rhs;
+    }
+
+    template <typename T, typename U>
+    friend U operator%(const U lhs, const ModularInt<T> &rhs) {
+        return lhs % U(rhs);
     }
 
     template <typename T>
@@ -441,7 +473,7 @@ U& operator/=(U &lhs, ModularInt<T> rhs) {
 }
 
 // For variable mod cases:
-// using MOD_TYPE = ll;
+// using MOD_TYPE = int;
 // struct VarMod {
 //     static MOD_TYPE value;
 // };
@@ -452,30 +484,27 @@ U& operator/=(U &lhs, ModularInt<T> rhs) {
 const int mod = int(1e9) + 7;
 using mint = ModularInt<std::integral_constant<std::decay<decltype(mod)>::type,mod>>;
 
-#endif
+// #define USE_NCR
+#ifdef USE_NCR
+const int NCR_MAX = int(1e5)+10;
+bool NCR_SETUP = false;
+std::vector<mint> factorial;
 
-void solve1() {
-    ll n; cin >> n;
-    vector<ll> a(n);
-    rep(i,n) cin >> a[i];
-    ll sum = accumulate(all(a),0ll);
-    sum%=mod;
-    ll sol = 0ll;
-    rep(i,n) {
-        sum = (sum-a[i]+mod)%mod;
-        sol += (a[i]*sum)%mod;
-        sol%=mod;
-    }
-    ll nc2 = (n*(n-1ll))/2ll;
-    nc2%=mod;
-    auto inv = [&](auto &&self, ll v) -> ll {
-        if (v <= 1ll) return 1ll;
-        return ((mod-mod/v)*self(self,mod%v))%mod;
-    };
-    sol*=inv(inv,nc2);
-    sol%=mod;
-    cout << sol << endl;
+void ncr_setup() {
+    if (NCR_SETUP) return;
+    NCR_SETUP = true;
+    factorial.assign(NCR_MAX,mint(0));
+    factorial[0] = factorial[1] = 1;
+    for (int f = 2; f < NCR_MAX; ++f)
+        factorial[f] = factorial[f-1]*f;
 }
+
+mint ncr(int n, int r) {
+    ncr_setup();
+    return factorial[n]/(factorial[n-r]*factorial[r]);
+}
+#endif
+#endif
 
 void solve() {
     int n; cin >> n;

@@ -17,6 +17,7 @@
 * Euler Tour
 * Stress Tester macros (for ex. macro for defining maxs, defining vectors, permutations, graphs, strings, gen. rnd number in [l,r], etc)
 * 5 min stress tester : https://codeforces.com/contest/2006/submission/278921664
+* ACL's lazy segment tree is wrong! Raise issue on ACL github repo. Error: (https://codeforces.com/blog/entry/134039?#comment-1200141)
 
 ## Scripts:
 ### rtest:
@@ -104,6 +105,7 @@
 * segtree?? (tourist: https://codeforces.com/contest/1969/submission/258720683)
 * https://codeforces.com/contest/1942/submission/254161327
 * Li-Chao Segment Tree (https://codeforces.com/blog/entry/92248)
+* Improvement on RMQ??? (https://codeforces.com/blog/entry/131221?#comment-1167384, https://arxiv.org/abs/2406.06321)
 
 ## List of advanced/(useless?) topics:
 * Um_nik: https://codeforces.com/blog/entry/92248
@@ -119,6 +121,8 @@
 
 ## C++ Things:
 * 'requires' ?? : https://codeforces.com/contest/2008/submission/279357035
+* Macbook Issue ld precision : https://www.codechef.com/START151A/problems/BALL_GAME (last sample test case) : ERROR FOUND : long double, for some asinine reason, is of size 8 bytes on macbook with GNU C++ compiler g++-14. Thus, the precision error.
+* Upgrade to C++23 ??
 
 
 ## Refer Solution:
