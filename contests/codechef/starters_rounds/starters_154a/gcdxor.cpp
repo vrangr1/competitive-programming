@@ -44,62 +44,36 @@ int main() {
 	return 0;
 }
 
-void solve1() {
-    int n, k; cin >> n >> k;
-    vector<int> a(n);
-    rep(i,n) cin >> a[i];
-    vector<int> b(n,-1ll);
-    int sol = 0, last = -1;
-    rep(i,n) {
-        if (a[i]%k) {
-            b[i] = a[i]^k;
-            continue;
-        }
-        b[i] = 0;
-    }
-    debug(b);
-    bool fd = false;
-    rep(i,n) {
-        if (b[i]) {
-            if (i != last+1) {
-                sol+=fd;
-                fd = false;
-            }
-            last = i;
-            continue;
-        }
-        if (a[i] != k) fd = true;
-    }
-    debug(fd);
-    sol += fd;
-    debug(sol);
-    {
-        vector<int> c;
-        rep(i,n)
-            if (c.empty() || c.back() != b[i])
-                c.push_back(b[i]);
-        swap(b,c);
-    }
-    n = sz(b);
-    last = -1;
-    rep(i,n) {
-        if (b[i]) sol++;
-    }
-    cout << sol << endl;
-}
-
 void solve() {
     int n, k; cin >> n >> k;
     vector<int> a(n);
     rep(i,n) cin >> a[i];
-    if (*min_element(all(a)) == k && *max_element(all(a)) == k) return void(cout << "0\n");
-    int sol = 0;
-    vector<int> b;
-    rep(i,n)
-        if (b.empty() || b.back() != a[i]%k) {
-            b.push_back(a[i]%k);
-            if (b.back()) sol++;
+    if (*max_element(all(a)) == k && *min_element(all(a)) == k) return void(cout << "0\n");
+    auto isgcd = [&]() -> bool {
+        for (int &v : a)
+            if (gcd(v,k) != k) return false;
+        return true;
+    };
+    auto isxor = [&]() -> bool {
+        int cur = -1;
+        bool fin = false;
+        rep(i,n) {
+            if (cur == -1 && a[i] == k) continue;
+            if (cur == -1) {
+                cur = (a[i]^k);
+                continue;
+            }
+            if (!fin) {
+                if (cur == (a[i]^k)) continue;
+                if (a[i] != k) return false;
+                fin = true;
+                continue;
+            }
+            if (a[i] == k) continue;
+            return false;
         }
-    sol++;
-    cout << sol << endl;
+        return true;
+    };
+    if (isgcd() || isxor()) return void(cout << "1\n");
+    cout << "2\n";
 }
