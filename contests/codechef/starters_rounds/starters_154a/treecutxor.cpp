@@ -52,14 +52,42 @@ void solve() {
         g[--u].push_back(--v);
         g[v].push_back(u);
     }
-    if (n%2) cout << "0\n";
+    if (n%2 || n >= 4) cout << "0\n";
     else cout << "1\n";
+    if (n == 2) return void(cout << "1 2 1\n");
+    auto ans = [&](int u, int v, int x) -> void {
+        cout << u+1 << " " << v+1 << " " << x << endl;
+    };
+    if (n%2) {
+        auto dfs = [&](auto &&self, int u, int p) -> void {
+            for (int v : g[u]) {
+                if (v == p) continue;
+                self(self,v,u);
+                ans(u,v,v);
+            }
+        };
+        return dfs(dfs,0,-1);
+    }
+    vector<int> subsize(n,-1);
+    auto sizecal = [&](auto &&self, int u, int p) -> int {
+        int &ct = subsize[u];
+        ct = 1;
+        for (int v : g[u]) {
+            if (v == p) continue;
+            int cs = self(self,v,u);
+            ct += cs;
+        }
+        return ct;
+    };
+    sizecal(sizecal,0,-1);
+    bool done = false;
     auto dfs = [&](auto &&self, int u, int p) -> void {
         for (int v : g[u]) {
             if (v == p) continue;
+            if (!done && subsize[v] == 3) {
+                ans(u,v,v);
+            }
             self(self,v,u);
-            cout << u+1 << " " << v+1 << " " << v+1 << endl;
         }
     };
-    dfs(dfs,0,-1);
 }
