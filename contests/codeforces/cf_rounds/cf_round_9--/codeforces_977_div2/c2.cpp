@@ -45,12 +45,67 @@ int main() {
 }
 
 void solve() {
-    ll n, m, q; cin >> n >> m >> q;
-    vector<ll> a(n), b(m);
+    int n, m, q; cin >> n >> m >> q;
+    vector<int> a(n), b(m);
     rep(i,n) cin >> a[i];
     rep(i,m) cin >> b[i];
-    vector<set<ll>> inds(n+1);
+    vector<set<int>> inds(n+1);
+    vector<int> p(n+1);
+    rep(i,n) p[a[i]] = i;
     rep(i,m)
         inds[b[i]].insert(i);
-    
+    rep(i,1,n,1) inds[i].insert(m);
+    int ct = 0;
+    rep(i,n-1)
+        ct += (*inds[a[i]].begin() > *inds[a[i+1]].begin());
+    auto ans = [&]() -> void {
+        cout << (ct ? "TIDAK\n":"YA\n");
+    };
+    auto upd = [&](int i, int c = 1) -> void {
+        if (i) ct += c*(*inds[a[i-1]].begin() > *inds[a[i]].begin());
+        if (i != n-1) ct += c*(*inds[a[i]].begin() > *inds[a[i+1]].begin());
+    };
+    auto rem = [&](int v1, int v2) -> void {
+        int i1 = p[v1], i2 = p[v2];
+        if (i1 == i2) {
+            upd(i1,-1);
+            return;
+        }
+        if (i1 > i2) swap(i1,i2);
+        if (i2-i1 > 1) {
+            upd(i1,-1);
+            upd(i2,-1);
+        } else {
+            upd(i1,-1);
+            if (i2 != n-1)
+                ct -= (*inds[a[i2]].begin() > *inds[a[i2+1]].begin());
+        }
+    };
+    auto add = [&](int v1, int v2) -> void {
+        int i1 = p[v1], i2 = p[v2];
+        if (i1 == i2) {
+            return upd(i1);
+        }
+        if (i1 > i2) swap(i1,i2);
+        if (i2-i1 > 1) {
+            upd(i1);
+            upd(i2);
+        } else {
+            upd(i1);
+            if (i2 != n-1)
+                ct += (*inds[a[i2]].begin() > *inds[a[i2+1]].begin());
+        }
+    };
+    ans();
+    while(q--) {
+        int s, t; cin >> s >> t;
+        --s;
+        int temp = b[s];
+        rem(temp,t);
+        inds[b[s]].erase(s);
+        b[s] = t;
+        inds[b[s]].insert(s);
+        add(temp,t);
+        ans();
+    }
 }
