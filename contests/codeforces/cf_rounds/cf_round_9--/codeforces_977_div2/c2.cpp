@@ -51,10 +51,12 @@ void solve() {
     rep(i,m) cin >> b[i];
     vector<set<int>> inds(n+1);
     vector<int> p(n+1);
-    rep(i,n) p[a[i]] = i;
+    rep(i,n)
+        p[a[i]] = i;
     rep(i,m)
         inds[b[i]].insert(i);
-    rep(i,1,n,1) inds[i].insert(m);
+    rep(i,1,n,1)
+        inds[i].insert(m);
     int ct = 0;
     rep(i,n-1)
         ct += (*inds[a[i]].begin() > *inds[a[i+1]].begin());
@@ -65,47 +67,28 @@ void solve() {
         if (i) ct += c*(*inds[a[i-1]].begin() > *inds[a[i]].begin());
         if (i != n-1) ct += c*(*inds[a[i]].begin() > *inds[a[i+1]].begin());
     };
-    auto rem = [&](int v1, int v2) -> void {
+    auto change = [&](int v1, int v2, int c) -> void {
         int i1 = p[v1], i2 = p[v2];
-        if (i1 == i2) {
-            upd(i1,-1);
-            return;
-        }
-        if (i1 > i2) swap(i1,i2);
+        if (i1 == i2) return upd(i1,c);
+        else if (i1 > i2) swap(i1,i2);
         if (i2-i1 > 1) {
-            upd(i1,-1);
-            upd(i2,-1);
+            upd(i1,c);
+            upd(i2,c);
         } else {
-            upd(i1,-1);
+            upd(i1,c);
             if (i2 != n-1)
-                ct -= (*inds[a[i2]].begin() > *inds[a[i2+1]].begin());
-        }
-    };
-    auto add = [&](int v1, int v2) -> void {
-        int i1 = p[v1], i2 = p[v2];
-        if (i1 == i2) {
-            return upd(i1);
-        }
-        if (i1 > i2) swap(i1,i2);
-        if (i2-i1 > 1) {
-            upd(i1);
-            upd(i2);
-        } else {
-            upd(i1);
-            if (i2 != n-1)
-                ct += (*inds[a[i2]].begin() > *inds[a[i2+1]].begin());
+                ct += c*(*inds[a[i2]].begin() > *inds[a[i2+1]].begin());
         }
     };
     ans();
     while(q--) {
         int s, t; cin >> s >> t;
-        --s;
-        int temp = b[s];
-        rem(temp,t);
+        int temp = b[--s];
+        change(temp,t,-1);
         inds[b[s]].erase(s);
         b[s] = t;
         inds[b[s]].insert(s);
-        add(temp,t);
+        change(temp,t,1);
         ans();
     }
 }
