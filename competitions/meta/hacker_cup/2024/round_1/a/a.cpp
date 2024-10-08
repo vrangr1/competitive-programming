@@ -44,15 +44,20 @@ int main() {
 	return 0;
 }
 
+const ld eps = 1e-6;
+
 void solve(int test_case) {
     cout << "Case #" << test_case << ": ";
     int n; cin >> n;
+    vector<pair<ld,ld>> times(n);
+    for (auto &[a,b] : times)
+        cin >> a >> b;
     ld l = 0, r = (ld)LLONG_MAX;
     rep(i,1,n,1) {
         ld d = i;
-        ld a, b; cin >> a >> b;
+        auto [a,b] = times[i-1];
         ld cr = d/a, cl = d/b;
-        if (cr < l || cl > r) return void(cout << "-1\n");
+        if (cr+eps < l || cl > r+eps) return void(cout << "-1\n");
         l = max(l,cl);
         r = min(r,cr);
     }
