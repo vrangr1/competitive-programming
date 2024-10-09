@@ -1,7 +1,7 @@
 /***************************************************
 * Author  : Anav Prasad
 * Handle  : vrangr
-* Created : Sat Oct  5 23:10:16 IST 2024
+* Created : Tue Oct  8 19:29:11 IST 2024
 ****************************************************/
 #include <bits/stdc++.h>
 
@@ -33,7 +33,7 @@ typedef __int128_t i128;
 #define forn(i, n) for (__typeof(n) i = 0; i < n; i++)
 #define forsn(i, st, end, d) for(__typeof(end) i = st; (d>0?i<=end:i>=end); i+=((__typeof(end))d))
 template<typename type>inline void print_vec(const vector<type> &v){rep(i,sz(v))cout<<v[i]<<" \n"[i==sz(v)-1];}
-void solve(int test_case);
+void solve(int t);
 
 #ifndef MODULAR_INT_SNIPPET
 #define MODULAR_INT_SNIPPET
@@ -528,7 +528,7 @@ void solve(int test_case) {
             if (s[i-1] == '1' || (s[i-1] == '2' && s[i] <= '6'))
                 dp[i] += dp[i-2];
         }
-        debug(dp);
+        // debug(dp);
         return int(dp.back());
     };
     string s; cin >> s;
@@ -541,90 +541,47 @@ void solve(int test_case) {
         cout << s << " 1\n";
         return;
     }
-    vector<vector<ll>> dp(n,vector<ll>(10,0ll));
-    ll m = -1ll;
-    rep(i,n-1,0ll,-1) {
-        if (i == n-1ll) {
-            if (s[i] == '?') {
-                rep(d,1,9,1)
-                    dp[i][d] = 1;
-            } else {
-                dp[i][s[i]-'0'] = 1;
-            }
-        } else if (i == 0) {
-            if (s[i] != '?') {
-                rep(d,0,9,1)
-                    dp[i][s[i]-'0'] += dp[i+1][d];
-            } else {
-                dp[i][1] = accumulate(dp[i+1].begin(),dp[i+1].end(),0ll);
-                dp[i][2] = accumulate(dp[i+1].begin(),dp[i+1].begin()+7,0ll);
-            }
-        } else {
-            if (s[i] != '?') {
-                rep(d,0,9,1)
-                    dp[i][s[i]-'0'] += dp[i+1][d];
-                if (dp[i][s[i]-'0'] > k) {
-                    m = i;
-                    break;
-                }
-            } else {
-                dp[i][1] = accumulate(dp[i+1].begin(),dp[i+1].end(),0ll);
-                dp[i][2] = accumulate(dp[i+1].begin(),dp[i+1].begin()+7,0ll);
-                if (dp[i][1] > k && dp[i][2] > k) {
-                    m = i;
-                    break;
-                }
-            }
-        }
+    ll mx;
+    {
+        string t = s;
+        for (char &ch : t)
+            if (ch == '?') ch = '1';
+        mx = comp(t);
     }
-    debug(dp,m);
-    if (m == -1) m = 0;
-    rep(i,m) {
-        if (s[i] != '?') continue;
-        if (s[i+1] == '?') s[i] = '2';
-        else if (s[i+1] == '0') s[i] = '2';
-        else if (s[i+1] > '6') s[i] = '1';
-        else s[i] = '2';
-    }
-    rep(i,m,n-1ll,1) {
-        assert(k > 0ll);
-        if (s[i] != '?') continue;
-        if (i == n-1) {
-            if (s[i-1] == '0') {
-                assert(k <= 9);
-                s[i] = '9' - char(k-1);
-            } else if (s[i-1] == '1') {
-                assert(k <= '9');
-                s[i] = '9' - char(k-1);
-            } else if (s[i-1] == '2') {
-                assert(k <= 6);
-                // if (k > 6) s[i] = '1';
-                // else 
-                s[i] = '6' - char(k-1);
-            } else {
-                assert(k <= '9');
-                s[i] = '9' - char(k-1);
-            }
-            break;
-        }
-        if (dp[i][2] >= k) {
-            s[i] = '2';
+    vector<ll> inds, vals;
+    rep(i,n) {
+        if (s[i] != '?')
             continue;
-        }
-        k -= dp[i][2];
-        assert(dp[i][1] >= k);
-        s[i] = '1';
+        inds.push_back(i);
+        vals.push_back(0);
     }
-    assert(find(all(s),'?') == s.end());
-    cout << s << " " << comp(s) << endl;
+    if (inds.empty()) return void(cout << s << " " << mx << endl);
+    debug(inds,vals);
+    // return;
+    vector<string> pos;
+    debug(mx);
+    while(true) {
+        ll ind = 0ll;
+        string t = s;
+        for (ll i : inds) {
+            assert(t[i] == '?');
+            t[i] = char(vals[ind++])+'0';
+        }
+        debug(endl,t,comp(t));
+        if (comp(t) == mx) pos.emplace_back(t);
+        if (*min_element(all(vals)) == 9) break;
+        ind = sz(vals)-1ll;
+        while(vals[ind] == 9) {
+            vals[ind] = 0;
+            --ind;
+        }
+        assert(ind >= 0ll);
+        assert(ind < sz(vals));
+        assert(vals[ind] < 9);
+        vals[ind]++;
+    }
+    sort(rall(pos));
+    // if (sz(pos) < k) return;
+    assert(sz(pos) >= k);
+    cout << pos[k-1ll] << " " << mx << endl;
 }
-
-/*
-1
-2?? 3
-
-1
-?8?68 3
-
-
-*/
