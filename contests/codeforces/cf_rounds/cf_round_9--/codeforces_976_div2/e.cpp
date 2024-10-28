@@ -75,9 +75,10 @@ private:
     
     // Assumes 0 <= lhs < mod, 0 <= rhs < mod
     void add(type lhs, type rhs, type &result) const {
-        if (lhs > rhs) swap(lhs, rhs);
-        if (__builtin_add_overflow(lhs, rhs, &result))
+        if (__builtin_add_overflow(lhs, rhs, &result)) {
+            if (lhs > rhs) swap(lhs, rhs);
             result = lhs + (this->mod - rhs); // ensures 0 <= result <= mod
+        }
         if (result >= mod) result -= mod;
     }
     
