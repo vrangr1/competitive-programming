@@ -51,18 +51,6 @@ int main() {
 #include <vector>
 #include <assert.h>
 
-#define IS_SMALL_INT_TYPE(T) ( \
-    std::is_same<T, int>::value || \
-    std::is_same<T, int32_t>::value || \
-    std::is_same<T, unsigned int>::value || \
-    std::is_same<T, int16_t>::value || \
-    std::is_same<T, short int>::value || \
-    std::is_same<T, int8_t>::value )
-#define OVERFLOW_MULTIPLY(T, lhs, rhs) \
-    (IS_SMALL_INT_TYPE(T) ? \
-        normalize(static_cast<int64_t>(lhs) * static_cast<int64_t>(rhs)) : \
-        normalize(static_cast<__uint128_t>(lhs) * static_cast<__uint128_t>(rhs)))
-
 // Based on ACL's modint header and tourist's Modular class.
 template <typename MOD>
 class ModularInt {
@@ -72,27 +60,23 @@ private:
     type value;
 
     template <typename T>
-    type normalize(T val) const {
+    inline type normalize(T val) const {
         val %= T(mod);
-        if (val >= 0ll)
-            return type(val);
-        return type((val + mod) % mod);
+        return type((val >= 0) ? val : val + mod);
     }
 
     // Not done value = (value%mod + mod)%mod because mod-1+mod maybe > inf
-    void normalize() {
-        this->value %= this->mod;
-        if (this->value >= 0) 
-            return;
-        this->value = (this->value + this->mod) % this->mod;
+    inline void normalize() {
+        this->value = (this->value >= 0) ? this->value % mod : (this->value % mod + this->mod);
     }
     
     // Assumes 0 <= lhs < mod, 0 <= rhs < mod
     void add(type lhs, type rhs, type &result) const {
-        if (__builtin_add_overflow(lhs, rhs, &result))
-            result = lhs + (this->mod - rhs);
-        else 
-            result = normalize(result);
+        if (__builtin_add_overflow(lhs, rhs, &result)) {
+            if (lhs > rhs) swap(lhs, rhs);
+            result = lhs + (this->mod - rhs); // ensures 0 <= result <= mod
+        }
+        if (result >= mod) result -= mod;
     }
     
     // Assumes 0 <= lhs < mod, 0 <= rhs < mod
@@ -103,11 +87,8 @@ private:
     }
 
     // Assumes 0 <= lhs < mod, 0 <= rhs < mod
-    void subtract(type lhs, type rhs, type &result) const {
-        if (lhs >= rhs)
-            result = lhs - rhs;
-        else
-            result = this->mod - (rhs - lhs);
+    inline void subtract(type lhs, type rhs, type &result) const {
+        result = (lhs >= rhs ? lhs - rhs : this->mod - (rhs - lhs));
     }
 
     // Assumes 0 <= lhs < mod, 0 <= rhs < mod
@@ -117,12 +98,21 @@ private:
         return result;
     }
 
+    inline type overflow_multiply(type lhs, type rhs) const {
+        if constexpr (sizeof(type) <= sizeof(int32_t) && is_signed<type>::value) {
+            return normalize(static_cast<int64_t>(lhs) * static_cast<int64_t>(rhs));
+        } else if constexpr (sizeof(type) <= sizeof(int32_t)) {
+            return normalize(static_cast<uint64_t>(lhs) * static_cast<uint64_t>(rhs));
+        } else if constexpr (sizeof(type) <= sizeof(int64_t) && is_signed<type>::value) {
+            return normalize(static_cast<__int128_t>(lhs) * static_cast<__int128_t>(rhs));
+        } else {
+            return normalize(static_cast<__uint128_t>(lhs) * static_cast<__uint128_t>(rhs));
+        }
+    }
+
     // Assumes 0 <= lhs < mod, 0 <= rhs < mod
-    void multiply(type lhs, type rhs, type &result) const {
-        if (__builtin_mul_overflow(lhs, rhs, &result))
-            result = OVERFLOW_MULTIPLY(type, lhs, rhs);
-        else
-            result = normalize(result);
+    inline void multiply(type lhs, type rhs, type &result) const {
+        result = (__builtin_mul_overflow(lhs, rhs, &result) ? overflow_multiply(lhs, rhs) : normalize(result));
     }
 
     // Assumes 0 <= lhs < mod, 0 <= rhs < mod
@@ -132,16 +122,20 @@ private:
         return result;
     }
 
-    pair<type,type> inverse(type a, type b) const {
-        if (a == 1) return {1,0};
-        auto [x, y] = inverse(b%a,a);
-        return {subtract(y, multiply((b / a), x)), x};
-    }
-
     // Assumes 1 <= x < mod
+    // Taken directly from tourist's code
+    // Source: https://codeforces.com/contest/1992/submission/269939496
     type inverse(type x) const {
-        if (x == 1) return 1;
-        return inverse(x, this->mod).first;
+        type u = 0, v = 1, m = mod;
+        while (x != 0) {
+            type t = m / x;
+            m -= t * x;
+            swap(x, m);
+            u -= t * v;
+            swap(u, v);
+        }
+        assert(m == 1);
+        return u;
     }
 
     // Assumes 0 <= lhs < mod, 0 <= rhs < mod
@@ -172,15 +166,15 @@ public:
         return this->value;
     }
 
-    template <typename T>
-    friend ostream& operator<< (ostream& out, const ModularInt<T> &var) {
+    template <typename U, typename T>
+    friend U& operator<< (U& out, const ModularInt<T> &var) {
         out << var.value;
         return out;
     }
 
     // Assumes the input fits into the type of mod
-    template <typename T>
-    friend istream& operator>> (istream &in, ModularInt<T> &var) {
+    template <typename U, typename T>
+    friend U& operator>> (U &in, ModularInt<T> &var) {
         in >> var.value;
         var.normalize();
         return in;
@@ -249,19 +243,21 @@ public:
 
     template <typename U>
     ModularInt power(const U n) const {
-        if (typeid(U) == typeid(ModularInt))
-            return this->power(__int128_t(n));
-        if (n == 0) {
-            return ModularInt(1);
-        } else if (n < 0) {
-            return 1 / this->power(-n);
-        } else {
-            ModularInt result = this->value;
-            result *= result;
-            if (n % 2 == 1)
-                return this->value * result.power(n/2);
-            return result.power(n/2);
+        ModularInt result = 1, base = this->value;
+        typename std::conditional<std::is_integral<U>::value, U, type>::type exponent = [&]() {
+            if constexpr (std::is_integral<U>::value) {
+                return n;
+            } else {
+                return n();
+            }
+        }();
+        while (exponent > 0) {
+            if (exponent % 2)
+                result *= base;
+            base *= base;
+            exponent /= 2;
         }
+        return result;
     }
 
     template <typename U>
@@ -472,17 +468,20 @@ U& operator/=(U &lhs, ModularInt<T> rhs) {
     return lhs /= U(rhs);
 }
 
+#define VARIABLE_MOD
+#ifdef VARIABLE_MOD
 // For variable mod cases:
-using MOD_TYPE = ll;
-struct VarMod {
-    static MOD_TYPE value;
-};
-MOD_TYPE VarMod::value;
-MOD_TYPE &mod = VarMod::value;
-using mint = ModularInt<VarMod>;
-
-// const int mod = int(1e9) + 7;
-// using mint = ModularInt<std::integral_constant<std::decay<decltype(mod)>::type,mod>>;
+    using MOD_TYPE = ll;
+    struct VarMod {
+        static MOD_TYPE value;
+    };
+    MOD_TYPE VarMod::value;
+    MOD_TYPE &mod = VarMod::value;
+    using mint = ModularInt<VarMod>;
+#else
+    constexpr int mod = int(1e9) + 7;
+    using mint = ModularInt<std::integral_constant<std::decay<decltype(mod)>::type,mod>>;
+#endif
 
 // #define USE_NCR
 #ifdef USE_NCR
@@ -514,6 +513,7 @@ void solve() {
             mint x, y; cin >> x;
             char op; cin >> op;
             cin >> y;
+            debug(x,y,op);
             switch(op) {
                 case '+':
                     cout << x+y << endl;

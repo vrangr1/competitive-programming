@@ -42,18 +42,6 @@ void solve();
 #include <vector>
 #include <assert.h>
 
-#define IS_SMALL_INT_TYPE(T) ( \
-    std::is_same<T, int>::value || \
-    std::is_same<T, int32_t>::value || \
-    std::is_same<T, unsigned int>::value || \
-    std::is_same<T, int16_t>::value || \
-    std::is_same<T, short int>::value || \
-    std::is_same<T, int8_t>::value )
-#define OVERFLOW_MULTIPLY(T, lhs, rhs) \
-    (IS_SMALL_INT_TYPE(T) ? \
-        normalize(static_cast<int64_t>(lhs) * static_cast<int64_t>(rhs)) : \
-        normalize(static_cast<__int128_t>(lhs) * static_cast<__int128_t>(rhs)))
-
 // Based on ACL's modint header and tourist's Modular class.
 template <typename MOD>
 class ModularInt {
@@ -70,7 +58,7 @@ private:
 
     // Not done value = (value%mod + mod)%mod because mod-1+mod maybe > inf
     inline void normalize() {
-        this->value = (this->value > 0) ? this->value % mod : (this->value % mod + this->mod);
+        this->value = (this->value >= 0) ? this->value % mod : (this->value % mod + this->mod);
     }
     
     // Assumes 0 <= lhs < mod, 0 <= rhs < mod
@@ -90,11 +78,8 @@ private:
     }
 
     // Assumes 0 <= lhs < mod, 0 <= rhs < mod
-    void subtract(type lhs, type rhs, type &result) const {
-        if (lhs >= rhs)
-            result = lhs - rhs;
-        else
-            result = this->mod - (rhs - lhs);
+    inline void subtract(type lhs, type rhs, type &result) const {
+        result = (lhs >= rhs ? lhs - rhs : this->mod - (rhs - lhs));
     }
 
     // Assumes 0 <= lhs < mod, 0 <= rhs < mod
@@ -104,12 +89,21 @@ private:
         return result;
     }
 
+    inline type overflow_multiply(type lhs, type rhs) const {
+        if constexpr (sizeof(type) <= sizeof(int32_t) && is_signed<type>::value) {
+            return normalize(static_cast<int64_t>(lhs) * static_cast<int64_t>(rhs));
+        } else if constexpr (sizeof(type) <= sizeof(int32_t)) {
+            return normalize(static_cast<uint64_t>(lhs) * static_cast<uint64_t>(rhs));
+        } else if constexpr (sizeof(type) <= sizeof(int64_t) && is_signed<type>::value) {
+            return normalize(static_cast<__int128_t>(lhs) * static_cast<__int128_t>(rhs));
+        } else {
+            return normalize(static_cast<__uint128_t>(lhs) * static_cast<__uint128_t>(rhs));
+        }
+    }
+
     // Assumes 0 <= lhs < mod, 0 <= rhs < mod
-    void multiply(type lhs, type rhs, type &result) const {
-        if (__builtin_mul_overflow(lhs, rhs, &result))
-            result = OVERFLOW_MULTIPLY(type, lhs, rhs);
-        else
-            result = normalize(result);
+    inline void multiply(type lhs, type rhs, type &result) const {
+        result = (__builtin_mul_overflow(lhs, rhs, &result) ? overflow_multiply(lhs, rhs) : normalize(result));
     }
 
     // Assumes 0 <= lhs < mod, 0 <= rhs < mod
@@ -163,15 +157,15 @@ public:
         return this->value;
     }
 
-    template <typename T>
-    friend ostream& operator<< (ostream& out, const ModularInt<T> &var) {
+    template <typename U, typename T>
+    friend U& operator<< (U& out, const ModularInt<T> &var) {
         out << var.value;
         return out;
     }
 
     // Assumes the input fits into the type of mod
-    template <typename T>
-    friend istream& operator>> (istream &in, ModularInt<T> &var) {
+    template <typename U, typename T>
+    friend U& operator>> (U &in, ModularInt<T> &var) {
         in >> var.value;
         var.normalize();
         return in;
@@ -465,17 +459,20 @@ U& operator/=(U &lhs, ModularInt<T> rhs) {
     return lhs /= U(rhs);
 }
 
+// #define VARIABLE_MOD
+#ifdef VARIABLE_MOD
 // For variable mod cases:
-// using MOD_TYPE = int;
-// struct VarMod {
-//     static MOD_TYPE value;
-// };
-// MOD_TYPE VarMod::value;
-// MOD_TYPE &mod = VarMod::value;
-// using mint = ModularInt<VarMod>;
-
-constexpr int mod = int(1e9) + 7;
-using mint = ModularInt<std::integral_constant<std::decay<decltype(mod)>::type,mod>>;
+    using MOD_TYPE = int;
+    struct VarMod {
+        static MOD_TYPE value;
+    };
+    MOD_TYPE VarMod::value;
+    MOD_TYPE &mod = VarMod::value;
+    using mint = ModularInt<VarMod>;
+#else
+    constexpr int mod = int(1e9) + 7;
+    using mint = ModularInt<std::integral_constant<std::decay<decltype(mod)>::type,mod>>;
+#endif
 
 // #define USE_NCR
 #ifdef USE_NCR
