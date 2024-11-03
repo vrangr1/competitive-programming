@@ -44,7 +44,7 @@ int main() {
 	return 0;
 }
 
-void solve() {
+void solve1() {
     ll n; cin >> n;
     if (n == -1) exit(0);
     auto ask = [&](ll l, ll r) -> ll {
@@ -73,7 +73,7 @@ void solve() {
         assert(sz(sol) < 3);
         assert(high > low+1ll);
         ll mid = low + ((high-low)/2ll);
-        ll v = ask(mid,high), ct = 0, st;
+        ll v = ask(mid,high), ct = 0, st = -1;
         if (sz(sol) == 2) {
             sol.insert(v);
             return v;
@@ -162,5 +162,83 @@ void solve() {
     bsch(bsch,1,n);
     assert(sz(sol) == 3);
     vector<ll> vals(all(sol));
+    ans(vals[0],vals[1],vals[2]);
+}
+
+void solve() {
+    ll n; cin >> n;
+    if (n == -1) exit(0);
+    auto ask = [&](ll l, ll r) -> ll {
+        assert(l >= 1 && l <= r && r <= n);
+        cout << "xor " << l << " " << r << endl;
+        cout.flush();
+        ll x; cin >> x;
+        if (x == -1) exit(0);
+        return x;
+    };
+    auto ans = [&](ll a, ll b, ll c) -> void {
+        assert(a >= 1 && a <= n);
+        assert(b >= 1 && b <= n);
+        assert(c >= 1 && c <= n);
+        cout << "ans " << a << " " << b << " " << c << endl;
+        cout.flush();
+    };
+    set<ll> st;
+    auto sch = [&](auto &&self, ll low, ll high, ll cur) -> void {
+        assert(low + 1ll < high);
+        if (sz(st) == 3) return;
+        assert(sz(st) < 3);
+        ll mx = (low^high);
+        if (low <= cur && cur <= high && mx < low) {
+            st.insert(cur);
+            return;
+        }
+        ll mid = low + (high-low+1ll)/2ll;
+        ll v = ask(mid,high);
+        if (v && mid+1ll == high) {
+            if (v == (mid^high)) {
+                st.insert(mid);
+                st.insert(high);
+            } else if (v == mid) {
+                st.insert(mid);
+            } else {
+                st.insert(high);
+            }
+            if (v == cur) return;
+        } else if (v) {
+            self(self,mid,high,v);
+            if (v == cur) return;
+        }
+        --mid;
+        if (cur == 0 && v == 0) {
+            assert(mid-low+1ll >= 3);
+            self(self,low,mid,0);
+            return;
+        }
+        v ^= cur;
+        assert(v > 0);
+        assert(sz(st) < 3);
+        if (low == mid) {
+            st.insert(low);
+            assert(v == low);
+            return;
+        } else if (low+1ll == mid) {
+            if (v == (low^mid)) {
+                st.insert(low);
+                st.insert(mid);
+            } else if (v == low) {
+                st.insert(low);
+            } else {
+                assert(v == mid);
+                st.insert(mid);
+            }
+            return;
+        } else {
+            self(self,low,mid,v);
+        }
+    };
+    sch(sch,1,n,ask(1,n));
+    assert(sz(st) == 3);
+    vector<ll> vals(all(st));
     ans(vals[0],vals[1],vals[2]);
 }
