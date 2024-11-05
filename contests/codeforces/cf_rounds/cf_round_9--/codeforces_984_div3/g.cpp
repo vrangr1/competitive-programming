@@ -165,7 +165,7 @@ void solve1() {
     ans(vals[0],vals[1],vals[2]);
 }
 
-void solve() {
+void solve2() {
     ll n; cin >> n;
     if (n == -1) exit(0);
     auto ask = [&](ll l, ll r) -> ll {
@@ -240,5 +240,120 @@ void solve() {
     sch(sch,1,n,ask(1,n));
     assert(sz(st) == 3);
     vector<ll> vals(all(st));
+    ans(vals[0],vals[1],vals[2]);
+}
+
+void solve() {
+    ll n; cin >> n;
+    if (n == -1) exit(0);
+    auto ask = [&](ll l, ll r) -> ll {
+        assert(l >= 1 && l <= r && r <= n);
+        cout << "xor " << l << " " << r << endl;
+        cout.flush();
+        ll x; cin >> x;
+        if (x == -1) exit(0);
+        return x;
+    };
+    auto ans = [&](ll a, ll b, ll c) -> void {
+        assert(a >= 1 && a <= n);
+        assert(b >= 1 && b <= n);
+        assert(c >= 1 && c <= n);
+        cout << "ans " << a << " " << b << " " << c << endl;
+        cout.flush();
+    };
+    vector<ll> vals;
+    auto find2 = [&](auto &&self, ll mask, ll xr) -> void {
+        assert((xr&mask) == 0);
+        assert(sz(vals) == 1);
+        ll lsb = (mask&(-mask));
+        ll bit = (lsb>>1ll), r = lsb-1ll;
+        ll v = ((bit|mask) <= n ? ask((bit|mask),min(n,(r|mask))) : 0);
+        while(v == 0) {
+            r = bit-1ll;
+            bit>>=1ll;
+            v = ((bit|mask) <= n ? ask((bit|mask),min(n,(r|mask))) : 0);
+        }
+        if (v == xr) {
+            self(self,(mask|bit),xr);
+        } else {
+            vals.push_back(v);
+            vals.push_back(xr^v);
+        }
+        assert(sz(vals) == 3);
+    };
+    auto find3 = [&](auto &&self, ll mask, ll xr) -> void {
+        assert((mask&xr) != 0ll);
+        assert(sz(vals) == 0);
+        ll r = (mask&(-mask))-1ll, bit = ((r+1ll)>>1ll);
+        ll v = ((bit|mask) <= n ? ask((bit|mask),min(n,(r|mask))) : 0);
+        while(v == 0) {
+            r = bit-1ll;
+            bit>>=1ll;
+            v = ((bit|mask) <= n ? ask((bit|mask),min(n,(r|mask))) : 0);
+        }
+        if (v == xr) {
+            self(self,mask|bit,xr);
+        } else if ((bit&v)) {
+            vals.push_back(v);
+            xr^=v;
+            r = bit-1ll;
+            bit>>=1ll;
+            v = ask((bit|mask),(r|mask));
+            while(v == 0) {
+                r = bit-1ll;
+                bit>>=1ll;
+                v = ask((bit|mask),(r|mask));
+            }
+            if (v != xr) {
+                vals.push_back(v);
+                vals.push_back(v^xr);
+            } else {
+                find2(find2,mask|bit,xr);
+            }
+        } else {
+            vals.push_back(v^xr);
+            find2(find2,mask|bit,v);
+        }
+    };
+    ll ov = ask(1,n);
+    ll bit = (1ll << (63ll-__builtin_clzll(n)));
+    assert(bit <= n);
+    ll v = ask(bit,n);
+    while(v == 0) {
+        ll r = bit-1ll;
+        bit>>=1ll;
+        v = ask(bit,r);
+    }
+    assert(v);
+    if (v != ov && (v&bit)) { // 1
+        vals.push_back(v);
+        ov ^= v;
+        // TODO Find rest two
+        assert(bit > 1);
+        ll r = bit-1ll;
+        bit>>=1ll;
+        v = ask(bit,r);
+        while(v == 0) {
+            r = bit-1ll;
+            bit>>=1ll;
+            v = ask(bit,r);
+        }
+        if (v == ov) {
+            find2(find2,bit,v);
+        } else {
+            vals.push_back(v);
+            vals.push_back(ov^v);
+        }
+    } else if (v == ov) {
+        assert((v&bit));
+        // TODO Find all three
+        ll mask = bit;
+        find3(find3,mask,ov);
+    } else { // 2
+        vals.push_back(v^ov); // Found 3rd val
+        // TODO Find the rest 2 here
+        find2(find2,bit,v);
+    }
+    assert(sz(vals)==3);
     ans(vals[0],vals[1],vals[2]);
 }
