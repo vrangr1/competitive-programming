@@ -44,12 +44,12 @@ int main() {
 	return 0;
 }
 
-class segtree {
+class segtree1 {
 public:
     int n;
     vector<pair<int,int>> tree;
     
-    segtree() {}
+    segtree1() {}
     
     // segtree(vector<int> &p) {
     //     n = sz(p);
@@ -109,16 +109,15 @@ public:
     }
 };
 
-void solve() {
+void solve1() {
     int n; cin >> n;
     vector<vector<int>> ps(3,vector<int>(n));
     rep(i,3) rep(j,n) {
         cin >> ps[i][j];
         --ps[i][j];
     }
-    vector<segtree> segs(3);
+    vector<segtree1> segs(3);
     rep(i,3) segs[i].build(ps[i]);
-    debug(segs[1].query(0,1));
     vector<array<int,3>> dp(n); // max card, player, nxt card type
     dp[n-1] = {n-1,0,n-1};
     rep(i,3)
@@ -127,17 +126,27 @@ void solve() {
         dp[i] = {i,0,i};
         rep(j,3) {
             auto [mx, nxt] = segs[j].query(0,ps[j][i]);
+            if (i == 0) {
+                debug(endl,j,mx,nxt);
+                if (j == 2) {
+                    debug(segs[j].query(0,ps[j][i]));
+                    debug(ps[j][i]);
+                    debug(segs[j].query(0,1));
+                }
+            }
             if (mx < i) {
                 mx = i;
                 nxt = i;
             }
             if (mx > dp[i][0]) {
-                dp[i] = {dp[mx][0],j,nxt};
+                dp[i] = {mx,j,nxt};
             }
             segs[j].update(ps[j][i], mx, nxt);
         }
+        // rep(j,3)
+        //     segs[j].update(ps[j][i],dp[i][0],dp[i][2]);
     }
-    debug(dp,segs[1].query(0,1));
+    debug(dp);
     if (dp[0][0] < n-1) {
         cout << "NO\n";
         return;
@@ -158,5 +167,72 @@ void solve() {
             default: cout << "j "; break;
         }
         cout << typ+1 << endl;
+    }
+}
+
+
+
+class segtree {
+public:
+    int n;
+    vector<array<int,3>> tree;
+    
+    segtree(const vector<vector<int>> &ps) {
+        n = sz(ps[0]);
+        int gn = (n<<1);
+        if (__builtin_popcount(gn) != 1)
+            gn = (1<<(32-__builtin_clz(gn)));
+        tree.assign(gn,{0,0,0});
+    }
+
+    void update(int ind, array<int,3> upd) {
+        ind += n;
+        if (tree[ind][0] >= upd[0]) return;
+        tree[ind] = upd;
+        for(;ind>1;ind>>=1) {
+            auto [lmx, lp, lnxt] = tree[ind];
+            auto [rmx, rp, rnxt] = tree[ind^1];
+            if (lmx >= rmx) {
+                tree[ind>>1] = tree[ind];
+            } else tree[ind>>1] = tree[ind^1];
+        }
+    }
+
+    array<int,3> query(int l, int r) {
+        array<int,3> res = {-1,0,0};
+        for(l+=n,r+=n; l < r; l>>=1, r>>=1) {
+            if (l&1) {
+                if (res[0] < tree[l][0]) 
+                    res = tree[l];
+                ++l;
+            }
+            if (r&1) {
+                --r;
+                if (res[0] < tree[r][0])
+                    res = tree[r];
+            }
+        }
+        return res;
+    }
+};
+
+
+void solve() {
+    int n; cin >> n;
+    vector<vector<int>> ps(3,vector<int>(n));
+    rep(i,3) rep(j,n) {
+        cin >> ps[i][j];
+        --ps[i][j];
+    }
+    segtree seg(ps);
+    vector<array<int,3>> dp(n);
+    rep(i,3) seg.update(ps[i][n-1], {n-1,i,n-1});
+    dp[n-1] = {n-1,0,n-1};
+    rep(i,n-2,0,-1) {
+        dp[i] = {i,0,i};
+        rep(j,3) {
+            auto [mx, p, nxt] = seg.query(0,ps[j][i]);
+            
+        }
     }
 }
